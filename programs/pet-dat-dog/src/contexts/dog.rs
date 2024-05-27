@@ -39,13 +39,46 @@ pub struct DogContext<'info> {
 }
 
 impl<'info> DogContext<'info> {
-    pub fn init(&mut self, name: String, pets: u64, bonks: u64, bumps: &DogContextBumps) -> Result<()> {
+    pub fn init(&mut self, name: String, pets: u64, bonks: u64, team: Vec<(Pubkey, u8)>, bumps: &DogContextBumps) -> Result<()> {
         self.dog.set_inner(Dog {
             name,
             pets,
             bonks,
             bump: bumps.dog,
         });
+
+        self.petsboard.set_inner(Board {
+            members: Vec::with_capacity(11),
+            bump: bumps.petsboard,
+        });
+
+        self.bonkboard.set_inner(Board {
+            members: Vec::with_capacity(11),
+            bump: bumps.bonkboard,
+        });
+
+        self.teamboard.set_inner(Team {
+            members: team.into_iter().map(|(key, value)| (key, value)).collect(),
+            bump: bumps.teamboard,
+        });
         Ok(())
-    }   
+    }
+
+    pub fn pet(&mut self) -> Result<()> {
+        self.dog.pets += 1;
+
+        self.update()?;
+        Ok(())
+    }
+
+    pub fn bonk(&mut self) -> Result<()> {
+        self.dog.bonks += 1;
+        
+        self.update()?;
+        Ok(())
+    }
+
+    pub fn update(&mut self) -> Result<()> {
+        Ok(())
+    }
 }

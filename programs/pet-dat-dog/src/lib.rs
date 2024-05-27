@@ -7,6 +7,8 @@ mod contexts;
 
 use contexts::dog::*;
 
+use contexts::user::*;
+
 declare_id!("4Z2Tjaw2a4tMUnefnPExQ7sE4UfYSZhZT1pMDKfvAofL");
 
 #[program]
@@ -14,30 +16,21 @@ pub mod pet_dat_dog {
 
     use super::*;
 
-    pub fn dog(ctx: Context<DogContext> , name: String) -> Result<()> {   
-        ctx.accounts.dog.new(name);
-
-        ctx.accounts.petsboard.new();
-
-        ctx.accounts.bonkboard.new();
-
-        ctx.accounts.teamboard.new();
-
-        ctx.accounts.vault.new();
-
+    pub fn create_dog(ctx: Context<DogContext> , name: String, pets: u64, bonks: u64, team: Vec<(Pubkey, u8)>) -> Result<()> {   
+        ctx.accounts.init(name, pets, bonks, team, &ctx.bumps)?;
         Ok(())
     }
 
     // pet, taking a User as context
     pub fn pet(ctx: Context<UserContext>) -> Result<()> {
-        ctx.accounts.dog.pets += 1;
+        ctx.accounts.pet();
         Ok(())
     
     }
 
     // bonk, taking a User as context
     pub fn bonk(ctx: Context<UserContext>) -> Result<()> {
-        ctx.accounts.dog.bonks += 1;
+        ctx.accounts.bonk();
         Ok(())
     
     }
