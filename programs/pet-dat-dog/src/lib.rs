@@ -16,20 +16,20 @@ pub mod pet_dat_dog {
 
     use super::*;
 
-    pub fn create_dog(ctx: Context<DogContext> , name: String, pets: u64, bonks: u64, team: Vec<(Pubkey, u8)>) -> Result<()> {   
-        ctx.accounts.init(name, pets, bonks, team, &ctx.bumps)?;
+    pub fn create_dog(ctx: Context<DogC>, name: String, team: Vec<(Pubkey, u8)>) -> Result<()> {   
+        ctx.accounts.init(name, team, &ctx.bumps)?;
         Ok(())
     }
 
     // pet, taking a User as context
-    pub fn pet(ctx: Context<UserContext>) -> Result<()> {
+    pub fn pet(ctx: Context<PetC>) -> Result<()> {
         ctx.accounts.pet();
         Ok(())
     
     }
 
     // bonk, taking a User as context
-    pub fn bonk(ctx: Context<UserContext>) -> Result<()> {
+    pub fn bonk(ctx: Context<BonkC>) -> Result<()> {
         ctx.accounts.bonk();
         Ok(())
     

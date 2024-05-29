@@ -1,15 +1,19 @@
+// the dog context inits a dog and its pda's, including a vault
+
 use anchor_lang::{prelude::*, Bump};
 use anchor_spl::{
     associated_token::AssociatedToken,
     token::{transfer, Mint, Token, TokenAccount, Transfer},
 };
 
+
+
 use crate::state::Board;
 use crate::state::Dog;
 use crate::state::Team;
 
 #[derive(Accounts)]
-#[instruction(name: String, team: Vec<()>)]
+#[instruction(name: String)]
 pub struct DogContext<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
@@ -30,19 +34,23 @@ pub struct DogContext<'info> {
     #[account(init, payer = owner, seeds = [b"team", dog.key().as_ref()], bump, space = Team::INIT_SPACE)]
     pub teamboard: Account<'info, Team>,
 
-    // token account for the vault
-    #[account(seeds = [b"vault", dog.key().as_ref()], bump)]
-    pub vault: Account<'info, TokenAccount>,
+    // Not putting the token vault account here in the dog, instead nesting it within the bonkboard account, in the BonkC Context.
+    // #[account(seeds = [b"vault", dog.key().as_ref()], bump)]
+    // pub vault: Account<'info, TokenAccount>,
+
+    // mint account for the vault
+    #[account(init_if_needed, seeds = [b"vault", dog.key().as_ref()], bump)]
+    pub mint: TokenAccount<'info, Mint>,
 
     // define a vault account with seeds [b"vault", owner.key().as_ref()] within the system program
     pub system_program: Program<'info, System>,
 }
 
-impl<'info> DogContext<'info> {
-    pub fn init(&mut self, name: String, pets: u64, bonks: u64, team: Vec<(Pubkey, u8)>, bumps: &DogContextBumps) -> Result<()> {
+impl<'info> DogC<'info> {
+    pub fn init(&mut self, name: String, team: Vec<(Pubkey, u8)>, bumps: &DogCBumps) -> Result<()> {
         self.dog.set_inner(Dog {
             name,
-            pets,
+            pets = 0,
             bonks,
             bump: bumps.dog,
         });

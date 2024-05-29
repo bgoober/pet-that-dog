@@ -1,59 +1,69 @@
-// use anchor_lang::prelude::*;
-// use anchor_spl::{associated_token::AssociatedToken, token::{transfer, Mint, Token, TokenAccount, Transfer}};
+use anchor_lang::prelude::*;
+use anchor_spl::{associated_token::AssociatedToken, token::{transfer, Mint, Token, TokenAccount, Transfer}};
 
 
-// use crate::state::Board;
-// use crate::state::Dog;
-// use crate::state::User;
+use crate::state::Board;
+use crate::state::Dog;
+use crate::state::User;
 
-// #[derive(Accounts)]
-// pub struct Bonk<'info> {
-//     #[account(mut)]
-//     pub user: Signer<'info>,
+#[derive(Accounts)]
+pub struct BonkC<'info> {
+    #[account(mut)]
+    pub user: Signer<'info>,
 
-//     // derived from the existing seeds of the dog account
-//     #[account(mut, seeds = [b"dog", dog.key().as_ref()], bump)]
-//     pub dog: Account<'info, Dog>,
+    // derived from the existing seeds of the dog account
+    #[account(mut, seeds = [b"dog", dog.key().as_ref()], bump)]
+    pub dog: Account<'info, Dog>,
 
-//     // constraints derived from the dog account 
-//     #[account(mut, seeds = [b"bonks", dog.key().as_ref()], bump)]
-//     pub bonkboard: Account<'info, Board>,
+    // user's global account
+    #[account(init_if_needed, payer = user, space = User::INIT_SPACE, seeds = [b"userglobal", user.key().as_ref()], bump)]
+    pub user_account: Account<'info, User>,
 
-//     #[account(mut)]
-//     pub vault: Account<'info, TokenAccount>,
+    // user's dog specific account
+    #[account(init_if_needed, payer = user, space = User::INIT_SPACE, seeds = [b"userdog", dog.key().as_ref(), user.key().as_ref()], bump)]
+    pub user_dog_account: Account<'info, User>,
 
-//     pub system_program: Program<'info, System>,
-// }
+    // constraints derived from the dog account 
+    #[account(mut, seeds = [b"bonks", dog.key().as_ref()], bump)]
+    pub bonkboard: Account<'info, Board>,
 
-// impl<'info> Bonk<'info> {
-//     pub fn new(
-//         user: Signer<'info>,
-//         dog: Account<'info, Dog>,
-//         bonkboard: Account<'info, Board>,
-//         vault: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub vault: Account<'info, TokenAccount>,
 
-//         system_program: Program<'info, System>,
-//     ) -> Self {
-//         Self {
-//             user,
-//             dog,
-//             bonkboard,
-//             vault,
-//             system_program,
-//         }
-//     }
+    pub system_program: Program<'info, System>,
+}
 
-//     pub fn bonk(&mut self) -> Result<()> {
-//         self.bonkboard.bonks += 1;
+impl<'info> BonkC<'info> {
+    pub fn init(&mut self, bumps: &InitBumps) -> Result<()> {
+        self.user_account.set_inner(User {
+            pets: 0,
+            bonks: 0,
+            bump: bumps.user_account,
+        });
+
+        self.user_dog_account.set_inner(User {
+            pets: 0,
+            bonks: 0,
+            bump: bumps.user_dog_account,
+        });
+        Ok(())
+    }
+
+    pub fn bonk(&mut self) -> Result<()> {
+        self.bonkboard.bonks += 1;
         
-//         // update the user's account for that dog
-//         let user_pets = &self.user.pets;
+        // update the user's account for that dog
+        let user_pets = &self.user.pets;
 
-//         self.update_leaderboard()?;
-//         Ok(())
-//     }
+        self.update()?;
+        Ok(())
+    }
 
-//     pub fn update_leaderboard(&mut self) -> Result<()> {
-//         Ok(())
-//     }
-// }
+    pub fn update(&mut self) -> Result<()> {
+        Ok(())
+    }
+
+    pub fn disburse(&mut self) -> Result<()> {
+        Ok(())
+    }   
+}

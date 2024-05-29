@@ -2,6 +2,7 @@ pub mod dog;
 // pub mod pet;
 // pub mod bonk;
 pub mod user;
+mod pet;
 
 pub use dog::*;
 // pub use pet::*;
