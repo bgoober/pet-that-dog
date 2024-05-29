@@ -35,9 +35,14 @@ pub struct BonkC<'info> {
 
 impl<'info> BonkC<'info> {
     pub fn init(&mut self, bumps: &InitBumps) -> Result<()> {
+        
+        let slot = Clock::get()?.slot;
+        let target = slot + 1000;
+
         self.user_account.set_inner(User {
             pets: 0,
             bonks: 0,
+            target,
             bump: bumps.user_account,
         });
 
@@ -56,6 +61,8 @@ impl<'info> BonkC<'info> {
         let user_pets = &self.user.pets;
 
         self.update()?;
+
+        self.disburse()?;
         Ok(())
     }
 
@@ -64,6 +71,8 @@ impl<'info> BonkC<'info> {
     }
 
     pub fn disburse(&mut self) -> Result<()> {
+
+
         Ok(())
     }   
 }

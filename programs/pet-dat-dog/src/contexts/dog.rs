@@ -1,12 +1,10 @@
 // the dog context inits a dog and its pda's, including a vault
 
-use anchor_lang::{prelude::*, Bump};
+use anchor_lang::{prelude::*, solana_program::fee_calculator::DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE, Bump};
 use anchor_spl::{
     associated_token::AssociatedToken,
     token::{transfer, Mint, Token, TokenAccount, Transfer},
 };
-
-
 
 use crate::state::Board;
 use crate::state::Dog;
@@ -14,7 +12,7 @@ use crate::state::Team;
 
 #[derive(Accounts)]
 #[instruction(name: String)]
-pub struct DogContext<'info> {
+pub struct DogC<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
 
@@ -38,9 +36,9 @@ pub struct DogContext<'info> {
     // #[account(seeds = [b"vault", dog.key().as_ref()], bump)]
     // pub vault: Account<'info, TokenAccount>,
 
-    // mint account for the vault
-    #[account(init_if_needed, seeds = [b"vault", dog.key().as_ref()], bump)]
-    pub mint: TokenAccount<'info, Mint>,
+    // // mint account for the vault
+    // #[account(init_if_needed, seeds = [b"vault", dog.key().as_ref()], bump)]
+    // pub mint: TokenAccount<'info, Mint>,
 
     // define a vault account with seeds [b"vault", owner.key().as_ref()] within the system program
     pub system_program: Program<'info, System>,
@@ -50,18 +48,24 @@ impl<'info> DogC<'info> {
     pub fn init(&mut self, name: String, team: Vec<(Pubkey, u8)>, bumps: &DogCBumps) -> Result<()> {
         self.dog.set_inner(Dog {
             name,
-            pets = 0,
-            bonks,
+            pets: 0,
+            bonks: 0,
             bump: bumps.dog,
         });
 
+        // get the current slot from the chain
+        let slot = Clock::get()?.slot;
+        let target = slot + 1000;
+
         self.petsboard.set_inner(Board {
             members: Vec::with_capacity(11),
+            target,
             bump: bumps.petsboard,
         });
 
         self.bonkboard.set_inner(Board {
             members: Vec::with_capacity(11),
+            target,
             bump: bumps.bonkboard,
         });
 
