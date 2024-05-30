@@ -1,10 +1,7 @@
 pub mod dog;
-// pub mod pet;
-// pub mod bonk;
-pub mod user;
-mod pet;
+pub mod pet;
+pub mod bonk;
 
+pub use pet::*;
 pub use dog::*;
-// pub use pet::*;
-// pub use bonk::*;
-pub use user::*;
+pub use bonk::*;

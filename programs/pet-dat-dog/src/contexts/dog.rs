@@ -1,17 +1,16 @@
 // the dog context inits a dog and its pda's, including a vault
 
-use anchor_lang::{prelude::*, solana_program::fee_calculator::DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE, Bump};
-use anchor_spl::{
-    associated_token::AssociatedToken,
-    token::{transfer, Mint, Token, TokenAccount, Transfer},
-};
+use std::fs::Metadata;
+
+use anchor_lang::{prelude::*, solana_program::stake::state::Meta};
+use anchor_spl::{associated_token::AssociatedToken, token::{self, initialize_mint, transfer, InitializeMint, Mint, Token, TokenAccount, Transfer}};
 
 use crate::state::Board;
 use crate::state::Dog;
 use crate::state::Team;
 
 #[derive(Accounts)]
-#[instruction(name: String)]
+#[instruction(name: String, params: InitTokenParams)]
 pub struct DogC<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
@@ -19,6 +18,21 @@ pub struct DogC<'info> {
     // init a Dog account with seeds [b"dog", owner.key().as_ref(), name.to_le_bytes()]
     #[account(init, payer = owner, seeds = [b"dog", name.as_bytes(), owner.key.as_ref()], bump, space = Dog::INIT_SPACE)]
     pub dog: Account<'info, Dog>,
+
+    /// CHECK: New Metaplex Account being created
+    #[account(mut)]
+    pub metadata: UncheckedAccount<'info>,
+
+    
+    #[account(
+        init,
+        seeds = [b"mint", dog.key().as_ref()],
+        bump,
+        payer = owner,
+        mint::decimals = params.decimals,
+        mint::authority = mint,
+    )]
+    pub mint: Account<'info, Mint>,
 
     // init a pets Board account with seeds [b"pets", owner.key().as_ref()]
     #[account(init, payer = owner, seeds = [b"pets", dog.key().as_ref()], bump, space = Board::INIT_SPACE)]
@@ -32,20 +46,24 @@ pub struct DogC<'info> {
     #[account(init, payer = owner, seeds = [b"team", dog.key().as_ref()], bump, space = Team::INIT_SPACE)]
     pub teamboard: Account<'info, Team>,
 
-    // Not putting the token vault account here in the dog, instead nesting it within the bonkboard account, in the BonkC Context.
-    // #[account(seeds = [b"vault", dog.key().as_ref()], bump)]
-    // pub vault: Account<'info, TokenAccount>,
+    /// CHECK: this is safe. The system needs this auth account to sign transactions for the program. Since no token or SOL balance will be held with this account, you dont need to init the account, just use its seeds for signing on behalf of the program.
+    // #[account(seeds = [b"auth", dog.key().as_ref()], bump)]
+    // pub auth: UncheckedAccount<'info>,
 
-    // // mint account for the vault
-    // #[account(init_if_needed, seeds = [b"vault", dog.key().as_ref()], bump)]
-    // pub mint: TokenAccount<'info, Mint>,
+    /// DOCS: using a Box wrapping a InterfaceAccount is used because it is compatible with token2022 standard
+    // mint account for the vault
+    // #[account(init, payer = owner, seeds = [b"mint", dog.key().as_ref()], mint::decimals = 6, mint::authority = auth, bump)]
+    // pub mint: InterfaceAccount<'info, Mint>,
 
     // define a vault account with seeds [b"vault", owner.key().as_ref()] within the system program
     pub system_program: Program<'info, System>,
+    pub token_program: Program<'info, Token>,
+
+
 }
 
 impl<'info> DogC<'info> {
-    pub fn init(&mut self, name: String, team: Vec<(Pubkey, u8)>, bumps: &DogCBumps) -> Result<()> {
+    pub fn init(&mut self, name: String, team: Vec<(Pubkey, u8)>, params: InitTokenParams, bumps: &DogCBumps) -> Result<()> {
         self.dog.set_inner(Dog {
             name,
             pets: 0,
@@ -73,24 +91,33 @@ impl<'info> DogC<'info> {
             members: team.into_iter().map(|(key, value)| (key, value)).collect(),
             bump: bumps.teamboard,
         });
+
+        let seeds = &["mint".as_bytes(), &[bumps.mint]];
+        let signer = [&seeds[..]];
+
+        let cpi_program = self.token_program.to_account_info();
+
+        let metadata: InitTokenParams = InitTokenParams {
+            name: params.name,
+            symbol: params.symbol,
+            uri: params.uri,
+            decimals: params.decimals,
+        };  
+
+
+        let init_context = CpiContext::new_with_signer(cpi_program, , signer);
+
+        initialize_mint(init_context, 6, auth)?;
+
         Ok(())
     }
+}
 
-    pub fn pet(&mut self) -> Result<()> {
-        self.dog.pets += 1;
-
-        self.update()?;
-        Ok(())
-    }
-
-    pub fn bonk(&mut self) -> Result<()> {
-        self.dog.bonks += 1;
-        
-        self.update()?;
-        Ok(())
-    }
-
-    pub fn update(&mut self) -> Result<()> {
-        Ok(())
-    }
+// 5. Define the init token params
+#[derive(AnchorSerialize, AnchorDeserialize, Debug, Clone)]
+pub struct InitTokenParams {
+    pub name: String,
+    pub symbol: String,
+    pub uri: String,
+    pub decimals: u8,
 }

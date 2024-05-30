@@ -5,9 +5,11 @@ use anchor_lang::prelude::*;
 pub struct User {
     pub pets: u64,
     pub bonks: u64,
+    pub last_pet: u64,
+    pub last_bonk: u64,
     pub bump: u8,
 }
 
 impl Space for User {
-    const INIT_SPACE: usize = 8+8+8+1;
+    const INIT_SPACE: usize = 8+8+8+8+8+1;
 }

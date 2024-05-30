@@ -1,5 +1,5 @@
-use anchor_lang::prelude::*;
-use anchor_spl::{associated_token::AssociatedToken, token::{transfer, Mint, Token, TokenAccount, Transfer}};
+use anchor_lang::{accounts::signer, prelude::*};
+use anchor_spl::{associated_token::AssociatedToken, token::{mint_to, transfer, Mint, MintTo, Token, TokenAccount, Transfer}, token_interface::spl_token_metadata_interface::instruction::Initialize};
 
 use crate::state::Board;
 use crate::state::Dog;
@@ -31,23 +31,32 @@ pub struct PetC<'info> {
     pub vault: Account<'info, TokenAccount>,
 
     // mint to call to mint the user a token for each pet function call, from the dog's mint
-    #[account(mut, seeds = [b"dog", dog.key().as_ref()], bump)]
+    #[account(mut, seeds = [b"mint", dog.key().as_ref()], bump)]
     pub mint: Account<'info, Mint>,
+
+    #[account(init_if_needed, payer = user, space = User::INIT_SPACE, seeds = [b"ata", user.key().as_ref()], bump)]
+    pub user_ata: Account<'info, TokenAccount>,
+
+    pub token_program: Program<'info, Token>,
 
     pub system_program: Program<'info, System>,
 }
 
 impl<'info> PetC<'info> {
-    pub fn init(&mut self, bumps: &InitBumps) -> Result<()> {
+    pub fn init(&mut self, bumps: &PetCBumps) -> Result<()> {
         self.user_account.set_inner(User {
             pets: 0,
             bonks: 0,
+            last_pet: 0,
+            last_bonk: 0,
             bump: bumps.user_account,
         });
 
         self.user_dog_account.set_inner(User {
             pets: 0,
             bonks: 0,
+            last_pet: 0,
+            last_bonk: 0,
             bump: bumps.user_dog_account,
         });
         Ok(())
@@ -57,6 +66,17 @@ impl<'info> PetC<'info> {
         self.dog.pets += 1;
         self.user_account.pets += 1;
         self.user_dog_account.pets += 1;
+
+        // mint a token to the user's vault from the dog's mint
+        let cpi_accounts = MintTo {
+            mint: self.mint.to_account_info(),
+            to: self.user_ata.to_account_info(),
+            authority: self.dog.to_account_info(),
+        };
+
+        let cpi_ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
+
+        mint_to(cpi_ctx, 1)?;
         
         self.update_board()?;
         Ok(())
@@ -67,6 +87,8 @@ impl<'info> PetC<'info> {
         let user = User {
             pets: self.user_dog_account.pets,
             bonks: self.user_dog_account.bonks,
+            last_pet: self.user_dog_account.last_pet,
+            last_bonk: self.user_dog_account.last_bonk,
             bump: self.user_account.bump,
             // You might need to add other fields here depending on the definition of the User struct
         };
