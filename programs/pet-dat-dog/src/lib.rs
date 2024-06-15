@@ -35,7 +35,13 @@ pub mod pet_dat_dog {
 }
 
 
-
+#[error_code]
+pub enum ErrorCode {
+    #[msg("Too many pets in one slot")]
+    TooManyPets,
+    #[msg("Session error")]
+    SessionError,
+}
 
 
 

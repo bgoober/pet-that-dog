@@ -1,28 +1,71 @@
 import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import { Program, web3 } from "@coral-xyz/anchor";
 import { PetDatDog } from "../target/types/pet_dat_dog";
+import { PublicKey } from '@solana/web3.js';
+
 
 describe("pet-dat-dog", () => {
-  // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
 
   const program = anchor.workspace.PetDatDog as Program<PetDatDog>;
 
-  it("Is initialized!", async () => {
-    // Add your test here.
-    const tx = await program.methods.createDog("Max").rpc();
-    console.log("Your transaction signature", tx);
-  });
+  const owner = new PublicKey('4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp');
 
-  it("Is pet!", async () => {
-    // Add your test here.
-    const tx = await program.methods.pet();
-    console.log("Your transaction signature", tx);
-  });
+  const dogNames = ["Max", "Petey"];
 
-  it("Is bonked!", async () => {
-    // Add your test here.
-    const tx = await program.methods.bonk();
-    console.log("Your transaction signature", tx);
-  });
+  for (const dogName of dogNames) {
+    it(`Is initialized! - ${dogName}`, async () => {
+      try {
+        await program.methods.createDog(dogName).rpc();
+      } catch (error) {
+        if (error.logs && error.logs.some((log: string | string[]) => log.includes('Allocate: account Address already in use'))) {
+            console.error(`Error: The dog ${dogName} is already initialized.`);
+        } else {
+            console.error("An unexpected error occurred:", error);
+        }
+      }
+    });
+
+    it(`Is pet! - ${dogName}`, async () => {
+      const [dog] = web3.PublicKey.findProgramAddressSync(
+        [Buffer.from("dog"), Buffer.from(dogName), owner.toBuffer()],
+        program.programId,
+      );
+
+      await program.methods
+      .pet()
+      .accountsPartial({
+        dog,
+        owner,
+      })
+      .rpc();
+    });
+
+    it(`Is bonked! - ${dogName}`, async () => {
+      const [dog] = web3.PublicKey.findProgramAddressSync(
+        [Buffer.from("dog"), Buffer.from(dogName), owner.toBuffer()],
+        program.programId,
+      );
+
+      await program.methods
+      .bonk()
+      .accountsPartial({
+        dog,
+        owner,
+      })
+      .rpc();
+    });
+
+    it(`Fetches dog state - ${dogName}`, async () => {
+      const [dog] = web3.PublicKey.findProgramAddressSync(
+        [Buffer.from("dog"), Buffer.from(dogName), owner.toBuffer()],
+        program.programId,
+      );
+
+      const dogAccount = await program.account.dog.fetch(dog);
+
+      console.log(`Dog's pets: ${dogName}`, dogAccount.pets.toString());
+      console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
+    });
+  }
 });
