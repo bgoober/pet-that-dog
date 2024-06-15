@@ -15,4 +15,7 @@ cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
+prime = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/pet-dat-dog.ts"
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+pet = "npx ts-mocha -p tsconfig.json -t 1000000 tests/pet.ts"
+query = "npx ts-mocha -p tsconfig.json -t 1000000 tests/query_program.ts"

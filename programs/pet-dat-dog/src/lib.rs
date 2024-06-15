@@ -1,15 +1,11 @@
 use anchor_lang::prelude::*;
-use anchor_spl::{associated_token::AssociatedToken, token::{transfer, Mint, Token, TokenAccount, Transfer}};
 
 mod state;
 
 mod contexts;
 
-use contexts::dog::*;
+use contexts::*;
 
-use contexts::pet::*;
-
-use contexts::bonk::*;
 
 declare_id!("4Z2Tjaw2a4tMUnefnPExQ7sE4UfYSZhZT1pMDKfvAofL");
 
@@ -18,8 +14,8 @@ pub mod pet_dat_dog {
 
     use super::*;
 
-    pub fn create_dog(ctx: Context<DogC>, name: String, params: InitTokenParams, team: Vec<(Pubkey, u8)>) -> Result<()> {   
-        ctx.accounts.init(name, team, params, &ctx.bumps)?;
+    pub fn create_dog(ctx: Context<DogC>, name: String) -> Result<()> {   
+        ctx.accounts.init(name, &ctx.bumps)?;
         Ok(())
     }
 

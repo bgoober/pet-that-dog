@@ -10,7 +10,19 @@ describe("pet-dat-dog", () => {
 
   it("Is initialized!", async () => {
     // Add your test here.
-    const tx = await program.methods.initialize().rpc();
+    const tx = await program.methods.createDog("Max").rpc();
+    console.log("Your transaction signature", tx);
+  });
+
+  it("Is pet!", async () => {
+    // Add your test here.
+    const tx = await program.methods.pet();
+    console.log("Your transaction signature", tx);
+  });
+
+  it("Is bonked!", async () => {
+    // Add your test here.
+    const tx = await program.methods.bonk();
     console.log("Your transaction signature", tx);
   });
 });
