@@ -21,13 +21,14 @@ describe("pet-dat-dog", () => {
         program.programId,
       );
 
-      await program.methods
+      const tx = await program.methods
       .pet()
       .accountsPartial({
         dog,
         owner,
       })
       .rpc();
+      console.log("Your pet tx signature is: ", tx);
     });
 
     it(`Is bonked! - ${dogName}`, async () => {
@@ -36,15 +37,17 @@ describe("pet-dat-dog", () => {
         program.programId,
       );
 
-      await program.methods
+      const tx = await program.methods
       .bonk()
       .accountsPartial({
         dog,
         owner,
       })
       .rpc();
+      console.log("Your bonk tx signature is: ", tx);
     });
-
+    
+    
     it(`Fetches dog state - ${dogName}`, async () => {
       const [dog] = web3.PublicKey.findProgramAddressSync(
         [Buffer.from("dog"), Buffer.from(dogName), owner.toBuffer()],
