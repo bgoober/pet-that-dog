@@ -5,7 +5,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-pet_dat_dog = "DNHVjKARnjUuTykjqhbrQ1veV8YFkmqiwP65EKd19YPT"
+pet_dat_dog = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp"
 
 [registry]
 url = "https://api.apr.dev"

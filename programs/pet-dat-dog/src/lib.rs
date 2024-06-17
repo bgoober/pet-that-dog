@@ -7,9 +7,9 @@ mod contexts;
 use contexts::*;
 
 
-declare_id!("4Z2Tjaw2a4tMUnefnPExQ7sE4UfYSZhZT1pMDKfvAofL");
+declare_id!("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp");
 
-#[program]
+#[program] 
 pub mod pet_dat_dog {
 
     use super::*;

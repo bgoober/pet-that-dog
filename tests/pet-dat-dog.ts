@@ -14,17 +14,17 @@ describe("pet-dat-dog", () => {
   const dogNames = ["Max", "Petey"];
 
   for (const dogName of dogNames) {
-    // it(`Is initialized! - ${dogName}`, async () => {
-    //   try {
-    //     await program.methods.createDog(dogName).rpc();
-    //   } catch (error) {
-    //     if (error.logs && error.logs.some((log: string | string[]) => log.includes('Allocate: account Address already in use'))) {
-    //         console.error(`Error: The dog ${dogName} is already initialized.`);
-    //     } else {
-    //         console.error("An unexpected error occurred:", error);
-    //     }
-    //   }
-    // });
+    it(`Is initialized! - ${dogName}`, async () => {
+      try {
+        await program.methods.createDog(dogName).rpc();
+      } catch (error) {
+        if (error.logs && error.logs.some((log: string | string[]) => log.includes('Allocate: account Address already in use'))) {
+            console.error(`Error: The dog ${dogName} is already initialized.`);
+        } else {
+            console.error("An unexpected error occurred:", error);
+        }
+      }
+    });
 
     it(`Is pet! - ${dogName}`, async () => {
       const [dog] = web3.PublicKey.findProgramAddressSync(
@@ -68,6 +68,9 @@ describe("pet-dat-dog", () => {
 
       console.log(`Dog's pets: ${dogName}`, dogAccount.pets.toString());
       console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
+
+      // find all the accounts underneath the dog account
+      
     });
   }
 });
