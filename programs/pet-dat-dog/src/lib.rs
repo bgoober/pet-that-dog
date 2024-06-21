@@ -1,10 +1,10 @@
 use anchor_lang::prelude::*;
 
+mod context;
+
+use context::*;
+
 mod state;
-
-mod contexts;
-
-use contexts::*;
 
 
 declare_id!("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp");

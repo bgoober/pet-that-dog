@@ -1,8 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked}};
 
-use crate::state::Dog;
-//use crate::state::Team;
+use crate::state::*;
 
 #[derive(Accounts)]
 #[instruction(name: String)]
