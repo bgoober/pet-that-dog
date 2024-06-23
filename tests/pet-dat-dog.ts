@@ -4,6 +4,7 @@ import { PetDatDog } from "../target/types/pet_dat_dog";
 import {
   TOKEN_PROGRAM_ID,
   createMint,
+  getAssociatedTokenAddress,
   getOrCreateAssociatedTokenAccount,
   mintTo,
 } from "@solana/spl-token";
@@ -17,10 +18,45 @@ describe("pet-dat-dog", () => {
   anchor.setProvider(provider);
   const program = anchor.workspace.PetDatDog as Program<PetDatDog>;
 
+  const connection = provider.connection;
+
   const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
 
+  const confirm = async (signature: string): Promise<string> => {
+    const block = await connection.getLatestBlockhash();
+    await connection.confirmTransaction({
+      signature,
+      ...block,
+    });
+    return signature;
+  };
+  const log = async (signature: string): Promise<string> => {
+    console.log();
+    return signature;
+  };
+
   let bonkMint: anchor.web3.PublicKey;
-  let dogMint: anchor.web3.PublicKey;
+  //let dogMint: anchor.web3.PublicKey;
+
+  const dogName = ["Max"];
+
+  const [dog] = web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("dog"), Buffer.from(dogName.toString())],
+    program.programId
+  );
+
+  let dogMint = PublicKey.findProgramAddressSync(
+    [Buffer.from("pets"), dog.toBuffer()],
+    program.programId
+  )[0];
+
+  const dogBonkTa = getOrCreateAssociatedTokenAccount(
+    connection,
+    keypair,
+    bonkMint,
+    dog,
+    true
+  );
 
   it("Setup token environment", async () => {
     bonkMint = await createMint(
@@ -51,141 +87,111 @@ describe("pet-dat-dog", () => {
     console.log("User bonkAta address: ", userBonkAta.toBase58());
   });
 
-  const dogNames = ["Max"];
-  dogNames.forEach((dogName) => {
-    it(`Is initialized! - ${dogName}`, async () => {
-      try {
-        const [dog] = web3.PublicKey.findProgramAddressSync(
-          [
-            Buffer.from("dog"),
-            Buffer.from(dogName),
-            keypair.publicKey.toBuffer(),
-          ],
-          program.programId
-        );
-        dogMint = await createMint(
-          provider.connection,
-          keypair,
-          dog,
-          null,
-          6
-        );
-        const dogBonkAta = (
-          await getOrCreateAssociatedTokenAccount(
-            provider.connection,
-            keypair,
-            bonkMint,
-            dog,
-            true
-          )
-        ).address;
-
-        console.log("Dog PETS Mint address: ", dogMint.toBase58());
-
-        const tx = await program.methods
-          .createDog(dogName)
-          .accountsPartial({
-            dog: dog,
-            owner: keypair.publicKey,
-            dogMint,
-            bonkMint,
-            dogBonkAta,
-            associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
-            tokenProgram: TOKEN_PROGRAM_ID,
-            systemProgram: SystemProgram.programId,
-          })
-          .signers([keypair])
-          .rpc();
-        console.log("Your createDog tx signature is: ", tx);
-      } catch (error) {
-        console.error("An error occurred:", error);
-      }
-    });
-
-    it(`Is pet! - ${dogName}`, async () => {
-      const [dog] = web3.PublicKey.findProgramAddressSync(
-        [
-          Buffer.from("dog"),
-          Buffer.from(dogName),
-          keypair.publicKey.toBuffer(),
-        ],
-        program.programId
-      );
-
-      const userPetsAta = (
-        await getOrCreateAssociatedTokenAccount(
-          provider.connection,
-          keypair,
-          dogMint,
-          keypair.publicKey
-        )
-      ).address;
-
-      const tx = await program.methods
-        .pet()
-        .accountsPartial({ owner: keypair.publicKey, dog, dogMint, userPetsAta })
-        .rpc();
-      console.log("Your pet tx signature is: ", tx);
-    });
-
-    it(`Is bonked! - ${dogName}`, async () => {
-      const [dog] = web3.PublicKey.findProgramAddressSync(
-        [
-          Buffer.from("dog"),
-          Buffer.from(dogName),
-          keypair.publicKey.toBuffer(),
-        ],
-        program.programId
-      );
-
-      const dogBonkAta = (
-        await getOrCreateAssociatedTokenAccount(
-          provider.connection,
-          keypair,
-          bonkMint,
-          dog,
-          true
-        )
-      ).address;
-
-      const userBonkAta = (
-        await getOrCreateAssociatedTokenAccount(
-          provider.connection,
-          keypair,
-          bonkMint,
-          keypair.publicKey
-        )
-      ).address;
-
-      const tx = await program.methods
-        .bonk()
-        .accountsPartial({
-          dog,
-          owner: keypair.publicKey,
-          dogBonkAta,
-          bonkMint,
-          userBonkAta,
-        })
-        .rpc();
-      console.log("Your bonk tx signature is: ", tx);
-    });
-
-    it(`Fetches dog state - ${dogName}`, async () => {
-      const [dog] = web3.PublicKey.findProgramAddressSync(
-        [
-          Buffer.from("dog"),
-          Buffer.from(dogName),
-          keypair.publicKey.toBuffer(),
-        ],
-        program.programId
-      );
-
-      const dogAccount = await program.account.dog.fetch(dog);
-
-      console.log(`Dog's pets: ${dogName}`, dogAccount.pets.toString());
-      console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
-
-      // find all the accounts underneath the dog account
-    });
+  // const dogNames = ["Max"];
+  // dogNames.forEach((dogName) => {
+  it(`Is initialized! - ${dogName}`, async () => {
+    const tx = await program.methods
+      .createDog(dogName.toString())
+      .accountsPartial({
+        owner: keypair.publicKey,
+        dog,
+        dogMint,
+        bonkMint,
+        dogBonkTa,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .signers([keypair])
+      .rpc({ skipPreflight: true })
+      .then(confirm)
+      .then(log);
   });
 });
+
+//   it(`Is pet! - ${dogName}`, async () => {
+//     const [dog] = web3.PublicKey.findProgramAddressSync(
+//       [
+//         Buffer.from("dog"),
+//         Buffer.from(dogName),
+//         keypair.publicKey.toBuffer(),
+//       ],
+//       program.programId
+//     );
+
+//     const userPetsAta = (
+//       await getOrCreateAssociatedTokenAccount(
+//         provider.connection,
+//         keypair,
+//         dogMint,
+//         keypair.publicKey
+//       )
+//     ).address;
+
+//     const tx = await program.methods
+//       .pet()
+//       .accountsPartial({ owner: keypair.publicKey, dog, dogMint, userPetsAta })
+//       .rpc();
+//     console.log("Your pet tx signature is: ", tx);
+//   });
+
+//   it(`Is bonked! - ${dogName}`, async () => {
+//     const [dog] = web3.PublicKey.findProgramAddressSync(
+//       [
+//         Buffer.from("dog"),
+//         Buffer.from(dogName),
+//         keypair.publicKey.toBuffer(),
+//       ],
+//       program.programId
+//     );
+
+//     const dogBonkAta = (
+//       await getOrCreateAssociatedTokenAccount(
+//         provider.connection,
+//         keypair,
+//         bonkMint,
+//         dog,
+//         true
+//       )
+//     ).address;
+
+//     const userBonkAta = (
+//       await getOrCreateAssociatedTokenAccount(
+//         provider.connection,
+//         keypair,
+//         bonkMint,
+//         keypair.publicKey
+//       )
+//     ).address;
+
+//     const tx = await program.methods
+//       .bonk()
+//       .accountsPartial({
+//         dog,
+//         owner: keypair.publicKey,
+//         dogBonkAta,
+//         bonkMint,
+//         userBonkAta,
+//       })
+//       .rpc();
+//     console.log("Your bonk tx signature is: ", tx);
+//   });
+
+//   it(`Fetches dog state - ${dogName}`, async () => {
+//     const [dog] = web3.PublicKey.findProgramAddressSync(
+//       [
+//         Buffer.from("dog"),
+//         Buffer.from(dogName),
+//         keypair.publicKey.toBuffer(),
+//       ],
+//       program.programId
+//     );
+
+//     const dogAccount = await program.account.dog.fetch(dog);
+
+//     console.log(`Dog's pets: ${dogName}`, dogAccount.pets.toString());
+//     console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
+
+//     // find all the accounts underneath the dog account
+//   });
+// });
