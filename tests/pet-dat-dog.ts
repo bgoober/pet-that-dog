@@ -61,12 +61,12 @@ describe("pet-dat-dog", () => {
           [Buffer.from("dog"), Buffer.from(dogName), keypair.publicKey.toBuffer()],
           program.programId,
         );
-        dogMint  = await createMint(provider.connection, keypair, provider.publicKey, provider.publicKey, 6);
-        dogBonkAta = (await getOrCreateAssociatedTokenAccount(provider.connection, keypair, bonkMint, dog)).address;
+        dogMint  = await createMint(provider.connection, keypair, dog, provider.publicKey, 6);
+        dogBonkAta = (await getOrCreateAssociatedTokenAccount(provider.connection, keypair, bonkMint, dog, true)).address; // true for allowOwnerOffCurve because the dog is a pda and it is the owner of the ATA
         
-        console.log("Mint B address: ", dogMint.toBase58());
+        console.log("Dog PETS Mint address: ", dogMint.toBase58());
     
-        userPetsAta = (await getOrCreateAssociatedTokenAccount(provider.connection, keypair, dogMint, user.publicKey)).address;
+        userPetsAta = (await getOrCreateAssociatedTokenAccount(provider.connection, user, dogMint, user.publicKey)).address;
     
        // user2_petsAta = (await getOrCreateAssociatedTokenAccount(provider.connection, keypair, dogMint, user2.publicKey)).address;
     
@@ -106,7 +106,7 @@ describe("pet-dat-dog", () => {
       const tx = await program.methods
       .bonk() 
       .accountsPartial({
-        dog, 
+        dog, owner, dogBonkAta, bonkMint, userBonkAta, 
       })
       .rpc();
       console.log("Your bonk tx signature is: ", tx);
