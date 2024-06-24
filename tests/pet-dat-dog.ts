@@ -17,29 +17,22 @@ describe("pet-dat-dog", () => {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
   const program = anchor.workspace.PetDatDog as Program<PetDatDog>;
-
   const connection = provider.connection;
-
   const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
 
   const confirm = async (signature: string): Promise<string> => {
     const block = await connection.getLatestBlockhash();
-    await connection.confirmTransaction({
-      signature,
-      ...block,
-    });
+    await connection.confirmTransaction({ signature, ...block });
     return signature;
   };
+
   const log = async (signature: string): Promise<string> => {
-    console.log();
+    console.log(signature);
     return signature;
   };
 
   let bonkMint: anchor.web3.PublicKey;
-  //let dogMint: anchor.web3.PublicKey;
-
   const dogName = ["Max"];
-
   const [dog] = web3.PublicKey.findProgramAddressSync(
     [Buffer.from("dog"), Buffer.from(dogName.toString())],
     program.programId
@@ -50,51 +43,32 @@ describe("pet-dat-dog", () => {
     program.programId
   )[0];
 
-  const dogBonkTa = getOrCreateAssociatedTokenAccount(
-    connection,
-    keypair,
-    bonkMint,
-    dog,
-    true
-  );
+  // Declare dogBonkTa at a higher scope to be accessible in both test cases.
+  let dogBonkTa: anchor.web3.PublicKey;
 
   it("Setup token environment", async () => {
-    bonkMint = await createMint(
-      provider.connection,
-      keypair,
-      provider.publicKey,
-      null,
-      6
-    );
+    bonkMint = await createMint(provider.connection, keypair, provider.publicKey, null, 6);
     console.log("Bonk Mint address: ", bonkMint.toBase58());
 
     const userBonkAta = (
-      await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        keypair,
-        bonkMint,
-        keypair.publicKey
-      )
+      await getOrCreateAssociatedTokenAccount(provider.connection, keypair, bonkMint, keypair.publicKey)
     ).address;
-    await mintTo(
-      provider.connection,
-      keypair,
-      bonkMint,
-      userBonkAta,
-      keypair,
-      1_000_000_0
-    );
+    await mintTo(provider.connection, keypair, bonkMint, userBonkAta, keypair, 1_000_000_0);
     console.log("User bonkAta address: ", userBonkAta.toBase58());
+
+    // Move the dogBonkTa calculation here and ensure it's assigned to the higher scope variable.
+    dogBonkTa = (
+      await getOrCreateAssociatedTokenAccount(connection, keypair, bonkMint, dog, true)
+    ).address;
+    console.log("dogBonkTa address: ", dogBonkTa.toBase58());
   });
 
-  // const dogNames = ["Max"];
-  // dogNames.forEach((dogName) => {
   it(`Is initialized! - ${dogName}`, async () => {
     const tx = await program.methods
       .createDog(dogName.toString())
       .accountsPartial({
-        owner: keypair.publicKey,
         dog,
+        owner: keypair.publicKey,
         dogMint,
         bonkMint,
         dogBonkTa,
@@ -103,7 +77,7 @@ describe("pet-dat-dog", () => {
         systemProgram: SystemProgram.programId,
       })
       .signers([keypair])
-      .rpc({ skipPreflight: true })
+      .rpc()
       .then(confirm)
       .then(log);
   });
@@ -131,7 +105,10 @@ describe("pet-dat-dog", () => {
 //     const tx = await program.methods
 //       .pet()
 //       .accountsPartial({ owner: keypair.publicKey, dog, dogMint, userPetsAta })
-//       .rpc();
+      // .signers([keypair])
+      // .rpc()
+      // .then(confirm)
+      // .then(log);
 //     console.log("Your pet tx signature is: ", tx);
 //   });
 
@@ -172,8 +149,11 @@ describe("pet-dat-dog", () => {
 //         dogBonkAta,
 //         bonkMint,
 //         userBonkAta,
-//       })
-//       .rpc();
+//       })          
+      // .signers([keypair])
+      // .rpc()
+      // .then(confirm)
+      // .then(log);
 //     console.log("Your bonk tx signature is: ", tx);
 //   });
 
