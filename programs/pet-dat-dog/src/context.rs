@@ -15,14 +15,21 @@ pub struct DogC<'info> {
     #[account(init, payer = owner, seeds = [b"dog", name.as_str().as_bytes()], space = Dog::LEN, bump)]
     pub dog: Account<'info, Dog>,
 
-    #[account(init, payer = owner, seeds = [b"pets", dog.key().as_ref()], mint::decimals=0, mint::authority = dog, bump)]
+    /// CHECK: this is safe
+    #[account(
+        seeds = [b"auth", dog.key().as_ref()],
+        bump
+    )]
+    pub dog_auth: UncheckedAccount<'info>,
+
+    #[account(init, payer = owner, seeds = [b"pets", dog.key().as_ref()], mint::decimals=0, mint::authority = dog_auth, bump)]
     pub dog_mint: Account<'info, Mint>,
 
     //bonk mint
     pub bonk_mint: Account<'info, Mint>,
 
     // dog's bonk ata
-    #[account(init, payer = owner, token::mint = bonk_mint, token::authority = dog)]
+    #[account(init, payer = owner, token::mint = bonk_mint, token::authority = dog_auth)]
     pub dog_bonk_ta: Account<'info, TokenAccount>,
 
     // #[account(init, payer = owner, seeds = [b"team"], space = Team::LEN, bump)]
@@ -39,8 +46,9 @@ impl<'info> DogC<'info> {
             pets: 0,
             bonks: 0,
             mint: self.dog_mint.key(),
-            bump: bumps.dog,
+            dog_bump: bumps.dog,
             mint_bump: bumps.dog_mint,
+            auth_bump: bumps.dog_auth,
         });
         Ok(())
     }
@@ -51,7 +59,7 @@ pub struct PetC<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
-    #[account(mut, seeds = [b"dog", dog.name.as_ref()], bump = dog.bump)]
+    #[account(mut, seeds = [b"dog", dog.name.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
 
     #[account(mut, seeds = [b"pets", dog.key().as_ref()], bump = dog.mint_bump)]
@@ -73,10 +81,9 @@ impl<'info> PetC<'info> {
             authority: self.dog.to_account_info(),
         };
         let seeds = &[
-            &b"dog"[..],
-            &self.dog.name.as_str().as_bytes()[..],
-            &self.dog_mint.key().to_bytes()[..],
-            &[self.dog.bump],
+            &b"auth"[..],
+            &self.dog.key().to_bytes()[..],
+            &[self.dog.auth_bump],
         ];
         let signer_seeds = &[&seeds[..]];
 
@@ -101,7 +108,7 @@ pub struct BonkC<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
-    #[account(mut, seeds = [b"dog", dog.name.as_ref()], bump = dog.bump)]
+    #[account(mut, seeds = [b"dog", dog.name.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
 
     //bonk mint

@@ -37,30 +37,32 @@ describe("pet-dat-dog", () => {
     [Buffer.from("dog"), Buffer.from(dogName.toString())],
     program.programId
   );
+  console.log("Dog account: ", dog.toBase58());
 
   let dogMint = PublicKey.findProgramAddressSync(
     [Buffer.from("pets"), dog.toBuffer()],
     program.programId
   )[0];
+  console.log("Dog Mint account: ", dogMint.toBase58());
 
   // Declare dogBonkTa at a higher scope to be accessible in both test cases.
   let dogBonkTa: anchor.web3.PublicKey;
 
   it("Setup token environment", async () => {
     bonkMint = await createMint(provider.connection, keypair, provider.publicKey, null, 6);
-    console.log("Bonk Mint address: ", bonkMint.toBase58());
+    console.log("Bonk Mint account: ", bonkMint.toBase58());
 
     const userBonkAta = (
       await getOrCreateAssociatedTokenAccount(provider.connection, keypair, bonkMint, keypair.publicKey)
     ).address;
     await mintTo(provider.connection, keypair, bonkMint, userBonkAta, keypair, 1_000_000_0);
-    console.log("User bonkAta address: ", userBonkAta.toBase58());
+    console.log("User bonkAta account: ", userBonkAta.toBase58());
 
     // Move the dogBonkTa calculation here and ensure it's assigned to the higher scope variable.
     dogBonkTa = (
       await getOrCreateAssociatedTokenAccount(connection, keypair, bonkMint, dog, true)
     ).address;
-    console.log("dogBonkTa address: ", dogBonkTa.toBase58());
+    console.log("dogBonkTa account: ", dogBonkTa.toBase58());
   });
 
   it(`Is initialized! - ${dogName}`, async () => {
