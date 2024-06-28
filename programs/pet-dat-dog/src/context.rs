@@ -62,6 +62,13 @@ pub struct PetC<'info> {
     #[account(mut, seeds = [b"dog", dog.name.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
 
+    /// CHECK: this is safe
+    #[account(
+        seeds = [b"auth", dog.key().as_ref()],
+        bump
+    )]
+    pub dog_auth: UncheckedAccount<'info>,
+
     #[account(mut, seeds = [b"pets", dog.key().as_ref()], bump = dog.mint_bump)]
     pub dog_mint: Account<'info, Mint>,
 
@@ -78,7 +85,7 @@ impl<'info> PetC<'info> {
         let cpi_accounts = MintTo {
             mint: self.dog_mint.to_account_info(),
             to: self.user_pets_ata.to_account_info(),
-            authority: self.dog.to_account_info(),
+            authority: self.dog_auth.to_account_info(),
         };
         let seeds = &[
             &b"auth"[..],
@@ -119,8 +126,15 @@ pub struct BonkC<'info> {
     #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = user)]
     pub user_bonk_ata: Account<'info, TokenAccount>,
 
+    /// CHECK: this is safe
+    #[account(
+        seeds = [b"auth", dog.key().as_ref()],
+        bump
+    )]
+    pub dog_auth: UncheckedAccount<'info>,
+
     // dog's bonk ata
-    #[account(mut, token::mint = bonk_mint, token::authority = dog)]
+    #[account(mut, token::mint = bonk_mint, token::authority = dog_auth)]
     pub dog_bonk_ta: Account<'info, TokenAccount>,
 
     pub token_program: Program<'info, Token>,
