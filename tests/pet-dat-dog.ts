@@ -33,7 +33,7 @@ describe("pet-dat-dog", () => {
   };
 
   let bonkMint: anchor.web3.PublicKey;
-  let dogBonkTa: anchor.web3.PublicKey;
+  let dogBonkAta: anchor.web3.PublicKey;
   // let dogAuth: anchor.web3.PublicKey;
   let userPetsAta: anchor.web3.PublicKey;
   let userBonkAta: anchor.web3.PublicKey;
@@ -51,10 +51,10 @@ describe("pet-dat-dog", () => {
   )[0];
   console.log("Dog Mint account: ", dogMint.toBase58());
 
-  // Declare dogBonkTa at a higher scope to be accessible in both test cases.
+  // Declare dogBonkAta at a higher scope to be accessible in both test cases.
 
   const [auth] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("dogAuth"), dog.toBuffer()],
+    [Buffer.from("auth"), dog.toBuffer()],
     program.programId
   );
   console.log("Dog Auth account: ", auth.toBase58());
@@ -70,6 +70,9 @@ describe("pet-dat-dog", () => {
     if (!bonkMint) throw new Error("Failed to create bonkMint");
     console.log("Bonk Mint account: ", bonkMint.toBase58());
 
+    const resulta = await getAssociatedTokenAddress(bonkMint, keypair.publicKey);
+    console.log("user's bonkMint ATA {}", resulta)
+
     const userBonkAtaResult = await getOrCreateAssociatedTokenAccount(
       provider.connection,
       keypair,
@@ -79,39 +82,29 @@ describe("pet-dat-dog", () => {
     userBonkAta = userBonkAtaResult.address;
     // Verify userBonkAta creation
     if (!userBonkAta) throw new Error("Failed to create or get userBonkAta");
-    
+
     await mintTo(
       provider.connection,
       keypair,
       bonkMint,
       userBonkAta,
       keypair,
-      1_000_000_0
+      1_000_000_000
     );
     console.log("User bonkAta account: ", userBonkAta.toBase58());
 
     // refactor the accounts that you have init or init_if_needed to use getAssociatedTokenAddressSync, and remove the await.
-    // Move the dogBonkTa calculation here and ensure it's assigned to the higher scope variable.
-    dogBonkTa = (
-      getAssociatedTokenAddressSync(
-        bonkMint,
-        auth,
-        true
-      )
-    )
-    console.log("dogBonkTa account: ", dogBonkTa.toBase58());
+    // Move the dogBonkAta calculation here and ensure it's assigned to the higher scope variable.
+    dogBonkAta = getAssociatedTokenAddressSync(bonkMint, auth, true);
+    console.log("dogBonkAta account: ", dogBonkAta.toBase58());
 
-    userPetsAta = (
-      getAssociatedTokenAddressSync(
-        dogMint,
-        keypair.publicKey
-      )
-    )
+    userPetsAta = getAssociatedTokenAddressSync(dogMint, keypair.publicKey);
     console.log("User petsAta account: ", userPetsAta.toBase58());
   });
 
   it(`Is initialized! - ${dogName}`, async () => {
-    const tx = await program.methods
+    console.log("test1");
+    const txHash = await program.methods
       .createDog(dogName.toString())
       .accountsPartial({
         dog,
@@ -119,20 +112,21 @@ describe("pet-dat-dog", () => {
         dogAuth: auth,
         dogMint,
         bonkMint,
-        dogBonkTa,
+        dogBonkAta,
         tokenProgram: TOKEN_PROGRAM_ID,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
       })
-      .signers([keypair])
-      .rpc({skipPreflight: true})
+      .rpc()
       .then(confirm)
       .then(log);
+    console.log("Your pet tx signature is: ", txHash);
+    if (!txHash) throw new Error("Failed to initialize.");
+
   });
 
   it(`Is pet! - ${dogName}`, async () => {
-
-    console.log("test")
+    console.log("test");
 
     const tx = await program.methods
       .pet()
@@ -158,7 +152,7 @@ describe("pet-dat-dog", () => {
       .accountsPartial({
         dog,
         bonkMint,
-        dogBonkTa,
+        dogBonkAta,
         userBonkAta,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,

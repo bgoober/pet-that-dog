@@ -29,8 +29,8 @@ pub struct DogC<'info> {
     pub bonk_mint: Account<'info, Mint>,
 
     // dog's bonk ata
-    #[account(init, payer = owner, token::mint = bonk_mint, token::authority = dog_auth)]
-    pub dog_bonk_ta: Account<'info, TokenAccount>,
+    #[account(init, payer = owner, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
+    pub dog_bonk_ata: Account<'info, TokenAccount>,
 
     // #[account(init, payer = owner, seeds = [b"team"], space = Team::LEN, bump)]
     // pub team: Account<'info, Team>,
@@ -134,8 +134,8 @@ pub struct BonkC<'info> {
     pub dog_auth: UncheckedAccount<'info>,
 
     // dog's bonk ata
-    #[account(mut, token::mint = bonk_mint, token::authority = dog_auth)]
-    pub dog_bonk_ta: Account<'info, TokenAccount>,
+    #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
+    pub dog_bonk_ata: Account<'info, TokenAccount>,
 
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
@@ -147,7 +147,7 @@ impl<'info> BonkC<'info> {
         // create a cpi transfer from the user's pets ata to the dog's pets ata for 1 token
         let cpi_accounts = TransferChecked {
             from: self.user_bonk_ata.to_account_info(),
-            to: self.dog_bonk_ta.to_account_info(),
+            to: self.dog_bonk_ata.to_account_info(),
             mint: self.bonk_mint.to_account_info(),
             authority: self.user.to_account_info(),
         };
@@ -164,3 +164,114 @@ impl<'info> BonkC<'info> {
         Ok(())
     }
 }
+
+
+// #[derive(Accounts)]
+// pub struct IssueTokens<'info> {
+
+//     // Account of the user issuing tokens
+//     #[account(mut)]
+//     user: Signer<'info>,
+//     #[account(
+//         mut,
+//         associated_token::mint = mint,
+//         associated_token::authority = user,
+//         associated_token::token_program = token_program
+//     )]
+//     pub user_ata: InterfaceAccount<'info, TokenAccount>,
+//     // Mint
+//     #[account(
+//         init,
+//         seeds = [b"mint"],
+//         bump,
+//         payer = user,
+//         mint::decimals = 6,
+//         mint::authority = user,
+//         mint::token_program = token_program
+//     )]
+//     mint: InterfaceAccount<'info, Mint>,
+//     #[account(mut)]
+//     /// CHECK: this account will be init by token metadata
+//     metadata: UncheckedAccount<'info>, 
+//     metadata_program: Program<'info, Metadata>,
+//     token_program: Interface<'info, TokenInterface>,
+//     associated_token_program: Program<'info, AssociatedToken>,
+//     system_program: Program<'info, System>,
+// }
+
+// impl<'info> IssueTokens<'info> {
+
+// pub fn issue_tokens(&self) -> Result<()> {
+
+//         let accounts = MintTo {
+//             mint: self.mint.to_account_info(),
+//             to: self.user_ata.to_account_info(),
+//             authority: self.user.to_account_info(),
+//         };
+
+//         let ctx = CpiContext::new(
+//             self.token_program.to_account_info(),
+//             accounts,
+//         );
+
+//         mint_to(ctx, TOKEN_ISSUE_AMOUNT)
+//     }
+
+//     pub fn create_metadata(&mut self, name: String, symbol: String, uri: String) -> Result<()> {
+
+//         let program_id = self.metadata_program.key();
+//         let metadata = self.metadata.key();
+//         let mint = self.mint.key();
+//         let mint_authority = self.user.key();
+//         let payer = self.user.key();
+
+//         let create_metadata_ix = create_metadata_accounts_v3(
+//             program_id,
+//             metadata,
+//             mint,
+//             mint_authority,
+//             payer,
+//             mint_authority,
+//             name,
+//             symbol,
+//             uri,
+//             Some(vec![creator_struct {
+//                 address: mint_authority,
+//                 verified: true,
+//                 share: 100,
+//             }]),
+//             0,
+//             false,
+//             false,
+//             None,
+//             None,
+//             None,
+//         );
+
+//         invoke_signed(
+//             &create_metadata_ix,
+//             &[
+//                 self.metadata.to_account_info(),
+//                 self.mint.to_account_info(),
+//                 self.creator.to_account_info(),
+//                 self.pool_creator.to_account_info(),
+//                 self.creator.to_account_info(),
+//                 self.system_program.to_account_info(),
+//                 self.rent_program.to_account_info(),
+//             ]
+//         )?;      
+
+//         Ok(())
+//     }
+//     pub fn revoke_mint_authority(&self) -> Result<()> {
+//         let accounts = SetAuthority {
+//             current_authority: self.user.to_account_info(),
+//             account_or_mint: self.mint.to_account_info(),
+//         };
+//         let ctx = CpiContext::new_with_signer(
+//             self.token_program.to_account_info(),
+//             accounts
+//         );
+//         set_authority(ctx, AuthorityType::MintTokens, None)
+//     }        
+// } 

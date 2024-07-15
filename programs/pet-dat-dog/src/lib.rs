@@ -7,7 +7,7 @@ use context::*;
 mod state;
 
 
-declare_id!("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp");
+declare_id!("DNHVjKARnjUuTykjqhbrQ1veV8YFkmqiwP65EKd19YPT");
 
 #[program] 
 pub mod pet_dat_dog {
@@ -37,8 +37,10 @@ pub mod pet_dat_dog {
 
 #[error_code]
 pub enum ErrorCode {
-    #[msg("Too many pets in one slot")]
+    #[msg("Too many pets in one slot!")]
     TooManyPets,
+    #[msg("Too many bonksin one slot!")]
+    TooManyBonks,
     #[msg("Session error")]
     SessionError,
 }
