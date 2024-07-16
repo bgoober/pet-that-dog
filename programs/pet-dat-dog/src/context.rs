@@ -6,6 +6,7 @@ use anchor_spl::{
 
 use crate::state::*;
 
+
 #[derive(Accounts)]
 #[instruction(name: String)]
 pub struct DogC<'info> {
@@ -57,7 +58,10 @@ impl<'info> DogC<'info> {
 #[derive(Accounts)]
 pub struct PetC<'info> {
     #[account(mut)]
-    pub user: Signer<'info>,
+    pub signer: Signer<'info>,
+
+    #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
+    pub user: Account<'info, User>,
 
     #[account(mut, seeds = [b"dog", dog.name.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
@@ -72,7 +76,7 @@ pub struct PetC<'info> {
     #[account(mut, seeds = [b"pets", dog.key().as_ref()], bump = dog.mint_bump)]
     pub dog_mint: Account<'info, Mint>,
 
-    #[account(init_if_needed, payer = user, associated_token::mint = dog_mint, associated_token::authority = user)]
+    #[account(init_if_needed, payer = signer, associated_token::mint = dog_mint, associated_token::authority = signer)]
     pub user_pets_ata: Account<'info, TokenAccount>,
 
     pub token_program: Program<'info, Token>,
@@ -82,6 +86,9 @@ pub struct PetC<'info> {
 
 impl<'info> PetC<'info> {
     pub fn pet(&mut self) -> Result<()> {
+        if self.user.last_pet == Clock::get()?.slot {
+            return Err(ErrorCode::TooManyPets.into());
+        }
         let cpi_accounts = MintTo {
             mint: self.dog_mint.to_account_info(),
             to: self.user_pets_ata.to_account_info(),
@@ -103,8 +110,13 @@ impl<'info> PetC<'info> {
 
         self.dog.pets += 1;
 
+        self.user.last_pet = Clock::get()?.slot;
+
         // tell how many pets the dog has
         msg!("{} has been pet {} times", self.dog.name, self.dog.pets);
+
+        msg!("User's last pet: {}", self.user.last_pet);
+
 
         Ok(())
     }
@@ -113,7 +125,10 @@ impl<'info> PetC<'info> {
 #[derive(Accounts)]
 pub struct BonkC<'info> {
     #[account(mut)]
-    pub user: Signer<'info>,
+    pub signer: Signer<'info>,
+
+    #[account(mut, seeds = [signer.key().as_ref()], bump)]
+    pub user: Account<'info, User>,
 
     #[account(mut, seeds = [b"dog", dog.name.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
@@ -123,7 +138,7 @@ pub struct BonkC<'info> {
     pub bonk_mint: Account<'info, Mint>,
 
     // user's bonk ata
-    #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = user)]
+    #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = signer)]
     pub user_bonk_ata: Account<'info, TokenAccount>,
 
     /// CHECK: this is safe
@@ -144,22 +159,30 @@ pub struct BonkC<'info> {
 
 impl<'info> BonkC<'info> {
     pub fn bonk(&mut self) -> Result<()> {
-        // create a cpi transfer from the user's pets ata to the dog's pets ata for 1 token
+        if self.user.last_bonk == Clock::get()?.slot {
+            return Err(ErrorCode::TooManyBonks.into());
+        }
+
+        // create a cpi transfer from the user's bonk ata to the dog's bonk ata for 1 $BONK token
         let cpi_accounts = TransferChecked {
             from: self.user_bonk_ata.to_account_info(),
             to: self.dog_bonk_ata.to_account_info(),
             mint: self.bonk_mint.to_account_info(),
-            authority: self.user.to_account_info(),
+            authority: self.signer.to_account_info(),
         };
 
         let ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
 
-        transfer_checked(ctx, 100_000, 6)?;
+        transfer_checked(ctx, 1_000_000, 6)?;
 
         self.dog.bonks += 1;
 
+        self.user.last_bonk = Clock::get()?.slot;
+
         // tell how many bonks the dog has
         msg!("{} has been bonked {} times", self.dog.name, self.dog.bonks);
+
+        msg!("User's last bonk: {}", self.user.last_bonk);
 
         Ok(())
     }
@@ -275,3 +298,14 @@ impl<'info> BonkC<'info> {
 //         set_authority(ctx, AuthorityType::MintTokens, None)
 //     }        
 // } 
+
+
+#[error_code]
+pub enum ErrorCode {
+    #[msg("Too many pets in one slot!")]
+    TooManyPets,
+    #[msg("Too many bonksin one slot!")]
+    TooManyBonks,
+    #[msg("Session error")]
+    SessionError,
+}

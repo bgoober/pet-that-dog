@@ -4,7 +4,6 @@ import { PetDatDog } from "../target/types/pet_dat_dog";
 import {
   TOKEN_PROGRAM_ID,
   createMint,
-  getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
   getOrCreateAssociatedTokenAccount,
   mintTo,
@@ -12,7 +11,6 @@ import {
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import wallet from "/home/agent/.config/solana/id.json";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
-import { publicKey } from "@coral-xyz/anchor/dist/cjs/utils";
 
 describe("pet-dat-dog", () => {
   const provider = anchor.AnchorProvider.env();
@@ -34,7 +32,6 @@ describe("pet-dat-dog", () => {
 
   let bonkMint: anchor.web3.PublicKey;
   let dogBonkAta: anchor.web3.PublicKey;
-  // let dogAuth: anchor.web3.PublicKey;
   let userPetsAta: anchor.web3.PublicKey;
   let userBonkAta: anchor.web3.PublicKey;
 
@@ -69,9 +66,6 @@ describe("pet-dat-dog", () => {
     );
     if (!bonkMint) throw new Error("Failed to create bonkMint");
     console.log("Bonk Mint account: ", bonkMint.toBase58());
-
-    const resulta = await getAssociatedTokenAddress(bonkMint, keypair.publicKey);
-    console.log("user's bonkMint ATA {}", resulta)
 
     const userBonkAtaResult = await getOrCreateAssociatedTokenAccount(
       provider.connection,
@@ -126,12 +120,19 @@ describe("pet-dat-dog", () => {
   });
 
   it(`Is pet! - ${dogName}`, async () => {
+
+    let user = PublicKey.findProgramAddressSync(
+      [keypair.publicKey.toBuffer()],
+      program.programId
+    )[0];
+
     console.log("test");
 
     const tx = await program.methods
       .pet()
       .accountsPartial({
         dog,
+        user,
         dogAuth: auth as web3.PublicKey,
         dogMint,
         userPetsAta: userPetsAta,
@@ -147,10 +148,17 @@ describe("pet-dat-dog", () => {
   });
 
   it(`Is bonked! - ${dogName}`, async () => {
+
+    let user = PublicKey.findProgramAddressSync(
+      [keypair.publicKey.toBuffer()],
+      program.programId
+    )[0];
+
     const tx = await program.methods
       .bonk()
       .accountsPartial({
         dog,
+        user,
         bonkMint,
         dogBonkAta,
         userBonkAta,

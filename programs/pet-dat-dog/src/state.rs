@@ -17,6 +17,18 @@ impl Dog {
 }
 
 
+#[account]
+pub struct User {
+    pub last_pet: u64,
+    pub last_bonk: u64,
+    pub bump: u8,
+}
+
+impl User {
+    pub const LEN: usize = 8+8+8+1;
+}
+
+
 // #[account]
 // pub struct Team {
 //     pub team: Vec<(Pubkey, u8)>,

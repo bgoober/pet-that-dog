@@ -30,7 +30,9 @@ describe("pet-dat-dog", () => {
     return signature;
   };
 
-  let userPetsAta: anchor.web3.PublicKey
+  let bonkMint: anchor.web3.PublicKey;
+  let dogBonkAta: anchor.web3.PublicKey;
+  let userBonkAta: anchor.web3.PublicKey;
 
   const dogName = ["Max"];
   const [dog] = web3.PublicKey.findProgramAddressSync(
@@ -53,11 +55,29 @@ describe("pet-dat-dog", () => {
   );
   console.log("Dog Auth : ", auth.toBase58());
 
-  userPetsAta = getAssociatedTokenAddressSync(dogMint, keypair.publicKey);
+  it("Setup token environment", async () => {
+    /// DOCS: hardcode bonk mint from main test token environment init
+    bonkMint = new PublicKey('3nhj4sipmZ4rEgUtbMiZ1tJxggVRjteMnCCkZ2VCMQgH');
+    // if (!bonkMint) throw new Error("Failed to create bonkMint");
+    
+    console.log("Bonk Mint : ", bonkMint.toBase58());
 
+    userBonkAta = getAssociatedTokenAddressSync(
+      bonkMint,
+      keypair.publicKey
+    );
+    // Verify userBonkAta creation
+    if (!userBonkAta) throw new Error("Failed to create or get userBonkAta");
+    console.log("userBonkAta : ", userBonkAta.toBase58())
 
-  it(`Is pet! - ${dogName}`, async () => {
-    console.log("test");
+    // refactor the accounts that you have init or init_if_needed to use getAssociatedTokenAddressSync, and remove the await.
+    // Move the dogBonkAta calculation here and ensure it's assigned to the higher scope variable.
+    dogBonkAta = getAssociatedTokenAddressSync(bonkMint, auth, true);
+    console.log("dogBonkAta : ", dogBonkAta.toBase58());
+
+  });
+
+  it(`Is bonked! - ${dogName}`, async () => {
 
     let user = PublicKey.findProgramAddressSync(
       [keypair.publicKey.toBuffer()],
@@ -65,15 +85,14 @@ describe("pet-dat-dog", () => {
     )[0];
 
     console.log("User pda: ", user.toBase58())
-
+    
     const tx = await program.methods
-      .pet()
+      .bonk()
       .accountsPartial({
         dog,
-        user,
-        dogAuth: auth as web3.PublicKey,
-        dogMint,
-        userPetsAta: userPetsAta,
+        bonkMint,
+        dogBonkAta,
+        userBonkAta,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
@@ -82,9 +101,9 @@ describe("pet-dat-dog", () => {
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your pet tx signature is: ", tx);
+    console.log("Your bonk tx signature is: ", tx);
   });
-  
+
   it(`Fetches dog state - ${dogName}`, async () => {
     const dogAccount = await program.account.dog.fetch(dog);
 
