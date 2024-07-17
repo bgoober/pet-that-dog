@@ -15,6 +15,8 @@ import {
 } from '../cluster/cluster-ui';
 import toast, { Toaster } from 'react-hot-toast';
 
+import Home from '../dashboard/dashboard-feature';
+
 export function UiLayout({
   children,
   links,
@@ -25,9 +27,12 @@ export function UiLayout({
   const pathname = usePathname();
 
   return (
-    <div className="h-full flex flex-col" style={{ backgroundColor: '#111827' }}>
+    <div
+      className="h-full flex flex-col"
+      style={{ backgroundColor: '#111827' }}
+    >
       {/* test */}
-        {/* <div className="flex-none space-x-2">
+      {/* <div className="flex-none space-x-2">
           <WalletButton />
           <ClusterUiSelect />
         </div> */}
@@ -54,7 +59,19 @@ export function UiLayout({
           <WalletButton />
           <ClusterUiSelect />
         </div>
-      </div> 
+      </div>
+      <div
+        className="Max"
+        style={{
+          width: '100vw',
+          height: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Home />
+      </div>
       {/* <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
