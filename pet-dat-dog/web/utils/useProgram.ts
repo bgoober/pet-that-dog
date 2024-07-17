@@ -2,15 +2,13 @@ import { useEffect, useState } from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
 
-import idl from "./over_under.json"
+import idl from "./pet_dat_dog.json"
 
-import { IDLData} from "@/utils/idl";
 
 import  { AnchorProvider } from  "@coral-xyz/anchor";;
-import { IDLType } from "./idl";
 
 
-const PROGRAM_ADDRESS = idl.metadata.address;
+const PROGRAM_ADDRESS = idl.address;
 const programID = new PublicKey(PROGRAM_ADDRESS);
 
 export interface Wallet {
@@ -40,7 +38,7 @@ export const useProgram = ({ connection, wallet }: ProgramProps) => {
       preflightCommitment: "recent",
       commitment: "processed",
     });
-    const program = new anchor.Program(idl as any, programID, provider);
+    const program = new anchor.Program(idl as any, provider);
     setProgram(program);
   };
 
