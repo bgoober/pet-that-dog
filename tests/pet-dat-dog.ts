@@ -35,6 +35,18 @@ describe("pet-dat-dog", () => {
   let userPetsAta: anchor.web3.PublicKey;
   let userBonkAta: anchor.web3.PublicKey;
 
+  let petsMint = PublicKey.findProgramAddressSync(
+    [Buffer.from("pets"), keypair.publicKey.toBuffer()],
+    program.programId
+  )[0];
+  console.log("PETS Mint: ", petsMint.toBase58());
+
+  let mintAuth = PublicKey.findProgramAddressSync(
+    [Buffer.from("auth"), keypair.publicKey.toBuffer()],
+    program.programId
+  )[0];
+  console.log("PETS Mint Auth: ", mintAuth.toBase58());
+
   const dogName = ["Max"];
   const [dog] = web3.PublicKey.findProgramAddressSync(
     [Buffer.from("dog"), Buffer.from(dogName.toString())],
@@ -42,19 +54,16 @@ describe("pet-dat-dog", () => {
   );
   console.log("Dog account: ", dog.toBase58());
 
-  let dogMint = PublicKey.findProgramAddressSync(
-    [Buffer.from("pets"), dog.toBuffer()],
-    program.programId
-  )[0];
-  console.log("Dog Mint account: ", dogMint.toBase58());
-
-  // Declare dogBonkAta at a higher scope to be accessible in both test cases.
-
-  const [auth] = web3.PublicKey.findProgramAddressSync(
+  const [dogAuth] = web3.PublicKey.findProgramAddressSync(
     [Buffer.from("auth"), dog.toBuffer()],
     program.programId
   );
-  console.log("Dog Auth account: ", auth.toBase58());
+  console.log("Dog Auth account: ", dogAuth.toBase58());
+
+  let user = PublicKey.findProgramAddressSync(
+    [keypair.publicKey.toBuffer()],
+    program.programId
+  )[0];
 
   it("Setup token environment", async () => {
     bonkMint = await createMint(
@@ -89,22 +98,39 @@ describe("pet-dat-dog", () => {
 
     // refactor the accounts that you have init or init_if_needed to use getAssociatedTokenAddressSync, and remove the await.
     // Move the dogBonkAta calculation here and ensure it's assigned to the higher scope variable.
-    dogBonkAta = getAssociatedTokenAddressSync(bonkMint, auth, true);
+    dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
     console.log("dogBonkAta account: ", dogBonkAta.toBase58());
 
-    userPetsAta = getAssociatedTokenAddressSync(dogMint, keypair.publicKey);
+    userPetsAta = getAssociatedTokenAddressSync(petsMint, keypair.publicKey);
     console.log("User petsAta account: ", userPetsAta.toBase58());
   });
 
-  it(`Is initialized! - ${dogName}`, async () => {
+  it("Global is Initialized", async () => {
+    const txHash = await program.methods
+      .initGlobal()
+      .accountsPartial({
+        authority: keypair.publicKey,
+        petsMint,
+        mintAuth,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc()
+      .then(confirm)
+      .then(log);
+    console.log("Your pet tx signature is: ", txHash);
+    if (!txHash) throw new Error("Failed to initialize.");
+  });
+
+  it(`Dog created - ${dogName}`, async () => {
     console.log("test1");
     const txHash = await program.methods
       .createDog(dogName.toString())
       .accountsPartial({
         dog,
         owner: keypair.publicKey,
-        dogAuth: auth,
-        dogMint,
+        dogAuth,
         bonkMint,
         dogBonkAta,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -116,31 +142,22 @@ describe("pet-dat-dog", () => {
       .then(log);
     console.log("Your pet tx signature is: ", txHash);
     if (!txHash) throw new Error("Failed to initialize.");
-
   });
 
   it(`Is pet! - ${dogName}`, async () => {
-
-    let user = PublicKey.findProgramAddressSync(
-      [keypair.publicKey.toBuffer()],
-      program.programId
-    )[0];
-
-    console.log("test");
-
     const tx = await program.methods
       .pet()
       .accountsPartial({
+        authority: keypair.publicKey,
         dog,
         user,
-        dogAuth: auth as web3.PublicKey,
-        dogMint,
+        petsMint,
+        mintAuth,
         userPetsAta: userPetsAta,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
       })
-      .signers([keypair])
       .rpc()
       .then(confirm)
       .then(log);
@@ -148,12 +165,6 @@ describe("pet-dat-dog", () => {
   });
 
   it(`Is bonked! - ${dogName}`, async () => {
-
-    let user = PublicKey.findProgramAddressSync(
-      [keypair.publicKey.toBuffer()],
-      program.programId
-    )[0];
-
     const tx = await program.methods
       .bonk()
       .accountsPartial({

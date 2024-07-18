@@ -32,53 +32,53 @@ describe("pet-dat-dog", () => {
 
   let userPetsAta: anchor.web3.PublicKey
 
+  let petsMint = PublicKey.findProgramAddressSync(
+    [Buffer.from("pets"), keypair.publicKey.toBuffer()],
+    program.programId
+  )[0];
+  console.log("PETS Mint: ", petsMint.toBase58());
+
+  let mintAuth = PublicKey.findProgramAddressSync(
+    [Buffer.from("auth"), keypair.publicKey.toBuffer()],
+    program.programId
+  )[0];
+  console.log("PETS Mint Auth: ", mintAuth.toBase58());
+
   const dogName = ["Max"];
   const [dog] = web3.PublicKey.findProgramAddressSync(
     [Buffer.from("dog"), Buffer.from(dogName.toString())],
     program.programId
   );
-  console.log("Dog : ", dog.toBase58());
+  console.log("Dog account: ", dog.toBase58());
 
-  let dogMint = PublicKey.findProgramAddressSync(
-    [Buffer.from("pets"), dog.toBuffer()],
-    program.programId
-  )[0];
-  console.log("Dog Mint : ", dogMint.toBase58());
-
-  // Declare dogBonkAta at a higher scope to be accessible in both test cases.
-
-  const [auth] = web3.PublicKey.findProgramAddressSync(
+  const [dogAuth] = web3.PublicKey.findProgramAddressSync(
     [Buffer.from("auth"), dog.toBuffer()],
     program.programId
   );
-  console.log("Dog Auth : ", auth.toBase58());
+  console.log("Dog Auth account: ", dogAuth.toBase58());
 
-  userPetsAta = getAssociatedTokenAddressSync(dogMint, keypair.publicKey);
+  let user = PublicKey.findProgramAddressSync(
+    [keypair.publicKey.toBuffer()],
+    program.programId
+  )[0];
 
+  userPetsAta = getAssociatedTokenAddressSync(petsMint, keypair.publicKey);
+  console.log("User petsAta account: ", userPetsAta.toBase58());
 
   it(`Is pet! - ${dogName}`, async () => {
-    console.log("test");
-
-    let user = PublicKey.findProgramAddressSync(
-      [keypair.publicKey.toBuffer()],
-      program.programId
-    )[0];
-
-    console.log("User pda: ", user.toBase58())
-
     const tx = await program.methods
       .pet()
       .accountsPartial({
+        authority: keypair.publicKey,
         dog,
         user,
-        dogAuth: auth as web3.PublicKey,
-        dogMint,
+        petsMint,
+        mintAuth,
         userPetsAta: userPetsAta,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
       })
-      .signers([keypair])
       .rpc()
       .then(confirm)
       .then(log);

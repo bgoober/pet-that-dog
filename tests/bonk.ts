@@ -34,30 +34,39 @@ describe("pet-dat-dog", () => {
   let dogBonkAta: anchor.web3.PublicKey;
   let userBonkAta: anchor.web3.PublicKey;
 
+  let petsMint = PublicKey.findProgramAddressSync(
+    [Buffer.from("pets"), keypair.publicKey.toBuffer()],
+    program.programId
+  )[0];
+  console.log("PETS Mint: ", petsMint.toBase58());
+
+  let mintAuth = PublicKey.findProgramAddressSync(
+    [Buffer.from("auth"), keypair.publicKey.toBuffer()],
+    program.programId
+  )[0];
+  console.log("PETS Mint Auth: ", mintAuth.toBase58());
+
   const dogName = ["Max"];
   const [dog] = web3.PublicKey.findProgramAddressSync(
     [Buffer.from("dog"), Buffer.from(dogName.toString())],
     program.programId
   );
-  console.log("Dog : ", dog.toBase58());
+  console.log("Dog account: ", dog.toBase58());
 
-  let dogMint = PublicKey.findProgramAddressSync(
-    [Buffer.from("pets"), dog.toBuffer()],
-    program.programId
-  )[0];
-  console.log("Dog Mint : ", dogMint.toBase58());
-
-  // Declare dogBonkAta at a higher scope to be accessible in both test cases.
-
-  const [auth] = web3.PublicKey.findProgramAddressSync(
+  const [dogAuth] = web3.PublicKey.findProgramAddressSync(
     [Buffer.from("auth"), dog.toBuffer()],
     program.programId
   );
-  console.log("Dog Auth : ", auth.toBase58());
+  console.log("Dog Auth account: ", dogAuth.toBase58());
+
+  let user = PublicKey.findProgramAddressSync(
+    [keypair.publicKey.toBuffer()],
+    program.programId
+  )[0];
 
   it("Setup token environment", async () => {
     /// DOCS: hardcode bonk mint from main test token environment init
-    bonkMint = new PublicKey('3nhj4sipmZ4rEgUtbMiZ1tJxggVRjteMnCCkZ2VCMQgH');
+    bonkMint = new PublicKey('8UMWjXtmSsj7XY2us5DzN2kLGpZqrhmLiZwn5cqcoVmF');
     // if (!bonkMint) throw new Error("Failed to create bonkMint");
     
     console.log("Bonk Mint : ", bonkMint.toBase58());
@@ -72,24 +81,17 @@ describe("pet-dat-dog", () => {
 
     // refactor the accounts that you have init or init_if_needed to use getAssociatedTokenAddressSync, and remove the await.
     // Move the dogBonkAta calculation here and ensure it's assigned to the higher scope variable.
-    dogBonkAta = getAssociatedTokenAddressSync(bonkMint, auth, true);
+    dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
     console.log("dogBonkAta : ", dogBonkAta.toBase58());
 
   });
 
   it(`Is bonked! - ${dogName}`, async () => {
-
-    let user = PublicKey.findProgramAddressSync(
-      [keypair.publicKey.toBuffer()],
-      program.programId
-    )[0];
-
-    console.log("User pda: ", user.toBase58())
-    
     const tx = await program.methods
       .bonk()
       .accountsPartial({
         dog,
+        user,
         bonkMint,
         dogBonkAta,
         userBonkAta,

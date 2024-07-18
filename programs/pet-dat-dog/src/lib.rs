@@ -14,6 +14,11 @@ pub mod pet_dat_dog {
 
     use super::*;
 
+    pub fn init_global(ctx: Context<GlobalC>) -> Result<()> {
+        ctx.accounts.init(&ctx.bumps)?;
+        Ok(())
+    }
+
     pub fn create_dog(ctx: Context<DogC>, name: String) -> Result<()> {   
         ctx.accounts.init(name, &ctx.bumps)?;
         Ok(())
@@ -44,7 +49,3 @@ pub enum ErrorCode {
     #[msg("Session error")]
     SessionError,
 }
-
-
-
-
