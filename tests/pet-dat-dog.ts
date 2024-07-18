@@ -109,7 +109,7 @@ describe("pet-dat-dog", () => {
     const txHash = await program.methods
       .initGlobal()
       .accountsPartial({
-        authority: keypair.publicKey,
+        house: keypair.publicKey,
         petsMint,
         mintAuth,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -148,7 +148,7 @@ describe("pet-dat-dog", () => {
     const tx = await program.methods
       .pet()
       .accountsPartial({
-        authority: keypair.publicKey,
+        house: keypair.publicKey,
         dog,
         user,
         petsMint,

@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 
 #[account]
 pub struct Global {
-    pub authority: Pubkey,
+    pub house: Pubkey,
     pub mint: Pubkey,
     pub auth_bump: u8,
     pub mint_bump: u8,

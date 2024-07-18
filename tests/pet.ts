@@ -69,7 +69,7 @@ describe("pet-dat-dog", () => {
     const tx = await program.methods
       .pet()
       .accountsPartial({
-        authority: keypair.publicKey,
+        house: keypair.publicKey,
         dog,
         user,
         petsMint,

@@ -1,7 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{
-    associated_token::AssociatedToken,
-    token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked},
+    associated_token::AssociatedToken, token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked}
 };
 
 use crate::state::*;
@@ -12,17 +11,17 @@ use crate::state::*;
 pub struct GlobalC<'info> {
 
     #[account(mut)]
-    pub authority: Signer<'info>,
+    pub house: Signer<'info>,
 
-    #[account(init, payer = authority, seeds = [b"global", authority.key().as_ref()], space = Global::LEN, bump)]
+    #[account(init, payer = house, seeds = [b"global", house.key().as_ref()], space = Global::LEN, bump)]
     pub global: Account<'info, Global>,
 
-    #[account(init, payer = authority, seeds = [b"pets", authority.key().as_ref()], mint::decimals=0, mint::authority = mint_auth, bump)]
+    #[account(init, payer = house, seeds = [b"pets", house.key().as_ref()], mint::decimals=0, mint::authority = mint_auth, bump)]
     pub pets_mint: Account<'info, Mint>,
 
     /// CHECK: this is safe
     #[account(
-        seeds = [b"auth", authority.key().as_ref()],
+        seeds = [b"auth", house.key().as_ref()],
         bump
     )]
     pub mint_auth: UncheckedAccount<'info>,
@@ -33,12 +32,16 @@ pub struct GlobalC<'info> {
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
+
+    // /// CHECK: this account will be init by token metadata
+    // pub metadata: UncheckedAccount<'info>, 
+    // pub metadata_program: Program<'info, Metadata>,
 }
 
 impl<'info> GlobalC<'info> {
     pub fn init(&mut self, bumps: &GlobalCBumps) -> Result<()> {
         self.global.set_inner(Global {
-            authority: self.authority.key(),
+            house: self.house.key(),
             mint: self.pets_mint.key(),
             auth_bump: bumps.mint_auth,
             mint_bump: bumps.pets_mint,
@@ -99,9 +102,9 @@ pub struct PetC<'info> {
 
     /// CHECK: this is the signer of the GlobalC context
     #[account()]
-    pub authority: UncheckedAccount<'info>,
+    pub house: UncheckedAccount<'info>,
 
-    #[account(mut, seeds = [b"global", authority.key().as_ref()], bump = global.global_bump)]
+    #[account(mut, seeds = [b"global", house.key().as_ref()], bump = global.global_bump)]
     pub global: Account<'info, Global>,
 
     #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
@@ -110,12 +113,12 @@ pub struct PetC<'info> {
     #[account(mut, seeds = [b"dog", dog.name.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
 
-    #[account(mut, seeds = [b"pets", authority.key().as_ref()], bump = global.mint_bump)]
+    #[account(mut, seeds = [b"pets", house.key().as_ref()], bump = global.mint_bump)]
     pub pets_mint: Account<'info, Mint>,
 
     /// CHECK: this is safe, it is the mint_auth from the GlobalC context
     #[account(
-        seeds = [b"auth", authority.key().as_ref()],
+        seeds = [b"auth", house.key().as_ref()],
         bump = global.auth_bump
     )]
     pub mint_auth: UncheckedAccount<'info>,
@@ -140,7 +143,7 @@ impl<'info> PetC<'info> {
         };
         let seeds = &[
             &b"auth"[..],
-            &self.authority.key().to_bytes()[..],
+            &self.house.key().to_bytes()[..],
             &[self.global.auth_bump],
         ];
         let signer_seeds = &[&seeds[..]];

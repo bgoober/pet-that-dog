@@ -66,7 +66,7 @@ describe("pet-dat-dog", () => {
 
   it("Setup token environment", async () => {
     /// DOCS: hardcode bonk mint from main test token environment init
-    bonkMint = new PublicKey('8UMWjXtmSsj7XY2us5DzN2kLGpZqrhmLiZwn5cqcoVmF');
+    bonkMint = new PublicKey('Av8WyYFuHzRf48vy2mPGSBgyg5yDYjTZWVEpfiZfRSMr');
     // if (!bonkMint) throw new Error("Failed to create bonkMint");
     
     console.log("Bonk Mint : ", bonkMint.toBase58());
