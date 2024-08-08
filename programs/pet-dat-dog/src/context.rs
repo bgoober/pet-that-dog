@@ -1,16 +1,30 @@
+// use solana_program::pubkey;
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken, metadata::{create_metadata_accounts_v3, mpl_token_metadata::types::DataV2, CreateMetadataAccountsV3, Metadata}, token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked}
+    associated_token::AssociatedToken,
+    metadata::{create_metadata_accounts_v3, CreateMetadataAccountsV3, Metadata,},
+    token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked},
 };
 
+use mpl_token_metadata::accounts::{
+    // MasterEdition,
+    Metadata as MetadataAccount,
+};
+use mpl_token_metadata::types::DataV2;
+
 use crate::state::*;
+
+// const ADMIN_PUBKEY: Pubkey = pubkey!("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp");
 
 /// DOCS: GlobalC now inits a global PETS token mint, to be used during any PetC context for any dog.
 /// There is now 1 token for ALL dogs made within the program, by any user.
 #[derive(Accounts)]
 pub struct GlobalC<'info> {
-
-    #[account(mut)]
+    #[account(
+        mut,
+        // address = ADMIN_PUBKEY
+    )]
     pub house: Signer<'info>,
 
     #[account(init, payer = house, seeds = [b"global", house.key().as_ref()], space = Global::LEN, bump)]
@@ -26,9 +40,18 @@ pub struct GlobalC<'info> {
     )]
     pub mint_auth: UncheckedAccount<'info>,
 
+    ///CHECK: Using "address" constraint to validate metadata account address
+    #[account(
+        mut,
+        address = MetadataAccount::find_pda(&pets_mint.key()).0,
+    )]
+    pub metadata_account: UncheckedAccount<'info>,
+
     pub token_program: Program<'info, Token>,
+    pub token_metadata_program: Program<'info, Metadata>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
+    pub rent: Sysvar<'info, Rent>,
 
     /// CHECK: Validate address by deriving pda
     #[account(
@@ -93,9 +116,62 @@ impl<'info> GlobalC<'info> {
         msg!("Token mint created successfully.");
         Ok(())
     }
+
+    pub fn create_mint(&mut self, uri: String, name: String, symbol: String) -> Result<()> {
+        let seeds = &[
+            &b"auth"[..],
+            &self.house.key().to_bytes()[..],
+            &[self.global.auth_bump],
+        ];
+        let signer_seeds = &[&seeds[..]];
+
+
+        // On-chain token metadata for the mint
+        let data_v2 = DataV2 {
+            name,
+            symbol,
+            uri,
+            seller_fee_basis_points: 0,
+            creators: None,
+            collection: None,
+            uses: None,
+        };
+
+        // CPI Context
+        let cpi_ctx = CpiContext::new_with_signer(
+            self.token_metadata_program.to_account_info(),
+            CreateMetadataAccountsV3 {
+                // the metadata account being created
+                metadata: self.metadata_account.to_account_info(),
+                // the mint account of the metadata account
+                mint: self.pets_mint.to_account_info(),
+                // the mint authority of the mint account
+                mint_authority: self.mint_auth.to_account_info(),
+                // the update authority of the metadata account
+                update_authority: self.house.to_account_info(),
+                // the payer for creating the metadata account
+                payer: self.house.to_account_info(),
+                // the system program account
+                system_program: self.system_program.to_account_info(),
+                // the rent sysvar account
+                rent: self.rent.to_account_info(),
+            },
+            signer_seeds,
+        );
+
+        create_metadata_accounts_v3(
+            cpi_ctx, // cpi context
+            data_v2, // token metadata
+            true,    // is_mutable
+            true,    // update_authority_is_signer
+            None,    // collection details
+        )?;
+
+        Ok(())
+    }
 }
 
-/// DOCS: The DogC now inits a new dog with a name, and an owner. 
+/// DOCS: The DogC now inits a new dog with a name, and an owner.
 /// Each dog no longer has its own token, but will instead use the global mint during a PetC context.
 /// Each dog retains its own BONK vault, auth, and mini-game.
 #[derive(Accounts)]
@@ -207,7 +283,6 @@ impl<'info> PetC<'info> {
         msg!("{} has been pet {} times", self.dog.name, self.dog.pets);
 
         msg!("User's last pet: {}", self.user.last_pet);
-
 
         Ok(())
     }
