@@ -11,6 +11,7 @@ import {
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import wallet from "/home/agent/.config/solana/id.json";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
+import { token } from "@coral-xyz/anchor/dist/cjs/utils";
 
 describe("pet-dat-dog", () => {
   const provider = anchor.AnchorProvider.env();
@@ -65,6 +66,21 @@ describe("pet-dat-dog", () => {
     program.programId
   )[0];
 
+  // let METADATA_PROGRAM = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s');
+
+  // const getMetadataAddress = async (mint) => {
+  //     return PublicKey.findProgramAddressSync(
+  //         [Buffer.from("metadata"), METADATA_PROGRAM.toBuffer(),mint.toBuffer()  ],
+  //         METADATA_PROGRAM
+  //     )
+  // }
+
+  const metadata = {
+    name: 'Solana Gold',
+    symbol: 'GOLDSOL',
+    uri: 'https://raw.githubusercontent.com/solana-developers/program-examples/new-examples/tokens/tokens/.assets/spl-token.json',
+  };
+
   it("Setup token environment", async () => {
     bonkMint = await createMint(
       provider.connection,
@@ -107,7 +123,7 @@ describe("pet-dat-dog", () => {
 
   it("Global is Initialized", async () => {
     const txHash = await program.methods
-      .initGlobal()
+      .initGlobal(metadata.name, metadata.symbol, metadata.uri)
       .accountsPartial({
         house: keypair.publicKey,
         petsMint,

@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{
-    associated_token::AssociatedToken, token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked}
+    associated_token::AssociatedToken, metadata::{create_metadata_accounts_v3, mpl_token_metadata::types::DataV2, CreateMetadataAccountsV3, Metadata}, token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked}
 };
 
 use crate::state::*;
@@ -26,20 +26,26 @@ pub struct GlobalC<'info> {
     )]
     pub mint_auth: UncheckedAccount<'info>,
 
-    // #[account(init, payer = owner, seeds = [b"team"], space = Team::LEN, bump)]
-    // pub team: Account<'info, Team>,
-
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
 
-    // /// CHECK: this account will be init by token metadata
-    // pub metadata: UncheckedAccount<'info>, 
-    // pub metadata_program: Program<'info, Metadata>,
+    /// CHECK: Validate address by deriving pda
+    #[account(
+        mut,
+        seeds = [b"metadata", token_metadata_program.key().as_ref(), pets_mint.key().as_ref()],
+        bump,
+        seeds::program = token_metadata_program.key(),
+    )]
+    pub metadata: UncheckedAccount<'info>,
+    
+    pub token_metadata_program: Program<'info, Metadata>,
+
+    pub rent: Sysvar<'info, Rent>,
 }
 
 impl<'info> GlobalC<'info> {
-    pub fn init(&mut self, bumps: &GlobalCBumps) -> Result<()> {
+    pub fn init(&mut self, bumps: &GlobalCBumps, token_name: String, token_symbol: String, token_uri: String) -> Result<()> {
         self.global.set_inner(Global {
             house: self.house.key(),
             mint: self.pets_mint.key(),
@@ -47,6 +53,44 @@ impl<'info> GlobalC<'info> {
             mint_bump: bumps.pets_mint,
             global_bump: bumps.global,
         });
+
+        let seeds = &[
+            &b"auth"[..],
+            &self.house.key().to_bytes()[..],
+            &[self.global.auth_bump],
+        ];
+        let signer_seeds = &[&seeds[..]];
+
+        // Invoking the create_metadata_account_v3 instruction on the token metadata program
+        create_metadata_accounts_v3(
+            CpiContext::new_with_signer(
+                self.token_metadata_program.to_account_info(),
+                CreateMetadataAccountsV3 {
+                    metadata: self.metadata.to_account_info(),
+                    mint: self.pets_mint.to_account_info(),
+                    mint_authority: self.mint_auth.to_account_info(), // is this safe? this makes the mint authority a PDA that is then invoked in the PetC for evey dog.
+                    update_authority: self.house.to_account_info(),
+                    payer: self.house.to_account_info(),
+                    system_program: self.system_program.to_account_info(),
+                    rent: self.rent.to_account_info(),
+                },
+                signer_seeds
+            ),
+            DataV2 {
+                name: token_name,
+                symbol: token_symbol,
+                uri: token_uri,
+                seller_fee_basis_points: 0,
+                creators: None,
+                collection: None,
+                uses: None,
+            },
+            false, // Is mutable
+            true,  // Update authority is signer
+            None,  // Collection details
+        )?;
+
+        msg!("Token mint created successfully.");
         Ok(())
     }
 }
