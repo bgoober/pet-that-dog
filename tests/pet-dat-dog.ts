@@ -67,9 +67,9 @@ describe("pet-dat-dog", () => {
   )[0];
 
   const metadata = {
-    name: 'Solana Gold',
-    symbol: 'GOLDSOL',
-    uri: 'https://raw.githubusercontent.com/solana-developers/program-examples/new-examples/tokens/tokens/.assets/spl-token.json',
+    name: 'pet dat dog',
+    symbol: 'PETS',
+    uri: 'https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/Qma41jzcPhZ2UspoBrHzKfEX7Ve7fbMV958sQQD3PgvBXW',
   };
 
   it("Setup token environment", async () => {
