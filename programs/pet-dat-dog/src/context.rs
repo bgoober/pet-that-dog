@@ -161,7 +161,7 @@ pub struct PetC<'info> {
     pub signer: Signer<'info>,
 
     /// CHECK: this is the signer of the GlobalC context
-    #[account()]
+    #[account(mut)]
     pub house: UncheckedAccount<'info>,
 
     #[account(mut, seeds = [b"global", house.key().as_ref()], bump = global.global_bump)]
