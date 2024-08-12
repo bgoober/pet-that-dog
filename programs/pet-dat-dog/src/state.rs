@@ -20,7 +20,7 @@ pub struct Dog {
     pub pets: u64,
     pub bonks: u64,
     pub dog_bump: u8,
-    pub auth_bump: u8,
+    pub auth_bump: u8, // the auth_bump for the dog is needed eventually as a signer to disburse the dog's BONK ata account balance to the user if they win
 }
 
 impl Dog {

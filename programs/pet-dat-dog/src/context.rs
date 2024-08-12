@@ -1,15 +1,21 @@
-use anchor_lang::prelude::*;
+use anchor_lang::{prelude::*, system_program::{transfer, Transfer}};
 use anchor_spl::{
-    associated_token::AssociatedToken, metadata::{create_metadata_accounts_v3, mpl_token_metadata::types::DataV2, CreateMetadataAccountsV3, Metadata}, token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked}
+    associated_token::AssociatedToken,
+    metadata::{
+        create_metadata_accounts_v3, mpl_token_metadata::types::DataV2, CreateMetadataAccountsV3,
+        Metadata,
+    },
+    token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked},
 };
 
 use crate::state::*;
+
+// const ADMIN: Pubkey = pubkey!("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp");
 
 /// DOCS: GlobalC now inits a global PETS token mint, to be used during any PetC context for any dog.
 /// There is now 1 token for ALL dogs made within the program, by any user.
 #[derive(Accounts)]
 pub struct GlobalC<'info> {
-
     #[account(mut)]
     pub house: Signer<'info>,
 
@@ -38,14 +44,20 @@ pub struct GlobalC<'info> {
         seeds::program = token_metadata_program.key(),
     )]
     pub metadata: UncheckedAccount<'info>,
-    
+
     pub token_metadata_program: Program<'info, Metadata>,
 
     pub rent: Sysvar<'info, Rent>,
 }
 
 impl<'info> GlobalC<'info> {
-    pub fn init(&mut self, bumps: &GlobalCBumps, token_name: String, token_symbol: String, token_uri: String) -> Result<()> {
+    pub fn init(
+        &mut self,
+        bumps: &GlobalCBumps,
+        token_name: String,
+        token_symbol: String,
+        token_uri: String,
+    ) -> Result<()> {
         self.global.set_inner(Global {
             house: self.house.key(),
             mint: self.pets_mint.key(),
@@ -74,7 +86,7 @@ impl<'info> GlobalC<'info> {
                     system_program: self.system_program.to_account_info(),
                     rent: self.rent.to_account_info(),
                 },
-                signer_seeds
+                signer_seeds,
             ),
             DataV2 {
                 name: token_name,
@@ -85,9 +97,9 @@ impl<'info> GlobalC<'info> {
                 collection: None,
                 uses: None,
             },
-            false, // Is mutable
-            true,  // Update authority is signer
-            None,  // Collection details
+            true, // Is mutable
+            true, // Update authority is signer -- what does this mean? Does this mean the mint authority is the signer, or that the update authority is the signer of this particular instruction?
+            None, // Collection details
         )?;
 
         msg!("Token mint created successfully.");
@@ -95,7 +107,7 @@ impl<'info> GlobalC<'info> {
     }
 }
 
-/// DOCS: The DogC now inits a new dog with a name, and an owner. 
+/// DOCS: The DogC now inits a new dog with a name, and an owner.
 /// Each dog no longer has its own token, but will instead use the global mint during a PetC context.
 /// Each dog retains its own BONK vault, auth, and mini-game.
 #[derive(Accounts)]
@@ -208,6 +220,15 @@ impl<'info> PetC<'info> {
 
         msg!("User's last pet: {}", self.user.last_pet);
 
+        // create a cpi transfer from the user's bonk ata to the dog's bonk ata for 1 $BONK token
+        let cpi_accounts = Transfer {
+            from: self.signer.to_account_info(),
+            to: self.house.to_account_info(),
+        };
+
+        let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
+
+        transfer(ctx, 1_000_000)?; // this is equal to 0.001 SOL. This means for every 1000 pets, the House will make 1 SOL.
 
         Ok(())
     }
@@ -225,7 +246,6 @@ pub struct BonkC<'info> {
     pub dog: Account<'info, Dog>,
 
     //bonk mint
-    //    #[account(mut)]
     pub bonk_mint: Account<'info, Mint>,
 
     // user's bonk ata

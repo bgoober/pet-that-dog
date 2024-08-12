@@ -20,6 +20,7 @@ test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/pet-dat-dog.ts"
 pet = "npx ts-mocha -p tsconfig.json -t 1000000 tests/pet.ts"
 query = "npx ts-mocha -p tsconfig.json -t 1000000 tests/query.ts"
 bonk = "npx ts-mocha -p tsconfig.json -t 1000000 tests/bonk.ts"
+p2 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/player2.ts"
 
 [[test.genesis]]
 address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
