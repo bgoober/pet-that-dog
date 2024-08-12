@@ -12,6 +12,9 @@ use crate::state::*;
 
 // const ADMIN: Pubkey = pubkey!("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp");
 
+// this is the main net $BONK Mint address
+// const BONK_MINT: Pubkey = pubkey!("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263");
+
 /// DOCS: GlobalC now inits a global PETS token mint, to be used during any PetC context for any dog.
 /// There is now 1 token for ALL dogs made within the program, by any user.
 #[derive(Accounts)]
@@ -127,6 +130,7 @@ pub struct DogC<'info> {
     pub dog_auth: UncheckedAccount<'info>,
 
     //bonk mint
+    // #[account(address = BONK_MINT)]
     pub bonk_mint: Account<'info, Mint>,
 
     // dog's bonk ata
@@ -246,6 +250,7 @@ pub struct BonkC<'info> {
     pub dog: Account<'info, Dog>,
 
     //bonk mint
+    // #[account(address = BONK_MINT)]
     pub bonk_mint: Account<'info, Mint>,
 
     // user's bonk ata
