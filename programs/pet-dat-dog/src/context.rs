@@ -146,6 +146,7 @@ impl<'info> DogC<'info> {
     pub fn init(&mut self, name: String, bumps: &DogCBumps) -> Result<()> {
         self.dog.set_inner(Dog {
             name,
+            owner: self.owner.key(),
             pets: 0,
             bonks: 0,
             dog_bump: bumps.dog,
