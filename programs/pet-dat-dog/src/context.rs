@@ -228,7 +228,7 @@ impl<'info> PetC<'info> {
 
         let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
 
-        transfer(ctx, 1_000_000)?; // this is equal to 0.001 SOL. This means for every 1000 pets, the House will make 1 SOL.
+        transfer(ctx, 100_000)?; // this is equal to 0.0001 SOL. This means for every 10,000 pets, the House will make 1 SOL.
 
         Ok(())
     }
