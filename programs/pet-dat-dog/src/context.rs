@@ -289,7 +289,7 @@ impl<'info> BonkC<'info> {
 
         let ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
 
-        transfer_checked(ctx, 1_000_000, 6)?;
+        transfer_checked(ctx, 100_000, 5)?;
 
         self.dog.bonks += 1;
 

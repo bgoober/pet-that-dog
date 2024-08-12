@@ -78,7 +78,7 @@ describe("pet-dat-dog", () => {
       keypair,
       provider.publicKey,
       null,
-      6
+      5
     );
     if (!bonkMint) throw new Error("Failed to create bonkMint");
     console.log("Bonk Mint account: ", bonkMint.toBase58());
