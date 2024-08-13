@@ -1,0 +1,139 @@
+{ "frames": {
+   "4-layDown 0.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "sourceSize": { "w": 439, "h": 409 },
+    "duration": 100
+   },
+   "4-layDown 1.aseprite": {
+    "frame": { "x": 439, "y": 0, "w": 439, "h": 409 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "sourceSize": { "w": 439, "h": 409 },
+    "duration": 100
+   },
+   "4-layDown 2.aseprite": {
+    "frame": { "x": 878, "y": 0, "w": 439, "h": 409 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "sourceSize": { "w": 439, "h": 409 },
+    "duration": 100
+   },
+   "4-layDown 3.aseprite": {
+    "frame": { "x": 1317, "y": 0, "w": 439, "h": 409 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "sourceSize": { "w": 439, "h": 409 },
+    "duration": 100
+   },
+   "4-layDown 4.aseprite": {
+    "frame": { "x": 1756, "y": 0, "w": 439, "h": 409 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "sourceSize": { "w": 439, "h": 409 },
+    "duration": 100
+   },
+   "4-layDown 5.aseprite": {
+    "frame": { "x": 2195, "y": 0, "w": 439, "h": 409 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "sourceSize": { "w": 439, "h": 409 },
+    "duration": 100
+   },
+   "4-layDown 6.aseprite": {
+    "frame": { "x": 2634, "y": 0, "w": 439, "h": 409 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "sourceSize": { "w": 439, "h": 409 },
+    "duration": 100
+   },
+   "4-layDown 7.aseprite": {
+    "frame": { "x": 3073, "y": 0, "w": 439, "h": 409 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "sourceSize": { "w": 439, "h": 409 },
+    "duration": 100
+   },
+   "4-layDown 8.aseprite": {
+    "frame": { "x": 3512, "y": 0, "w": 439, "h": 409 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "sourceSize": { "w": 439, "h": 409 },
+    "duration": 100
+   },
+   "4-layDown 9.aseprite": {
+    "frame": { "x": 3951, "y": 0, "w": 439, "h": 409 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "sourceSize": { "w": 439, "h": 409 },
+    "duration": 100
+   },
+   "4-layDown 10.aseprite": {
+    "frame": { "x": 4390, "y": 0, "w": 439, "h": 409 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "sourceSize": { "w": 439, "h": 409 },
+    "duration": 100
+   },
+   "4-layDown 11.aseprite": {
+    "frame": { "x": 4829, "y": 0, "w": 439, "h": 409 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "sourceSize": { "w": 439, "h": 409 },
+    "duration": 100
+   },
+   "4-layDown 12.aseprite": {
+    "frame": { "x": 5268, "y": 0, "w": 439, "h": 409 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 439, "h": 409 },
+    "sourceSize": { "w": 439, "h": 409 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.3.2-x64",
+  "format": "RGBA8888",
+  "size": { "w": 5707, "h": 409 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "sky", "opacity": 255, "blendMode": "normal" },
+   { "name": "sun", "opacity": 255, "blendMode": "normal" },
+   { "name": "ground", "opacity": 255, "blendMode": "normal" },
+   { "name": "cloud2", "opacity": 255, "blendMode": "normal" },
+   { "name": "cloud1", "opacity": 255, "blendMode": "normal" },
+   { "name": "dog shadow", "opacity": 255, "blendMode": "normal" },
+   { "name": "body", "opacity": 255, "blendMode": "normal" },
+   { "name": "head", "opacity": 255, "blendMode": "normal" },
+   { "name": "tennis ball" },
+   { "name": "tennis ball shadow", "group": "tennis ball", "opacity": 255, "blendMode": "normal" },
+   { "name": "tennis ball", "group": "tennis ball", "opacity": 255, "blendMode": "normal" },
+   { "name": "sunflower", "opacity": 255, "blendMode": "normal" },
+   { "name": "sunflower", "opacity": 255, "blendMode": "normal" },
+   { "name": "tennis ball" },
+   { "name": "tennis ball shadow", "group": "tennis ball", "opacity": 255, "blendMode": "normal" },
+   { "name": "tennis ball", "group": "tennis ball", "opacity": 255, "blendMode": "normal" },
+   { "name": "Eyes", "opacity": 255, "blendMode": "normal" },
+   { "name": "sunflower", "opacity": 255, "blendMode": "normal" },
+   { "name": "BONK Ball + Shadow", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}
