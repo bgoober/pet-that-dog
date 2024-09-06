@@ -1,0 +1,14 @@
+{
+  "name": "@app/source",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {},
+  "private": true,
+  "dependencies": {
+    "@solana-developers/preset-react": "3.0.1"
+  },
+  "devDependencies": {
+    "@nx/workspace": "19.0.0",
+    "nx": "19.0.0"
+  }
+}
