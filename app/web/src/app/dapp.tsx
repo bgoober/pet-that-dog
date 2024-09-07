@@ -26,10 +26,10 @@ import { Provider } from '@project-serum/anchor';
 const states = {
   intro: { file: "1-sunriseIntro.gif", timeout: 12000, duration: 2700 },
   sitUp: { file: "2-sitUp.gif", timeout: 30000, duration: 2400 },
-  pet: { file: "3-petDog.gif", timeout: 12000, duration: 4100 },
+  pet: { file: "3-petDog.gif", timeout: 30000, duration: 4100 },
   layDown: { file: "4-layDown.gif", timeout: 10000, duration: 1200 },
   idle: { file: "5-idleWind.gif", timeout: 20000, duration: 1750 },
-  bonk: { file: "BONK.gif", timeout: 10000, duration: 3300 },
+  bonk: { file: "BONK.gif", timeout: 30000, duration: 3300 },
 };
 
 // Preload GIFs
@@ -97,7 +97,7 @@ const Dapp: React.FC = () => {
   );
   // console.log("Dog Auth account: ", dogAuth.toBase58());
 
-  bonkMint = new PublicKey('B6QwbiRCaRwvzhQmMivKa7PJRC3GtqAwQSxVherm6enA');
+  bonkMint = new PublicKey('5FRW92nraRQz8z8ma8gCuA7A4r5dLpyY79HSfhoMonyk');
 
   dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
   // console.log("dogBonkAta account: ", dogBonkAta.toBase58());
@@ -128,7 +128,7 @@ const Dapp: React.FC = () => {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .rpc({skipPreflight: true})
+        .rpc()
         .then(confirm);
       console.log("Your pet tx signature is: ", tx);
       changeState('pet');
@@ -152,7 +152,7 @@ const Dapp: React.FC = () => {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .rpc({skipPreflight: true})
+        .rpc()
         .then(confirm);
       console.log("Your bonk tx signature is: ", tx);
       changeState('bonk');

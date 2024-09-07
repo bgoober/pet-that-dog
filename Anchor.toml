@@ -8,7 +8,8 @@ skip-lint = false
 pet_dat_dog = "DNHVjKARnjUuTykjqhbrQ1veV8YFkmqiwP65EKd19YPT"
 
 [registry]
-url = "https://api.apr.dev"
+url = "http://localhost:8899"
+# _url = "https://api.apr.dev"
 
 [provider]
 cluster = "Localnet"
