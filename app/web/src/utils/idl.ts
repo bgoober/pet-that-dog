@@ -1,0 +1,495 @@
+export type IDLType = {
+  address: 'DNHVjKARnjUuTykjqhbrQ1veV8YFkmqiwP65EKd19YPT';
+  metadata: {
+    name: 'pet_dat_dog';
+    version: '0.1.0';
+    spec: '0.1.0';
+    description: 'Created with Anchor';
+  };
+  instructions: [
+    {
+      name: 'bonk';
+      discriminator: [49, 159, 45, 43, 24, 86, 89, 106];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'user';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'signer';
+              }
+            ];
+          };
+        },
+        {
+          name: 'dog';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [100, 111, 103];
+              },
+              {
+                kind: 'account';
+                path: 'dog.name';
+                account: 'Dog';
+              }
+            ];
+          };
+        },
+        {
+          name: 'bonk_mint';
+        },
+        {
+          name: 'user_bonk_ata';
+          writable: true;
+        },
+        {
+          name: 'dog_auth';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [97, 117, 116, 104];
+              },
+              {
+                kind: 'account';
+                path: 'dog';
+              }
+            ];
+          };
+        },
+        {
+          name: 'dog_bonk_ata';
+          writable: true;
+        },
+        {
+          name: 'token_program';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'associated_token_program';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'system_program';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [];
+    },
+    {
+      name: 'create_dog';
+      discriminator: [135, 101, 247, 246, 186, 192, 188, 96];
+      accounts: [
+        {
+          name: 'owner';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'dog';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [100, 111, 103];
+              },
+              {
+                kind: 'arg';
+                path: 'name';
+              }
+            ];
+          };
+        },
+        {
+          name: 'dog_auth';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [97, 117, 116, 104];
+              },
+              {
+                kind: 'account';
+                path: 'dog';
+              }
+            ];
+          };
+        },
+        {
+          name: 'bonk_mint';
+        },
+        {
+          name: 'dog_bonk_ata';
+          writable: true;
+        },
+        {
+          name: 'token_program';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'associated_token_program';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'system_program';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'name';
+          type: 'string';
+        }
+      ];
+    },
+    {
+      name: 'init_global';
+      discriminator: [44, 238, 77, 253, 76, 182, 192, 162];
+      accounts: [
+        {
+          name: 'house';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'global';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [103, 108, 111, 98, 97, 108];
+              },
+              {
+                kind: 'account';
+                path: 'house';
+              }
+            ];
+          };
+        },
+        {
+          name: 'pets_mint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [112, 101, 116, 115];
+              },
+              {
+                kind: 'account';
+                path: 'house';
+              }
+            ];
+          };
+        },
+        {
+          name: 'mint_auth';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [97, 117, 116, 104];
+              },
+              {
+                kind: 'account';
+                path: 'house';
+              }
+            ];
+          };
+        },
+        {
+          name: 'token_program';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'associated_token_program';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'system_program';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'metadata';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [109, 101, 116, 97, 100, 97, 116, 97];
+              },
+              {
+                kind: 'account';
+                path: 'token_metadata_program';
+              },
+              {
+                kind: 'account';
+                path: 'pets_mint';
+              }
+            ];
+            program: {
+              kind: 'account';
+              path: 'token_metadata_program';
+            };
+          };
+        },
+        {
+          name: 'token_metadata_program';
+          address: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s';
+        },
+        {
+          name: 'rent';
+          address: 'SysvarRent111111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'token_name';
+          type: 'string';
+        },
+        {
+          name: 'token_symbol';
+          type: 'string';
+        },
+        {
+          name: 'token_uri';
+          type: 'string';
+        }
+      ];
+    },
+    {
+      name: 'pet';
+      discriminator: [15, 227, 79, 118, 129, 108, 0, 63];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'house';
+          writable: true;
+        },
+        {
+          name: 'global';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [103, 108, 111, 98, 97, 108];
+              },
+              {
+                kind: 'account';
+                path: 'house';
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'signer';
+              }
+            ];
+          };
+        },
+        {
+          name: 'dog';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [100, 111, 103];
+              },
+              {
+                kind: 'account';
+                path: 'dog.name';
+                account: 'Dog';
+              }
+            ];
+          };
+        },
+        {
+          name: 'pets_mint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [112, 101, 116, 115];
+              },
+              {
+                kind: 'account';
+                path: 'house';
+              }
+            ];
+          };
+        },
+        {
+          name: 'mint_auth';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [97, 117, 116, 104];
+              },
+              {
+                kind: 'account';
+                path: 'house';
+              }
+            ];
+          };
+        },
+        {
+          name: 'user_pets_ata';
+          writable: true;
+        },
+        {
+          name: 'token_program';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'associated_token_program';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'system_program';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [];
+    }
+  ];
+  accounts: [
+    {
+      name: 'Dog';
+      discriminator: [146, 97, 68, 134, 183, 22, 228, 157];
+    },
+    {
+      name: 'Global';
+      discriminator: [167, 232, 232, 177, 200, 108, 114, 127];
+    },
+    {
+      name: 'User';
+      discriminator: [159, 117, 95, 227, 239, 151, 58, 236];
+    }
+  ];
+  errors: [
+    {
+      code: 6000;
+      name: 'TooManyPets';
+      msg: 'Too many pets in one slot!';
+    },
+    {
+      code: 6001;
+      name: 'TooManyBonks';
+      msg: 'Too many bonksin one slot!';
+    },
+    {
+      code: 6002;
+      name: 'SessionError';
+      msg: 'Session error';
+    }
+  ];
+  types: [
+    {
+      name: 'Dog';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'name';
+            type: 'string';
+          },
+          {
+            name: 'owner';
+            type: 'pubkey';
+          },
+          {
+            name: 'pets';
+            type: 'u64';
+          },
+          {
+            name: 'bonks';
+            type: 'u64';
+          },
+          {
+            name: 'dog_bump';
+            type: 'u8';
+          },
+          {
+            name: 'auth_bump';
+            type: 'u8';
+          }
+        ];
+      };
+    },
+
+    {
+      name: 'Global';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'house';
+            type: 'pubkey';
+          },
+          {
+            name: 'mint';
+            type: 'pubkey';
+          },
+          {
+            name: 'auth_bump';
+            type: 'u8';
+          },
+          {
+            name: 'mint_bump';
+            type: 'u8';
+          },
+          {
+            name: 'global_bump';
+            type: 'u8';
+          }
+        ];
+      };
+    },
+    {
+      name: 'User';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'last_pet';
+            type: 'u64';
+          },
+          {
+            name: 'last_bonk';
+            type: 'u64';
+          },
+          {
+            name: 'bump';
+            type: 'u8';
+          }
+        ];
+      };
+    }
+  ];
+};

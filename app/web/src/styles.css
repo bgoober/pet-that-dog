@@ -1,3 +1,5 @@
+/* BOILERPLATE */
+
 html,
 body,
 #root {
@@ -9,4 +11,56 @@ body,
   color-scheme: light dark;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+/* NEW */
+body {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #111827;
+}
+
+#dog-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100vw;
+  max-height: 100vh;
+  box-sizing: border-box;
+  transform: scale(2.12);
+}
+
+#dog-image {
+  max-width: 100%; 
+  max-height: 100%;
+  transition: opacity 0.3s;
+  opacity: 1;
+}
+
+.bounding-box {
+  position: absolute;
+  display: none;
+}
+
+#pet-box {
+  position: absolute;
+  top: 99px;
+  left: 181px;
+  width: 160px;
+  height: 180px;
+  cursor: pointer;
+  border: 2px solid rgb(201, 9, 9); /* To visualize the box -- remove for production */
+}
+
+#bonk-box {
+  position: absolute;
+  top: 304px;
+  left: 89px;
+  width: 49px;
+  height: 49px;
+  cursor: pointer;
+  border: 2px solid rgb(14, 14, 204); /* To visualize the box -- remove for production */
 }
