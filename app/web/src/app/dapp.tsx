@@ -55,8 +55,8 @@ const Dapp: React.FC = () => {
   // Create Anchor provider if wallet is connected
   const provider = wallet
     ? new anchor.AnchorProvider(connection, wallet, {
-        preflightCommitment: 'processed',
-        commitment: 'processed',
+        preflightCommitment: 'confirmed',
+        commitment: 'confirmed',
       })
     : null;
 
@@ -97,7 +97,7 @@ const Dapp: React.FC = () => {
   );
   // console.log("Dog Auth account: ", dogAuth.toBase58());
 
-  bonkMint = new PublicKey('5XdaS9PKe1WNa6hjJfQXdfLXvE5X42h9amcY7SYuJnuh');
+  bonkMint = new PublicKey('B6QwbiRCaRwvzhQmMivKa7PJRC3GtqAwQSxVherm6enA');
 
   dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
   // console.log("dogBonkAta account: ", dogBonkAta.toBase58());
@@ -128,7 +128,7 @@ const Dapp: React.FC = () => {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .rpc()
+        .rpc({skipPreflight: true})
         .then(confirm);
       console.log("Your pet tx signature is: ", tx);
     } catch (error) {
@@ -151,7 +151,7 @@ const Dapp: React.FC = () => {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .rpc()
+        .rpc({skipPreflight: true})
         .then(confirm);
       console.log("Your bonk tx signature is: ", tx);
     } catch (error) {
