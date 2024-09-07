@@ -25,7 +25,7 @@ import { Provider } from '@project-serum/anchor';
 // Define the states
 const states = {
   intro: { file: "1-sunriseIntro.gif", timeout: 12000, duration: 2700 },
-  sitUp: { file: "2-sitUp.gif", timeout: 12000, duration: 2400 },
+  sitUp: { file: "2-sitUp.gif", timeout: 30000, duration: 2400 },
   pet: { file: "3-petDog.gif", timeout: 12000, duration: 4100 },
   layDown: { file: "4-layDown.gif", timeout: 10000, duration: 1200 },
   idle: { file: "5-idleWind.gif", timeout: 20000, duration: 1750 },
@@ -131,6 +131,7 @@ const Dapp: React.FC = () => {
         .rpc({skipPreflight: true})
         .then(confirm);
       console.log("Your pet tx signature is: ", tx);
+      changeState('pet');
     } catch (error) {
       console.error('Error executing instruction', error);
     }
@@ -154,6 +155,7 @@ const Dapp: React.FC = () => {
         .rpc({skipPreflight: true})
         .then(confirm);
       console.log("Your bonk tx signature is: ", tx);
+      changeState('bonk');
     } catch (error) {
       console.error('Error executing instruction', error);
     }
@@ -236,21 +238,21 @@ const Dapp: React.FC = () => {
     }
   };
 
-  const handlePetBoxClick = () => {
+  const handlePetBoxClick = async () => {
     if (isAnimating) return; // Lockout during animation
-    // call pet instruction
-    handlePetInstruction();
+    // Call pet instruction and wait for confirmation
+    await handlePetInstruction();
     if (['sitUp', 'pet', 'bonk'].includes(currentState)) {
       console.log(`Pet box clicked during ${currentState} state`);
       setClicked(true);
       changeState('pet');
     }
   };
-
-  const handleBonkBoxClick = () => {
+  
+  const handleBonkBoxClick = async () => {
     if (isAnimating) return; // Lockout during animation
-    // call bonk instruction
-    handleBonkInstruction();
+    // Call bonk instruction and wait for confirmation
+    await handleBonkInstruction();
     if (['sitUp', 'pet', 'bonk'].includes(currentState)) {
       console.log(`Bonk box clicked during ${currentState} state`);
       setClicked(true);
@@ -297,7 +299,7 @@ const Dapp: React.FC = () => {
 
   return (
     <div id="dog-container" onClick={handleBackgroundClick}>
-      <img id="dog-image" ref={dogImageRef} alt="can I pet dat dog?!" />
+      <img id="dog-image" ref={dogImageRef} alt="pet dat dog" />
       <div
         id="pet-box"
         ref={petBoxRef}
