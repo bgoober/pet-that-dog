@@ -52,7 +52,7 @@ body {
   width: 160px;
   height: 180px;
   cursor: pointer;
-  border: 2px solid rgb(201, 9, 9); /* To visualize the box -- remove for production */
+  border: 2px solid rgba(201, 9, 9, 0); /* To visualize the box -- remove for production */
 }
 
 #bonk-box {
@@ -62,5 +62,5 @@ body {
   width: 49px;
   height: 49px;
   cursor: pointer;
-  border: 2px solid rgb(14, 14, 204); /* To visualize the box -- remove for production */
+  border: 2px solid rgba(14, 14, 204, 0); /* To visualize the box -- remove for production */
 }

@@ -35,6 +35,9 @@ describe("pet-dat-dog", () => {
   let dogBonkAta: anchor.web3.PublicKey;
   let userPetsAta: anchor.web3.PublicKey;
   let userBonkAta: anchor.web3.PublicKey;
+  let devuserBonkAta: anchor.web3.PublicKey;
+
+  const DEVNETWALLET = new PublicKey("J4JHaaMFpo8oPKB5DoHh7YZxXLdzkqvkLnMUQiSD3NrF");
 
   let petsMint = PublicKey.findProgramAddressSync(
     [Buffer.from("pets"), keypair.publicKey.toBuffer()],
@@ -103,6 +106,23 @@ describe("pet-dat-dog", () => {
     );
     console.log("User bonkAta account: ", userBonkAta.toBase58());
 
+    // devnet wallet bonk ata + mint to bonk ata
+    const devnetwalletBonkAtaResult = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      keypair,
+      bonkMint,
+      DEVNETWALLET    );
+    devuserBonkAta = devnetwalletBonkAtaResult.address;
+
+    await mintTo(
+      provider.connection,
+      keypair,
+      bonkMint,
+      devuserBonkAta,
+      keypair,
+      1_000_000_000
+    );
+    console.log("User bonkAta account: ", userBonkAta.toBase58());
     // refactor the accounts that you have init or init_if_needed to use getAssociatedTokenAddressSync, and remove the await.
     // Move the dogBonkAta calculation here and ensure it's assigned to the higher scope variable.
     dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
@@ -110,6 +130,15 @@ describe("pet-dat-dog", () => {
 
     userPetsAta = getAssociatedTokenAddressSync(petsMint, keypair.publicKey);
     console.log("User petsAta account: ", userPetsAta.toBase58());
+
+    // transfer 1 SOL from keypair to devnetwallet
+    const transfer = anchor.web3.SystemProgram.transfer({
+      fromPubkey: keypair.publicKey,
+      toPubkey: DEVNETWALLET,
+      lamports: anchor.web3.LAMPORTS_PER_SOL,
+    });
+
+    
   });
 
   it("Global is Initialized", async () => {

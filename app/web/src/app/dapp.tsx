@@ -1,32 +1,35 @@
-import React, { useEffect, useState, useRef } from 'react';
+import * as anchor from '@coral-xyz/anchor';
+import { Program, web3 } from '@coral-xyz/anchor';
+import { PetDatDog } from '../utils/_';
 
-import * as anchor from "@coral-xyz/anchor";
-import { Program, web3 } from "@coral-xyz/anchor";
-import { PetDatDog } from "../utils/_";
-
+import idl from '../utils/pet_dat_dog.json';
 import {
   TOKEN_PROGRAM_ID,
   createMint,
   getAssociatedTokenAddressSync,
   getOrCreateAssociatedTokenAccount,
   mintTo,
-} from "@solana/spl-token";
-import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
+} from '@solana/spl-token';
+import { Keypair, PublicKey, SystemProgram } from '@solana/web3.js';
 // import wallet from "~/.config/solana/id.json";
-import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
-import { token } from "@coral-xyz/anchor/dist/cjs/utils";
+import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
+import { token } from '@coral-xyz/anchor/dist/cjs/utils';
 
 import { useProgram } from '../utils/useProgram';
 import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 
+import React, { useEffect, useState, useRef } from 'react';
+
+import { Provider } from '@project-serum/anchor';
+
 // Define the states
 const states = {
-  intro: { file: "1-sunriseIntro.gif", timeout: 20000, duration: 2600 },
-  sitUp: { file: "2-sitUp.gif", timeout: 12000, duration: 2300 },
-  pet: { file: "3-petDog.gif", timeout: 12000, duration: 4100 },
-  layDown: { file: "4-layDown.gif", timeout: 10000, duration: 1200 },
-  idle: { file: "5-idleWind.gif", timeout: 20000, duration: 1750 },
-  bonk: { file: "BONK.gif", timeout: 10000, duration: 3300 },
+  intro: { file: '1-sunriseIntro.gif', timeout: 12000, duration: 4000 },
+  sitUp: { file: '2-sitUp.gif', timeout: 12000, duration: 2500 },
+  pet: { file: '3-petDog.gif', timeout: 12000, duration: 5000 },
+  layDown: { file: '4-layDown.gif', timeout: 10000, duration: 1500 },
+  idle: { file: '5-idleWind.gif', timeout: 20000, duration: 1750 },
+  bonk: { file: 'BONK.gif', timeout: 10000, duration: 3300 },
 };
 
 // Preload GIFs
@@ -37,14 +40,120 @@ Object.values(states).forEach((state) => {
   images[state.file] = img;
 });
 
+const house = new PublicKey('4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp');
+
 const Dapp: React.FC = () => {
-  const [currentState, setCurrentState] = useState<keyof typeof states>("intro");
+  const [currentState, setCurrentState] =
+    useState<keyof typeof states>('intro');
   const [isAnimating, setIsAnimating] = useState(false);
   const [clicked, setClicked] = useState(false);
   const dogImageRef = useRef<HTMLImageElement>(null);
   const petBoxRef = useRef<HTMLDivElement>(null);
   const bonkBoxRef = useRef<HTMLDivElement>(null);
   const nextTimeoutRef = useRef<number | null>(null);
+
+  const wallet = useAnchorWallet();
+  const { connection } = useConnection(); // Extract the connection object
+
+  // Create Anchor provider
+  const provider = new anchor.AnchorProvider(connection, wallet!, {
+    preflightCommitment: 'processed',
+    commitment: 'processed',
+  });
+
+  // Create program instance
+  const programID = new PublicKey(idl.address);
+  const program = new anchor.Program(idl as anchor.Idl, provider);
+
+
+  let bonkMint: anchor.web3.PublicKey;
+  let dogBonkAta: anchor.web3.PublicKey;
+  let userPetsAta: anchor.web3.PublicKey;
+  let userBonkAta: anchor.web3.PublicKey;
+
+  let petsMint = PublicKey.findProgramAddressSync(
+    [Buffer.from("pets"), house.toBuffer()],
+    program.programId
+  )[0];
+  console.log("PETS Mint: ", petsMint.toBase58());
+
+  let mintAuth = PublicKey.findProgramAddressSync(
+    [Buffer.from("auth"), house.toBuffer()],
+    program.programId
+  )[0];
+  console.log("PETS Mint Auth: ", mintAuth.toBase58());
+
+  const dogName = ["Max"];
+  const [dog] = web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("dog"), Buffer.from(dogName.toString())],
+    program.programId
+  );
+  console.log("Dog account: ", dog.toBase58());
+
+  const [dogAuth] = web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("auth"), dog.toBuffer()],
+    program.programId
+  );
+  console.log("Dog Auth account: ", dogAuth.toBase58());
+
+  bonkMint = new PublicKey('5Lp6Z55iWvnvrXCCu89AhyfBwctRb2dDKmtSRf7hzAuJ');
+
+  dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
+  console.log("dogBonkAta account: ", dogBonkAta.toBase58());
+
+  userPetsAta = getAssociatedTokenAddressSync(petsMint, provider.wallet.publicKey);
+  console.log("User petsAta account: ", userPetsAta.toBase58());
+
+  userBonkAta = getAssociatedTokenAddressSync(bonkMint, provider.wallet.publicKey);
+  console.log("User bonkAta account: ", userBonkAta.toBase58());
+
+  const handlePetInstruction = async () => {
+    try {
+      const tx = await program.methods
+        .pet()
+        .accountsPartial({
+          dog,
+          user: wallet?.publicKey,
+          petsMint,
+          mintAuth,
+          userPetsAta,
+          associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc();
+      console.log("Your pet tx signature is: ", tx);
+    } catch (error) {
+      console.error('Error executing instruction', error);
+      if (error instanceof anchor.web3.SendTransactionError) {
+        console.error('Transaction logs:', error.logs);
+      }
+    }
+  };
+
+  const handleBonkInstruction = async () => {
+    try {
+      const tx = await program.methods
+        .bonk()
+        .accountsPartial({
+          dog,
+          user: wallet?.publicKey,
+          bonkMint,
+          dogBonkAta,
+          userBonkAta,
+          associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc();
+      console.log("Your bonk tx signature is: ", tx);
+    } catch (error) {
+      console.error('Error executing instruction', error);
+      if (error instanceof anchor.web3.SendTransactionError) {
+        console.error('Transaction logs:', error.logs);
+      }
+    }
+  };
 
   // Clears any existing timeout
   const clearExistingTimeout = () => {
@@ -75,12 +184,12 @@ const Dapp: React.FC = () => {
     console.log(`State changed to ${newState}`);
 
     // Show or hide bounding boxes based on the current state
-    if (["sitUp", "pet", "bonk"].includes(newState)) {
-      if (petBoxRef.current) petBoxRef.current.style.display = "block";
-      if (bonkBoxRef.current) bonkBoxRef.current.style.display = "block";
+    if (['sitUp', 'pet', 'bonk'].includes(newState)) {
+      if (petBoxRef.current) petBoxRef.current.style.display = 'block';
+      if (bonkBoxRef.current) bonkBoxRef.current.style.display = 'block';
     } else {
-      if (petBoxRef.current) petBoxRef.current.style.display = "none";
-      if (bonkBoxRef.current) bonkBoxRef.current.style.display = "none";
+      if (petBoxRef.current) petBoxRef.current.style.display = 'none';
+      if (bonkBoxRef.current) bonkBoxRef.current.style.display = 'none';
     }
 
     setIsAnimating(true);
@@ -92,18 +201,18 @@ const Dapp: React.FC = () => {
     // Timeout logic to change state if no clicks occur
     nextTimeoutRef.current = window.setTimeout(() => {
       if (!clicked) {
-        if (newState === "intro") {
-          changeState("idle");
-        } else if (newState === "sitUp") {
-          changeState("layDown");
-        } else if (newState === "pet") {
-          changeState("layDown");
-        } else if (newState === "bonk") {
-          changeState("layDown");
-        } else if (newState === "layDown") {
-          changeState("idle");
-        } else if (newState === "idle") {
-          changeState("idle");
+        if (newState === 'intro') {
+          changeState('idle');
+        } else if (newState === 'sitUp') {
+          changeState('layDown');
+        } else if (newState === 'pet') {
+          changeState('layDown');
+        } else if (newState === 'bonk') {
+          changeState('layDown');
+        } else if (newState === 'layDown') {
+          changeState('idle');
+        } else if (newState === 'idle') {
+          changeState('idle');
         }
       }
     }, states[newState].timeout);
@@ -114,37 +223,44 @@ const Dapp: React.FC = () => {
     if (isAnimating) return; // Lockout during animation
     console.log(`Image clicked during ${currentState} state`);
 
-    if (currentState === "intro") {
-      changeState("sitUp");
-    } else if (currentState === "layDown") {
-      changeState("sitUp");
-    } else if (currentState === "idle") {
-      changeState("sitUp");
+    if (currentState === 'intro') {
+      changeState('sitUp');
+    } else if (currentState === 'layDown') {
+      changeState('sitUp');
+    } else if (currentState === 'idle') {
+      changeState('sitUp');
     }
   };
 
   const handlePetBoxClick = () => {
     if (isAnimating) return; // Lockout during animation
-    if (["sitUp", "pet", "bonk"].includes(currentState)) {
+    // call pet instruction
+    handlePetInstruction();
+    if (['sitUp', 'pet', 'bonk'].includes(currentState)) {
       console.log(`Pet box clicked during ${currentState} state`);
       setClicked(true);
-      changeState("pet");
+      changeState('pet');
     }
   };
 
   const handleBonkBoxClick = () => {
     if (isAnimating) return; // Lockout during animation
-    if (["sitUp", "pet", "bonk"].includes(currentState)) {
+    // call bonk instruction
+    handleBonkInstruction();
+    if (['sitUp', 'pet', 'bonk'].includes(currentState)) {
       console.log(`Bonk box clicked during ${currentState} state`);
       setClicked(true);
-      changeState("bonk");
+      changeState('bonk');
     }
   };
 
   useEffect(() => {
-    if (dogImageRef.current) dogImageRef.current.addEventListener("click", handleDogImageClick);
-    if (petBoxRef.current) petBoxRef.current.addEventListener("click", handlePetBoxClick);
-    if (bonkBoxRef.current) bonkBoxRef.current.addEventListener("click", handleBonkBoxClick);
+    if (dogImageRef.current)
+      dogImageRef.current.addEventListener('click', handleDogImageClick);
+    if (petBoxRef.current)
+      petBoxRef.current.addEventListener('click', handlePetBoxClick);
+    if (bonkBoxRef.current)
+      bonkBoxRef.current.addEventListener('click', handleBonkBoxClick);
 
     // Call changeState function to start the state machine
     changeState(currentState);
@@ -152,9 +268,12 @@ const Dapp: React.FC = () => {
     // Cleanup event listeners on component unmount
     return () => {
       clearExistingTimeout();
-      if (dogImageRef.current) dogImageRef.current.removeEventListener("click", handleDogImageClick);
-      if (petBoxRef.current) petBoxRef.current.removeEventListener("click", handlePetBoxClick);
-      if (bonkBoxRef.current) bonkBoxRef.current.removeEventListener("click", handleBonkBoxClick);
+      if (dogImageRef.current)
+        dogImageRef.current.removeEventListener('click', handleDogImageClick);
+      if (petBoxRef.current)
+        petBoxRef.current.removeEventListener('click', handlePetBoxClick);
+      if (bonkBoxRef.current)
+        bonkBoxRef.current.removeEventListener('click', handleBonkBoxClick);
     };
   }, []); // Empty dependency array to run only once on mount
 
@@ -163,16 +282,36 @@ const Dapp: React.FC = () => {
     if (isAnimating) return; // Lockout during animation
     console.log(`Background clicked during ${currentState} state`);
 
-    if (["intro", "layDown", "idle"].includes(currentState)) {
-      changeState("sitUp");
+    if (currentState === 'intro') {
+      changeState('sitUp');
+    } else if (currentState === 'layDown') {
+      changeState('sitUp');
+    } else if (currentState === 'idle') {
+      changeState('sitUp');
     }
   };
 
   return (
     <div id="dog-container" onClick={handleBackgroundClick}>
       <img id="dog-image" ref={dogImageRef} alt="can i pet dat dog?!" />
-      <div id="pet-box" ref={petBoxRef} className="bounding-box" onClick={(e) => { e.stopPropagation(); handlePetBoxClick(); }}></div>
-      <div id="bonk-box" ref={bonkBoxRef} className="bounding-box" onClick={(e) => { e.stopPropagation(); handleBonkBoxClick(); }}></div>
+      <div
+        id="pet-box"
+        ref={petBoxRef}
+        className="bounding-box"
+        onClick={(e) => {
+          e.stopPropagation();
+          handlePetBoxClick();
+        }}
+      ></div>
+      <div
+        id="bonk-box"
+        ref={bonkBoxRef}
+        className="bounding-box"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleBonkBoxClick();
+        }}
+      ></div>
     </div>
   );
 };
