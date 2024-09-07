@@ -25,11 +25,11 @@ import { Provider } from '@project-serum/anchor';
 // Define the states
 const states = {
   intro: { file: "1-sunriseIntro.gif", timeout: 12000, duration: 2700 },
-  sitUp: { file: "2-sitUp.gif", timeout: 30000, duration: 2400 },
-  pet: { file: "3-petDog.gif", timeout: 30000, duration: 4100 },
+  sitUp: { file: "2-sitUp.gif", timeout: 30000, duration: 1000 },
+  pet: { file: "3-petDog.gif", timeout: 30000, duration: 2000 },
   layDown: { file: "4-layDown.gif", timeout: 10000, duration: 1200 },
   idle: { file: "5-idleWind.gif", timeout: 20000, duration: 1750 },
-  bonk: { file: "BONK.gif", timeout: 30000, duration: 3300 },
+  bonk: { file: "BONK.gif", timeout: 30000, duration: 2700 },
 };
 
 // Preload GIFs
