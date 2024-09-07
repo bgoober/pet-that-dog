@@ -1,3 +1,4 @@
+import React from 'react';
 import { AppLayout } from './app-layout';
 import { AppRoutes } from './app-routes';
 import { ClusterProvider } from './cluster/cluster-data-access';

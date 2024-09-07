@@ -11,7 +11,6 @@
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "files": [],
   "include": ["app/web/src/**/*"],
   "references": [
     {

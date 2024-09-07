@@ -35,7 +35,7 @@ export const useProgram = ({ connection, wallet }: ProgramProps) => {
         preflightCommitment: "recent",
         commitment: "processed",
       });
-      const program = new anchor.Program(idl as anchor.Idl, provider, programID);
+      const program = new anchor.Program(idl as anchor.Idl, provider);
       setProgram(program);
     }
   }, [connection, wallet]);

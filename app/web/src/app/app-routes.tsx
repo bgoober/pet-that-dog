@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link, Navigate, useRoutes } from 'react-router-dom';
 
 export function AppRoutes() {

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import * as anchor from "@coral-xyz/anchor";
 import { Program, web3 } from "@coral-xyz/anchor";
-import { PetDatDog } from "../utils/pet_dat_dog";
+import { PetDatDog } from "../utils/_";
 
 import {
   TOKEN_PROGRAM_ID,

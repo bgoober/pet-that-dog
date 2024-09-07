@@ -9,6 +9,7 @@ import {
 } from '@solana/wallet-adapter-react-ui';
 import { ReactNode, useCallback, useMemo } from 'react';
 import { useCluster } from '../cluster/cluster-data-access';
+import React from 'react';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 

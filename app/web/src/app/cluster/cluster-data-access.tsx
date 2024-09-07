@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 
 import { clusterApiUrl } from '@solana/web3.js';
 

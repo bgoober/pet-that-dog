@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import Dapp from './dapp'; // Import the Dapp component
 
 import { Link } from 'react-router-dom';
+import React from 'react';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   return (
