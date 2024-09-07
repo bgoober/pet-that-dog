@@ -24,12 +24,12 @@ import { Provider } from '@project-serum/anchor';
 
 // Define the states
 const states = {
-  intro: { file: '1-sunriseIntro.gif', timeout: 12000, duration: 4000 },
-  sitUp: { file: '2-sitUp.gif', timeout: 12000, duration: 2500 },
-  pet: { file: '3-petDog.gif', timeout: 12000, duration: 5000 },
-  layDown: { file: '4-layDown.gif', timeout: 10000, duration: 1500 },
-  idle: { file: '5-idleWind.gif', timeout: 20000, duration: 1750 },
-  bonk: { file: 'BONK.gif', timeout: 10000, duration: 3300 },
+  intro: { file: "1-sunriseIntro.gif", timeout: 12000, duration: 2700 },
+  sitUp: { file: "2-sitUp.gif", timeout: 12000, duration: 2400 },
+  pet: { file: "3-petDog.gif", timeout: 12000, duration: 4100 },
+  layDown: { file: "4-layDown.gif", timeout: 10000, duration: 1200 },
+  idle: { file: "5-idleWind.gif", timeout: 20000, duration: 1750 },
+  bonk: { file: "BONK.gif", timeout: 10000, duration: 3300 },
 };
 
 // Preload GIFs
@@ -297,7 +297,7 @@ const Dapp: React.FC = () => {
 
   return (
     <div id="dog-container" onClick={handleBackgroundClick}>
-      <img id="dog-image" ref={dogImageRef} alt="can i pet dat dog?!" />
+      <img id="dog-image" ref={dogImageRef} alt="can I pet dat dog?!" />
       <div
         id="pet-box"
         ref={petBoxRef}
