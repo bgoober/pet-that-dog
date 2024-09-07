@@ -40,11 +40,8 @@ Object.values(states).forEach((state) => {
   images[state.file] = img;
 });
 
-const house = new PublicKey('4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp');
-
 const Dapp: React.FC = () => {
-  const [currentState, setCurrentState] =
-    useState<keyof typeof states>('intro');
+  const [currentState, setCurrentState] = useState<keyof typeof states>('intro');
   const [isAnimating, setIsAnimating] = useState(false);
   const [clicked, setClicked] = useState(false);
   const dogImageRef = useRef<HTMLImageElement>(null);
@@ -55,16 +52,20 @@ const Dapp: React.FC = () => {
   const wallet = useAnchorWallet();
   const { connection } = useConnection(); // Extract the connection object
 
-  // Create Anchor provider
-  const provider = new anchor.AnchorProvider(connection, wallet!, {
-    preflightCommitment: 'processed',
-    commitment: 'processed',
-  });
+  // Create Anchor provider if wallet is connected
+  const provider = wallet
+    ? new anchor.AnchorProvider(connection, wallet, {
+        preflightCommitment: 'processed',
+        commitment: 'processed',
+      })
+    : null;
 
-  // Create program instance
-  const programID = new PublicKey(idl.address);
-  const program = new anchor.Program(idl as anchor.Idl, provider);
+  // Create program instance if provider is available
+  const program = provider
+    ? new anchor.Program(idl as anchor.Idl, provider)
+    : null;
 
+  let house = new PublicKey('4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp');
 
   let bonkMint: anchor.web3.PublicKey;
   let dogBonkAta: anchor.web3.PublicKey;
@@ -73,47 +74,53 @@ const Dapp: React.FC = () => {
 
   let petsMint = PublicKey.findProgramAddressSync(
     [Buffer.from("pets"), house.toBuffer()],
-    program.programId
+    program?.programId || PublicKey.default
   )[0];
-  console.log("PETS Mint: ", petsMint.toBase58());
+  // console.log("PETS Mint: ", petsMint.toBase58());
 
   let mintAuth = PublicKey.findProgramAddressSync(
     [Buffer.from("auth"), house.toBuffer()],
-    program.programId
+    program?.programId || PublicKey.default
   )[0];
-  console.log("PETS Mint Auth: ", mintAuth.toBase58());
+  // console.log("PETS Mint Auth: ", mintAuth.toBase58());
 
   const dogName = ["Max"];
-  const [dog] = web3.PublicKey.findProgramAddressSync(
+  const [dog] = PublicKey.findProgramAddressSync(
     [Buffer.from("dog"), Buffer.from(dogName.toString())],
-    program.programId
+    program?.programId || PublicKey.default
   );
-  console.log("Dog account: ", dog.toBase58());
+  // console.log("Dog account: ", dog.toBase58());
 
-  const [dogAuth] = web3.PublicKey.findProgramAddressSync(
+  const [dogAuth] = PublicKey.findProgramAddressSync(
     [Buffer.from("auth"), dog.toBuffer()],
-    program.programId
+    program?.programId || PublicKey.default
   );
-  console.log("Dog Auth account: ", dogAuth.toBase58());
+  // console.log("Dog Auth account: ", dogAuth.toBase58());
 
-  bonkMint = new PublicKey('5Lp6Z55iWvnvrXCCu89AhyfBwctRb2dDKmtSRf7hzAuJ');
+  bonkMint = new PublicKey('5XdaS9PKe1WNa6hjJfQXdfLXvE5X42h9amcY7SYuJnuh');
 
   dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
-  console.log("dogBonkAta account: ", dogBonkAta.toBase58());
+  // console.log("dogBonkAta account: ", dogBonkAta.toBase58());
 
-  userPetsAta = getAssociatedTokenAddressSync(petsMint, provider.wallet.publicKey);
-  console.log("User petsAta account: ", userPetsAta.toBase58());
+  userPetsAta = wallet
+    ? getAssociatedTokenAddressSync(petsMint, wallet.publicKey)
+    : PublicKey.default;
+  // console.log("User petsAta account: ", userPetsAta.toBase58());
 
-  userBonkAta = getAssociatedTokenAddressSync(bonkMint, provider.wallet.publicKey);
-  console.log("User bonkAta account: ", userBonkAta.toBase58());
+  userBonkAta = wallet
+    ? getAssociatedTokenAddressSync(bonkMint, wallet.publicKey)
+    : PublicKey.default;
+  // console.log("User bonkAta account: ", userBonkAta.toBase58());
 
   const handlePetInstruction = async () => {
+    if (!program || !wallet) return;
     try {
       const tx = await program.methods
         .pet()
         .accountsPartial({
+          house,
           dog,
-          user: wallet?.publicKey,
+          user: wallet.publicKey,
           petsMint,
           mintAuth,
           userPetsAta,
@@ -121,23 +128,22 @@ const Dapp: React.FC = () => {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .rpc();
+        .rpc()
+        .then(confirm);
       console.log("Your pet tx signature is: ", tx);
     } catch (error) {
       console.error('Error executing instruction', error);
-      if (error instanceof anchor.web3.SendTransactionError) {
-        console.error('Transaction logs:', error.logs);
-      }
     }
   };
 
   const handleBonkInstruction = async () => {
+    if (!program || !wallet) return;
     try {
       const tx = await program.methods
         .bonk()
         .accountsPartial({
           dog,
-          user: wallet?.publicKey,
+          user: wallet.publicKey,
           bonkMint,
           dogBonkAta,
           userBonkAta,
@@ -145,13 +151,11 @@ const Dapp: React.FC = () => {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .rpc();
+        .rpc()
+        .then(confirm);
       console.log("Your bonk tx signature is: ", tx);
     } catch (error) {
       console.error('Error executing instruction', error);
-      if (error instanceof anchor.web3.SendTransactionError) {
-        console.error('Transaction logs:', error.logs);
-      }
     }
   };
 
@@ -275,7 +279,7 @@ const Dapp: React.FC = () => {
       if (bonkBoxRef.current)
         bonkBoxRef.current.removeEventListener('click', handleBonkBoxClick);
     };
-  }, []); // Empty dependency array to run only once on mount
+  }, [wallet, connection]); // Ensure hooks are called consistently
 
   // Global click handler
   const handleBackgroundClick = () => {
