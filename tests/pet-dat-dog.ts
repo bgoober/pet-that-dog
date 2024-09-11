@@ -10,6 +10,7 @@ import {
 } from "@solana/spl-token";
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import wallet from "/home/agent/.config/solana/id.json";
+import wallet2 from "../wallet.json";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
 import { publicKey, token } from "@coral-xyz/anchor/dist/cjs/utils";
 
@@ -19,6 +20,7 @@ describe("pet-dat-dog", () => {
   const program = anchor.workspace.PetDatDog as Program<PetDatDog>;
   const connection = provider.connection;
   const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
+  const player2 = Keypair.fromSecretKey(new Uint8Array(wallet2));
 
   const confirm = async (signature: string): Promise<string> => {
     const block = await connection.getLatestBlockhash();
@@ -96,6 +98,14 @@ describe("pet-dat-dog", () => {
     // Verify userBonkAta creation
     if (!userBonkAta) throw new Error("Failed to create or get userBonkAta");
 
+    // player2 bonk ata
+    const player2BonkAtaResult = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      keypair,
+      bonkMint,
+      player2.publicKey
+    );
+
     await mintTo(
       provider.connection,
       keypair,
@@ -105,6 +115,16 @@ describe("pet-dat-dog", () => {
       1_000_000_000
     );
     console.log("User bonkAta account: ", userBonkAta.toBase58());
+
+    // mint bonk to player2
+    await mintTo(
+      provider.connection,
+      keypair,
+      bonkMint,
+      player2BonkAtaResult.address,
+      keypair,
+      1_000_000_000
+    );
 
     // devnet wallet bonk ata + mint to bonk ata
     const devnetwalletBonkAtaResult = await getOrCreateAssociatedTokenAccount(
