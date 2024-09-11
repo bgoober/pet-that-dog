@@ -11,7 +11,7 @@ import {
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import wallet from "/home/agent/.config/solana/id.json";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
-import { token } from "@coral-xyz/anchor/dist/cjs/utils";
+import { publicKey, token } from "@coral-xyz/anchor/dist/cjs/utils";
 
 describe("pet-dat-dog", () => {
   const provider = anchor.AnchorProvider.env();
@@ -155,11 +155,14 @@ describe("pet-dat-dog", () => {
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your pet tx signature is: ", txHash);
+    console.log("Your init global tx signature is: ", txHash);
     if (!txHash) throw new Error("Failed to initialize.");
   });
 
   it(`Dog created - ${dogName}`, async () => {
+    
+    let global = new PublicKey("EPEcGyW9uxqbMBkAmFcNZ37iCLFYhmAzzZviJ8jmYeSV")
+
     console.log("test1");
     const txHash = await program.methods
       .createDog(dogName.toString())
@@ -169,6 +172,8 @@ describe("pet-dat-dog", () => {
         dogAuth,
         bonkMint,
         dogBonkAta,
+        house: keypair.publicKey, // defined by the local wallet now, but will need to be derived later
+        global,
         tokenProgram: TOKEN_PROGRAM_ID,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
@@ -176,17 +181,21 @@ describe("pet-dat-dog", () => {
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your pet tx signature is: ", txHash);
+    console.log("Your create dog tx signature is: ", txHash);
     if (!txHash) throw new Error("Failed to initialize.");
   });
 
   it(`Is pet! - ${dogName}`, async () => {
+
+    // 
+
     const tx = await program.methods
       .pet()
       .accountsPartial({
         house: keypair.publicKey,
         dog,
         user,
+        owner: keypair.publicKey,
         petsMint,
         mintAuth,
         userPetsAta: userPetsAta,

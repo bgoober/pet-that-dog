@@ -10,8 +10,6 @@ use anchor_spl::{
 
 use crate::state::*;
 
-// const ADMIN: Pubkey = pubkey!("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp");
-
 // this is the main net $BONK Mint address
 // const BONK_MINT: Pubkey = pubkey!("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263");
 
@@ -129,6 +127,13 @@ pub struct DogC<'info> {
     )]
     pub dog_auth: UncheckedAccount<'info>,
 
+    /// CHECK: this is the signer of the GlobalC context
+    #[account(mut, constraint = house.key() == global.house.key())]
+    pub house: UncheckedAccount<'info>,
+
+    #[account(mut, seeds = [b"global", house.key().as_ref()], bump = global.global_bump)]
+    pub global: Account<'info, Global>,
+
     //bonk mint
     // #[account(address = BONK_MINT)]
     pub bonk_mint: Account<'info, Mint>,
@@ -152,6 +157,16 @@ impl<'info> DogC<'info> {
             dog_bump: bumps.dog,
             auth_bump: bumps.dog_auth,
         });
+
+        let cpi_accounts = Transfer {
+            from: self.owner.to_account_info(),
+            to: self.house.to_account_info(),
+        };
+
+        let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
+
+        transfer(ctx, 100_000_000)?; // this is equal to 100M lamports, or 0.1 SOL. 1M pets would repay this fee. A competition to the first 1M pets would be fun.
+
         Ok(())
     }
 }
@@ -162,8 +177,12 @@ pub struct PetC<'info> {
     pub signer: Signer<'info>,
 
     /// CHECK: this is the signer of the GlobalC context
-    #[account(mut)]
+    #[account(mut, constraint = house.key() == global.house.key())]
     pub house: UncheckedAccount<'info>,
+
+    /// CHECK: this is the signer of the GlobalC context
+    #[account(mut, constraint = owner.key() == dog.owner.key())]
+    pub owner: UncheckedAccount<'info>,
 
     #[account(mut, seeds = [b"global", house.key().as_ref()], bump = global.global_bump)]
     pub global: Account<'info, Global>,
@@ -225,15 +244,14 @@ impl<'info> PetC<'info> {
 
         msg!("User's last pet: {}", self.user.last_pet);
 
-        // create a cpi transfer from the user's bonk ata to the dog's bonk ata for 1 $BONK token
         let cpi_accounts = Transfer {
             from: self.signer.to_account_info(),
-            to: self.house.to_account_info(),
+            to: self.owner.to_account_info(),
         };
 
         let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
 
-        transfer(ctx, 100_000)?; // this is equal to 0.0001 SOL. This means for every 10,000 pets, the House will make 1 SOL.
+        transfer(ctx, 100_000)?; // this is equal 0.0001 SOL. 1000 pets would repay the dog creation for for the owner. It seems to be the minimum SOL you can transfer without incurring a fee from the recipient.
 
         Ok(())
     }

@@ -72,6 +72,7 @@ describe("pet-dat-dog", () => {
         house: keypair.publicKey,
         dog,
         user,
+        owner: keypair.publicKey,
         petsMint,
         mintAuth,
         userPetsAta: userPetsAta,
