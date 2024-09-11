@@ -202,6 +202,11 @@ describe("pet-dat-dog", () => {
     // player2 bonk ata
     let userBonkAta = getAssociatedTokenAddressSync(bonkMint, player2.publicKey);
 
+    let user = PublicKey.findProgramAddressSync(
+      [player2.publicKey.toBuffer()],
+      program.programId
+    )[0];
+
     const tx = await program.methods
       .bonk()
       .accountsPartial({
@@ -224,6 +229,8 @@ describe("pet-dat-dog", () => {
 
   it(`Fetches dog state - ${dog2Name}`, async () => {
     const dog2Account = await program.account.dog.fetch(dog2);
+    // log dog2 account
+    console.log(`${dog2Name} account : `, dog2.toBase58());
 
     console.log(`${dog2Name}'s pets: `, dog2Account.pets.toString());
     console.log(`${dog2Name}'s bonks:`, dog2Account.bonks.toString());
