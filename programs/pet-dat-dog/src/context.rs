@@ -23,7 +23,7 @@ pub struct GlobalC<'info> {
     #[account(init, payer = house, seeds = [b"global", house.key().as_ref()], space = Global::LEN, bump)]
     pub global: Account<'info, Global>,
 
-    #[account(init, payer = house, seeds = [b"pets", house.key().as_ref()], mint::decimals=0, mint::authority = mint_auth, bump)]
+    #[account(init, payer = house, seeds = [b"pets", house.key().as_ref()], mint::decimals=5, mint::authority = mint_auth, bump)]
     pub pets_mint: Account<'info, Mint>,
 
     /// CHECK: this is safe
@@ -165,8 +165,7 @@ impl<'info> DogC<'info> {
 
         let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
 
-        transfer(ctx, 100_000_000)?; // this is equal to 100M lamports, or 0.1 SOL. 1M pets would repay this fee. A competition to the first 1M pets would be fun.
-
+        transfer(ctx, 10_000_000)?; // this is equal to 10M lamports, or 0.01 SOL.
         Ok(())
     }
 }
@@ -233,7 +232,7 @@ impl<'info> PetC<'info> {
             cpi_accounts,
             signer_seeds,
         );
-        mint_to(ctx, 1)?;
+        mint_to(ctx, 100_000)?;
 
         self.dog.pets += 1;
 
@@ -251,7 +250,7 @@ impl<'info> PetC<'info> {
 
         let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
 
-        transfer(ctx, 100_000)?; // this is equal 0.0001 SOL. 1000 pets would repay the dog creation for for the owner. It seems to be the minimum SOL you can transfer without incurring a fee from the recipient.
+        transfer(ctx, 1)?; // this is equal 1x10^-9 SOL. 10M pets would repay the dog creation for for the owner.
 
         Ok(())
     }

@@ -27,11 +27,11 @@ describe("pet-dat-dog", () => {
   const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
   const player2 = Keypair.fromSecretKey(new Uint8Array(wallet2));
 
-  const confirm = async (signature: string): Promise<string> => {
-    const block = await connection.getLatestBlockhash();
-    await connection.confirmTransaction({ signature, ...block });
-    return signature;
-  };
+  // const confirm = async (signature: string): Promise<string> => {
+  //   const block = await connection.getLatestBlockhash();
+  //   await connection.confirmTransaction({ signature, ...block });
+  //   return signature;
+  // };
 
   const log = async (signature: string): Promise<string> => {
     console.log(signature);
@@ -96,7 +96,7 @@ describe("pet-dat-dog", () => {
   );
   console.log("Dog Auth account: ", dog2Auth.toBase58());
 
-  let bonkMint = new PublicKey("BbTA42aqNAwn6YMa515xqeSUEHq37ZNofrUa81d4rczq");
+  let bonkMint = new PublicKey("B7W6Jjc6xe9QsBoqS6vyeB9p9uY1N6EYooQx5H8NP7Z2");
 
   let dog2BonkAta = getAssociatedTokenAddressSync(bonkMint, dog2Auth, true);
   console.log("dogBonkAta account: ", dog2BonkAta.toBase58());
@@ -119,7 +119,7 @@ describe("pet-dat-dog", () => {
       })
       .signers([player2])
       .rpc()
-      .then(confirm)
+      .then()
       .then(log);
     console.log("Your pet tx signature is: ", tx);
   });
@@ -191,7 +191,7 @@ describe("pet-dat-dog", () => {
       })
       // .signers()
       .rpc()
-      .then(confirm)
+      .then()
       .then(log);
     console.log("Your pet tx signature is: ", tx);
   });
@@ -222,7 +222,7 @@ describe("pet-dat-dog", () => {
       })
       .signers([player2])
       .rpc()
-      .then(confirm)
+      .then()
       .then(log);
     console.log("Your bonk tx signature is: ", tx);
   });
