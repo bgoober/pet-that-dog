@@ -96,7 +96,7 @@ describe("pet-dat-dog", () => {
   );
   console.log("Dog Auth account: ", dog2Auth.toBase58());
 
-  let bonkMint = new PublicKey("B7W6Jjc6xe9QsBoqS6vyeB9p9uY1N6EYooQx5H8NP7Z2");
+  let bonkMint = new PublicKey("BdsbaX2DsSzyiEzP5NzbuPDfzu2HH9qvgCz8aTYmk6Cr");
 
   let dog2BonkAta = getAssociatedTokenAddressSync(bonkMint, dog2Auth, true);
   console.log("dogBonkAta account: ", dog2BonkAta.toBase58());
@@ -132,23 +132,23 @@ describe("pet-dat-dog", () => {
   });
 
   it(`Dog created - ${dog2Name}`, async () => {
-    let global = new PublicKey("EPEcGyW9uxqbMBkAmFcNZ37iCLFYhmAzzZviJ8jmYeSV");
+    // let global = new PublicKey("EPEcGyW9uxqbMBkAmFcNZ37iCLFYhmAzzZviJ8jmYeSV");
 
-    const dog2Name = ["Petey"];
-    const [dog2] = web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("dog"), Buffer.from(dog2Name.toString()), player2.publicKey.toBuffer()],
-      program.programId
-    );
-    console.log("Dog account: ", dog2.toBase58());
+    // const dog2Name = ["Petey"];
+    // const [dog2] = web3.PublicKey.findProgramAddressSync(
+    //   [Buffer.from("dog"), Buffer.from(dog2Name.toString()), player2.publicKey.toBuffer()],
+    //   program.programId
+    // );
+    // console.log("Dog account: ", dog2.toBase58());
 
-    const [dog2Auth] = web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("auth"), dog2.toBuffer()],
-      program.programId
-    );
-    console.log("Dog Auth account: ", dog2Auth.toBase58());
+    // const [dog2Auth] = web3.PublicKey.findProgramAddressSync(
+    //   [Buffer.from("auth"), dog2.toBuffer()],
+    //   program.programId
+    // );
+    // console.log("Dog Auth account: ", dog2Auth.toBase58());
 
-    let dog2BonkAta = getAssociatedTokenAddressSync(bonkMint, dog2Auth, true);
-    console.log("dogBonkAta account: ", dog2BonkAta.toBase58());
+    // let dog2BonkAta = getAssociatedTokenAddressSync(bonkMint, dog2Auth, true);
+    // console.log("dogBonkAta account: ", dog2BonkAta.toBase58());
 
     // console.log("test1");
     // const txHash = await program.methods
@@ -167,7 +167,7 @@ describe("pet-dat-dog", () => {
     //   })
     //   .signers([player2])
     //   .rpc()
-    //   .then(confirm)
+    //   .then()
     //   .then(log);
     // console.log("Your create dog tx signature is: ", txHash);
     // if (!txHash) throw new Error("Failed to initialize.");
@@ -180,7 +180,7 @@ describe("pet-dat-dog", () => {
         signer: keypair.publicKey,
         house: keypair.publicKey,
         dog: dog2,
-        user: user2,
+        user: user2, // user2 is keypair here
         owner: player2.publicKey,
         petsMint,
         mintAuth,
@@ -189,7 +189,7 @@ describe("pet-dat-dog", () => {
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
       })
-      // .signers()
+      .signers([keypair])
       .rpc()
       .then()
       .then(log);

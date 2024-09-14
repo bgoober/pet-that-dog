@@ -191,7 +191,7 @@ pub struct PetC<'info> {
     #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
     pub user: Account<'info, User>,
 
-    #[account(mut, seeds = [b"dog", dog.name.as_ref()], bump = dog.dog_bump)]
+    #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
 
     #[account(mut, seeds = [b"pets", house.key().as_ref()], bump = global.mint_bump)]
@@ -266,7 +266,7 @@ pub struct BonkC<'info> {
     #[account(mut, seeds = [signer.key().as_ref()], bump)]
     pub user: Account<'info, User>,
 
-    #[account(mut, seeds = [b"dog", dog.name.as_ref()], bump = dog.dog_bump)]
+    #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
 
     //bonk mint
