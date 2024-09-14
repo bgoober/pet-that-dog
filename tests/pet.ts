@@ -46,7 +46,7 @@ describe("pet-dat-dog", () => {
 
   const dogName = ["Max"];
   const [dog] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("dog"), Buffer.from(dogName.toString())],
+    [Buffer.from("dog"), Buffer.from(dogName.toString()), keypair.publicKey.toBuffer()],
     program.programId
   );
   console.log("Dog account: ", dog.toBase58());
