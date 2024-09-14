@@ -13,6 +13,8 @@ use crate::state::*;
 // this is the main net $BONK Mint address
 // const BONK_MINT: Pubkey = pubkey!("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263");
 
+// pub const ADMIN: Pubkey = pubkey!("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp");
+
 /// DOCS: GlobalC now inits a global PETS token mint, to be used during any PetC context for any dog.
 /// There is now 1 token for ALL dogs made within the program, by any user.
 #[derive(Accounts)]
@@ -117,7 +119,7 @@ pub struct DogC<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
 
-    #[account(init, payer = owner, seeds = [b"dog", name.as_str().as_bytes()], space = Dog::LEN, bump)]
+    #[account(init, payer = owner, seeds = [b"dog", name.as_str().as_bytes(), owner.key().as_ref()], space = Dog::LEN, bump)]
     pub dog: Account<'info, Dog>,
 
     /// CHECK: this is safe
