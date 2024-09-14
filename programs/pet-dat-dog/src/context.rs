@@ -1,4 +1,5 @@
 use anchor_lang::{prelude::*, system_program::{transfer, Transfer}};
+use std::str::FromStr;
 use anchor_spl::{
     associated_token::AssociatedToken,
     metadata::{
@@ -8,18 +9,18 @@ use anchor_spl::{
     token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked},
 };
 
+const ADMIN: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";   
+
 use crate::state::*;
 
 // this is the main net $BONK Mint address
-// const BONK_MINT: Pubkey = pubkey!("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263");
-
-// pub const ADMIN: Pubkey = pubkey!("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp");
+// const BONK_MINT: &str = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";   
 
 /// DOCS: GlobalC now inits a global PETS token mint, to be used during any PetC context for any dog.
 /// There is now 1 token for ALL dogs made within the program, by any user.
 #[derive(Accounts)]
 pub struct GlobalC<'info> {
-    #[account(mut)]
+    #[account(mut, constraint = house.key() == Pubkey::from_str(ADMIN).unwrap())]
     pub house: Signer<'info>,
 
     #[account(init, payer = house, seeds = [b"global", house.key().as_ref()], space = Global::LEN, bump)]
