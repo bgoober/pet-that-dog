@@ -26,12 +26,12 @@ pub struct GlobalC<'info> {
     #[account(init, payer = house, seeds = [b"global", house.key().as_ref()], space = Global::LEN, bump)]
     pub global: Account<'info, Global>,
 
-    #[account(init, payer = house, seeds = [b"pets", house.key().as_ref()], mint::decimals=5, mint::authority = mint_auth, bump)]
+    #[account(init, payer = house, seeds = [b"pets"], mint::decimals=5, mint::authority = mint_auth, bump)]
     pub pets_mint: Account<'info, Mint>,
 
     /// CHECK: this is safe
     #[account(
-        seeds = [b"auth", house.key().as_ref()],
+        seeds = [b"auth"],
         bump
     )]
     pub mint_auth: UncheckedAccount<'info>,
@@ -72,7 +72,6 @@ impl<'info> GlobalC<'info> {
 
         let seeds = &[
             &b"auth"[..],
-            &self.house.key().to_bytes()[..],
             &[self.global.auth_bump],
         ];
         let signer_seeds = &[&seeds[..]];
@@ -195,12 +194,12 @@ pub struct PetC<'info> {
     #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
 
-    #[account(mut, seeds = [b"pets", house.key().as_ref()], bump = global.mint_bump)]
+    #[account(mut, seeds = [b"pets"], bump = global.mint_bump)]
     pub pets_mint: Account<'info, Mint>,
 
     /// CHECK: this is safe, it is the mint_auth from the GlobalC context
     #[account(
-        seeds = [b"auth", house.key().as_ref()],
+        seeds = [b"auth"],
         bump = global.auth_bump
     )]
     pub mint_auth: UncheckedAccount<'info>,
@@ -225,7 +224,6 @@ impl<'info> PetC<'info> {
         };
         let seeds = &[
             &b"auth"[..],
-            &self.house.key().to_bytes()[..],
             &[self.global.auth_bump],
         ];
         let signer_seeds = &[&seeds[..]];

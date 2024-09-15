@@ -10,7 +10,7 @@ import {
 } from "@solana/spl-token";
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 // use my local keypair for signing
-import wallet from "/home/agent/.config/solana/id.json";
+// import wallet from "/home/agent/.config/solana/id.json";
 import wallet2 from "../wallet.json";
 import { publicKey } from "@coral-xyz/anchor/dist/cjs/utils";
 
@@ -24,7 +24,7 @@ describe("pet-dat-dog", () => {
   anchor.setProvider(provider);
   const program = anchor.workspace.PetDatDog as Program<PetDatDog>;
   const connection = provider.connection;
-  const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
+  // const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
   const player2 = Keypair.fromSecretKey(new Uint8Array(wallet2));
 
   // const confirm = async (signature: string): Promise<string> => {
@@ -32,6 +32,11 @@ describe("pet-dat-dog", () => {
   //   await connection.confirmTransaction({ signature, ...block });
   //   return signature;
   // };
+
+
+  const ADMIN = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";   
+  const adminPublicKey = new PublicKey(ADMIN);
+
 
   const log = async (signature: string): Promise<string> => {
     console.log(signature);
@@ -54,7 +59,7 @@ describe("pet-dat-dog", () => {
 
   const dogName = ["Max"];
   const [dog] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("dog"), Buffer.from(dogName.toString()), keypair.publicKey.toBuffer()],
+    [Buffer.from("dog"), Buffer.from(dogName.toString()), adminPublicKey.toBuffer()],
     program.programId
   );
   console.log("Dog account: ", dog.toBase58());
@@ -70,13 +75,13 @@ describe("pet-dat-dog", () => {
     program.programId
   )[0];
 
-  let user2 = PublicKey.findProgramAddressSync(
-    [keypair.publicKey.toBuffer()],
-    program.programId
-  )[0];
+  // let user2 = PublicKey.findProgramAddressSync(
+  //   [keypair.publicKey.toBuffer()],
+  //   program.programId
+  // )[0];
 
-  let user2petsAta = getAssociatedTokenAddressSync(petsMint, keypair.publicKey); 
-  console.log("User2 main keypair petsAta account: ", user2petsAta.toBase58());
+  // let user2petsAta = getAssociatedTokenAddressSync(petsMint, keypair.publicKey); 
+  // console.log("User2 main keypair petsAta account: ", user2petsAta.toBase58());
 
   userPetsAta = getAssociatedTokenAddressSync(petsMint, player2.publicKey);
   console.log("User petsAta account: ", userPetsAta.toBase58());
@@ -96,7 +101,7 @@ describe("pet-dat-dog", () => {
   );
   console.log("Dog Auth account: ", dog2Auth.toBase58());
 
-  let bonkMint = new PublicKey("HFHTY4nSbvV8Cntd1ec1QPPsmXRYGQYuTVtw6hhAbK6h");
+  let bonkMint = new PublicKey("ExeYQZSYvgs5vbst715RXdpfgzkYwLNnycZiR4PBcKyc");
 
   let dog2BonkAta = getAssociatedTokenAddressSync(bonkMint, dog2Auth, true);
   console.log("dogBonkAta account: ", dog2BonkAta.toBase58());
@@ -106,10 +111,10 @@ describe("pet-dat-dog", () => {
       .pet()
       .accountsPartial({
         signer: player2.publicKey,
-        house: keypair.publicKey,
+        house: adminPublicKey,
         dog,
         user,
-        owner: keypair.publicKey,
+        owner: adminPublicKey,
         petsMint,
         mintAuth,
         userPetsAta: userPetsAta,
@@ -132,70 +137,70 @@ describe("pet-dat-dog", () => {
   });
 
   it(`Dog created - ${dog2Name}`, async () => {
-    // let global = new PublicKey("EPEcGyW9uxqbMBkAmFcNZ37iCLFYhmAzzZviJ8jmYeSV");
+    let global = new PublicKey("EPEcGyW9uxqbMBkAmFcNZ37iCLFYhmAzzZviJ8jmYeSV");
 
-    // const dog2Name = ["Petey"];
-    // const [dog2] = web3.PublicKey.findProgramAddressSync(
-    //   [Buffer.from("dog"), Buffer.from(dog2Name.toString()), player2.publicKey.toBuffer()],
-    //   program.programId
-    // );
-    // console.log("Dog account: ", dog2.toBase58());
+    const dog2Name = ["Petey"];
+    const [dog2] = web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("dog"), Buffer.from(dog2Name.toString()), player2.publicKey.toBuffer()],
+      program.programId
+    );
+    console.log("Dog account: ", dog2.toBase58());
 
-    // const [dog2Auth] = web3.PublicKey.findProgramAddressSync(
-    //   [Buffer.from("auth"), dog2.toBuffer()],
-    //   program.programId
-    // );
-    // console.log("Dog Auth account: ", dog2Auth.toBase58());
+    const [dog2Auth] = web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("auth"), dog2.toBuffer()],
+      program.programId
+    );
+    console.log("Dog Auth account: ", dog2Auth.toBase58());
 
-    // let dog2BonkAta = getAssociatedTokenAddressSync(bonkMint, dog2Auth, true);
-    // console.log("dogBonkAta account: ", dog2BonkAta.toBase58());
+    let dog2BonkAta = getAssociatedTokenAddressSync(bonkMint, dog2Auth, true);
+    console.log("dogBonkAta account: ", dog2BonkAta.toBase58());
 
-    // console.log("test1");
-    // const txHash = await program.methods
-    //   .createDog(dog2Name.toString())
-    //   .accountsPartial({
-      //   signer: player2.publicKey,
-    //     dog: dog2,
-    //     owner: player2.publicKey,
-    //     dogAuth: dog2Auth,
-    //     bonkMint,
-    //     dogBonkAta: dog2BonkAta,
-    //     house: keypair.publicKey, // defined by the local wallet now, but will need to be derived later
-    //     global,
-    //     tokenProgram: TOKEN_PROGRAM_ID,
-    //     associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
-    //     systemProgram: SystemProgram.programId,
-    //   })
-    //   .signers([player2])
-    //   .rpc()
-    //   .then()
-    //   .then(log);
-    // console.log("Your create dog tx signature is: ", txHash);
-    // if (!txHash) throw new Error("Failed to initialize.");
-  });
-
-  it(`Is pet! - ${dog2Name}`, async () => {
-    const tx = await program.methods
-      .pet()
+    console.log("test1");
+    const txHash = await program.methods
+      .createDog(dog2Name.toString())
       .accountsPartial({
-        signer: keypair.publicKey,
-        house: keypair.publicKey,
+        // signer: player2.publicKey,
         dog: dog2,
-        user: user2, // user2 is keypair here
         owner: player2.publicKey,
-        petsMint,
-        mintAuth,
-        userPetsAta: user2petsAta,
-        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        dogAuth: dog2Auth,
+        bonkMint,
+        dogBonkAta: dog2BonkAta,
+        house: adminPublicKey, // defined by the local wallet now, but will need to be derived later
+        global,
         tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
       })
-      .signers([keypair])
+      .signers([player2])
       .rpc()
       .then()
       .then(log);
-    console.log("Your pet tx signature is: ", tx);
+    console.log("Your create dog tx signature is: ", txHash);
+    if (!txHash) throw new Error("Failed to initialize.");
   });
+
+  // it(`Is pet! - ${dog2Name}`, async () => {
+  //   const tx = await program.methods
+  //     .pet()
+  //     .accountsPartial({
+  //       signer: keypair.publicKey,
+  //       house: keypair.publicKey,
+  //       dog: dog2,
+  //       user: user2, // user2 is keypair here
+  //       owner: player2.publicKey,
+  //       petsMint,
+  //       mintAuth,
+  //       userPetsAta: user2petsAta,
+  //       associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+  //       tokenProgram: TOKEN_PROGRAM_ID,
+  //       systemProgram: SystemProgram.programId,
+  //     })
+  //     .signers([keypair])
+  //     .rpc()
+  //     .then()
+  //     .then(log);
+  //   console.log("Your pet tx signature is: ", tx);
+  // });
 
   // bonk dog2
   it(`Is bonked! - ${dog2Name}`, async () => {

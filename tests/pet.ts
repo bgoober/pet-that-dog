@@ -33,13 +33,13 @@ describe("pet-dat-dog", () => {
   let userPetsAta: anchor.web3.PublicKey
 
   let petsMint = PublicKey.findProgramAddressSync(
-    [Buffer.from("pets"), keypair.publicKey.toBuffer()],
+    [Buffer.from("pets")],
     program.programId
   )[0];
   console.log("PETS Mint: ", petsMint.toBase58());
 
   let mintAuth = PublicKey.findProgramAddressSync(
-    [Buffer.from("auth"), keypair.publicKey.toBuffer()],
+    [Buffer.from("auth")],
     program.programId
   )[0];
   console.log("PETS Mint Auth: ", mintAuth.toBase58());
@@ -69,6 +69,7 @@ describe("pet-dat-dog", () => {
     const tx = await program.methods
       .pet()
       .accountsPartial({
+        signer: keypair.publicKey,
         house: keypair.publicKey,
         dog,
         user,

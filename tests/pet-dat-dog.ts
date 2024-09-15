@@ -39,23 +39,29 @@ describe("pet-dat-dog", () => {
   let userBonkAta: anchor.web3.PublicKey;
   let devuserBonkAta: anchor.web3.PublicKey;
 
-  const DEVNETWALLET = new PublicKey("J4JHaaMFpo8oPKB5DoHh7YZxXLdzkqvkLnMUQiSD3NrF");
+  const DEVNETWALLET = new PublicKey(
+    "J4JHaaMFpo8oPKB5DoHh7YZxXLdzkqvkLnMUQiSD3NrF"
+  );
 
   let petsMint = PublicKey.findProgramAddressSync(
-    [Buffer.from("pets"), keypair.publicKey.toBuffer()],
+    [Buffer.from("pets")],
     program.programId
   )[0];
   console.log("PETS Mint: ", petsMint.toBase58());
 
   let mintAuth = PublicKey.findProgramAddressSync(
-    [Buffer.from("auth"), keypair.publicKey.toBuffer()],
+    [Buffer.from("auth")],
     program.programId
   )[0];
   console.log("PETS Mint Auth: ", mintAuth.toBase58());
 
   const dogName = ["Max"];
   const [dog] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("dog"), Buffer.from(dogName.toString()), keypair.publicKey.toBuffer()],
+    [
+      Buffer.from("dog"),
+      Buffer.from(dogName.toString()),
+      keypair.publicKey.toBuffer(),
+    ],
     program.programId
   );
   console.log("Dog account: ", dog.toBase58());
@@ -72,9 +78,9 @@ describe("pet-dat-dog", () => {
   )[0];
 
   const metadata = {
-    name: 'pet dat dog',
-    symbol: 'PETS',
-    uri: 'https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/Qma41jzcPhZ2UspoBrHzKfEX7Ve7fbMV958sQQD3PgvBXW',
+    name: "pet dat dog",
+    symbol: "PETS",
+    uri: "https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/Qma41jzcPhZ2UspoBrHzKfEX7Ve7fbMV958sQQD3PgvBXW",
   };
 
   it("Setup token environment", async () => {
@@ -131,7 +137,8 @@ describe("pet-dat-dog", () => {
       provider.connection,
       keypair,
       bonkMint,
-      DEVNETWALLET    );
+      DEVNETWALLET
+    );
     devuserBonkAta = devnetwalletBonkAtaResult.address;
 
     await mintTo(
@@ -150,15 +157,6 @@ describe("pet-dat-dog", () => {
 
     userPetsAta = getAssociatedTokenAddressSync(petsMint, keypair.publicKey);
     console.log("User petsAta account: ", userPetsAta.toBase58());
-
-    // transfer 1 SOL from keypair to devnetwallet
-    const transfer = anchor.web3.SystemProgram.transfer({
-      fromPubkey: keypair.publicKey,
-      toPubkey: DEVNETWALLET,
-      lamports: anchor.web3.LAMPORTS_PER_SOL,
-    });
-
-    
   });
 
   it("Global is Initialized", async () => {
@@ -180,8 +178,7 @@ describe("pet-dat-dog", () => {
   });
 
   it(`Dog created - ${dogName}`, async () => {
-    
-    let global = new PublicKey("EPEcGyW9uxqbMBkAmFcNZ37iCLFYhmAzzZviJ8jmYeSV")
+    let global = new PublicKey("EPEcGyW9uxqbMBkAmFcNZ37iCLFYhmAzzZviJ8jmYeSV");
 
     console.log("test1");
     const txHash = await program.methods
@@ -206,8 +203,7 @@ describe("pet-dat-dog", () => {
   });
 
   it(`Is pet! - ${dogName}`, async () => {
-
-    // 
+    //
 
     const tx = await program.methods
       .pet()
