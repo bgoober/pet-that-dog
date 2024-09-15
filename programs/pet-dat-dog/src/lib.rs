@@ -16,7 +16,6 @@ pub mod pet_dat_dog {
 
     pub fn init_global(ctx: Context<GlobalC>, token_name: String, token_symbol: String, token_uri: String) -> Result<()> {
         ctx.accounts.init(&ctx.bumps, token_name, token_symbol, token_uri)?;
-
         Ok(())
     }
 

@@ -1,5 +1,7 @@
-use anchor_lang::{prelude::*, system_program::{transfer, Transfer}};
-use std::str::FromStr;
+use anchor_lang::{
+    prelude::*,
+    system_program::{transfer, Transfer},
+};
 use anchor_spl::{
     associated_token::AssociatedToken,
     metadata::{
@@ -8,13 +10,14 @@ use anchor_spl::{
     },
     token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked},
 };
-
-const ADMIN: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";   
+use std::str::FromStr;
 
 use crate::state::*;
 
+const ADMIN: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
+
 // this is the main net $BONK Mint address
-// const BONK_MINT: &str = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";   
+const BONK_MINT: &str = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
 
 /// DOCS: GlobalC now inits a global PETS token mint, to be used during any PetC context for any dog.
 /// There is now 1 token for ALL dogs made within the program, by any user.
@@ -70,10 +73,7 @@ impl<'info> GlobalC<'info> {
             global_bump: bumps.global,
         });
 
-        let seeds = &[
-            &b"auth"[..],
-            &[self.global.auth_bump],
-        ];
+        let seeds = &[&b"auth"[..], &[self.global.auth_bump]];
         let signer_seeds = &[&seeds[..]];
 
         // Invoking the create_metadata_account_v3 instruction on the token metadata program
@@ -137,7 +137,7 @@ pub struct DogC<'info> {
     pub global: Account<'info, Global>,
 
     //bonk mint
-    // #[account(address = BONK_MINT)]
+    #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
     pub bonk_mint: Account<'info, Mint>,
 
     // dog's bonk ata
@@ -222,10 +222,7 @@ impl<'info> PetC<'info> {
             to: self.user_pets_ata.to_account_info(),
             authority: self.mint_auth.to_account_info(),
         };
-        let seeds = &[
-            &b"auth"[..],
-            &[self.global.auth_bump],
-        ];
+        let seeds = &[&b"auth"[..], &[self.global.auth_bump]];
         let signer_seeds = &[&seeds[..]];
 
         let ctx = CpiContext::new_with_signer(
@@ -269,7 +266,7 @@ pub struct BonkC<'info> {
     pub dog: Account<'info, Dog>,
 
     //bonk mint
-    // #[account(address = BONK_MINT)]
+    #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
     pub bonk_mint: Account<'info, Mint>,
 
     // user's bonk ata
