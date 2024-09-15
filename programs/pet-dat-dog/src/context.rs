@@ -262,7 +262,7 @@ pub struct BonkC<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
 
-    #[account(mut, seeds = [signer.key().as_ref()], bump)]
+    #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
     pub user: Account<'info, User>,
 
     #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]

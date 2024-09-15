@@ -96,7 +96,7 @@ describe("pet-dat-dog", () => {
   );
   console.log("Dog Auth account: ", dog2Auth.toBase58());
 
-  let bonkMint = new PublicKey("HFHTY4nSbvV8Cntd1ec1QPPsmXRYGQYuTVtw6hhAbK6h");
+  let bonkMint = new PublicKey("AhLdHbPkrWfWhdT6mG6z7Zzyt5uMmbZSPPi89u87ZHcQ");
 
   let dog2BonkAta = getAssociatedTokenAddressSync(bonkMint, dog2Auth, true);
   console.log("dogBonkAta account: ", dog2BonkAta.toBase58());
