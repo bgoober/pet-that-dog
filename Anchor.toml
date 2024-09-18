@@ -23,6 +23,7 @@ query = "npx ts-mocha -p tsconfig.json -t 1000000 tests/query.ts"
 bonk = "npx ts-mocha -p tsconfig.json -t 1000000 tests/bonk.ts"
 p2 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/player2.ts"
 p3 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/p3.ts"
+gm = "npx ts-mocha -p tsconfig.json -t 1000000 tests/global_max_mainnet.ts"
 
 [[test.genesis]]
 address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
