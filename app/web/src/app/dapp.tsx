@@ -67,11 +67,6 @@ const Dapp: React.FC = () => {
 
   let house = new PublicKey('4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp');
 
-  let bonkMint: anchor.web3.PublicKey;
-  let dogBonkAta: anchor.web3.PublicKey;
-  let userPetsAta: anchor.web3.PublicKey;
-  let userBonkAta: anchor.web3.PublicKey;
-
   let petsMint = PublicKey.findProgramAddressSync(
     [Buffer.from("pets"), house.toBuffer()],
     program?.programId || PublicKey.default
@@ -97,20 +92,32 @@ const Dapp: React.FC = () => {
   );
   // console.log("Dog Auth account: ", dogAuth.toBase58());
 
-  bonkMint = new PublicKey('5FRW92nraRQz8z8ma8gCuA7A4r5dLpyY79HSfhoMonyk');
+  // for testnet 
+  let bonkMint = new PublicKey('5FRW92nraRQz8z8ma8gCuA7A4r5dLpyY79HSfhoMonyk');
 
-  dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
+  // for devnet and mainnet -- actual BONK mint address
+  // bonkMint = new PublicKey('DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263');
+
+  let dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
   // console.log("dogBonkAta account: ", dogBonkAta.toBase58());
 
-  userPetsAta = wallet
+  let userPetsAta = wallet
     ? getAssociatedTokenAddressSync(petsMint, wallet.publicKey)
     : PublicKey.default;
   // console.log("User petsAta account: ", userPetsAta.toBase58());
 
-  userBonkAta = wallet
+  let userBonkAta = wallet
     ? getAssociatedTokenAddressSync(bonkMint, wallet.publicKey)
     : PublicKey.default;
   // console.log("User bonkAta account: ", userBonkAta.toBase58());
+
+  let user = wallet
+  ? PublicKey.findProgramAddressSync(
+      [wallet.publicKey.toBuffer()],
+      program?.programId || PublicKey.default
+    )[0]
+  : PublicKey.default;
+// console.log("User account: ", user.toBase58());
 
   const handlePetInstruction = async () => {
     if (!program || !wallet) return;
@@ -120,7 +127,7 @@ const Dapp: React.FC = () => {
         .accountsPartial({
           house,
           dog,
-          user: wallet.publicKey,
+          user,
           petsMint,
           mintAuth,
           userPetsAta,
@@ -144,7 +151,7 @@ const Dapp: React.FC = () => {
         .bonk()
         .accountsPartial({
           dog,
-          user: wallet.publicKey,
+          user,
           bonkMint,
           dogBonkAta,
           userBonkAta,
