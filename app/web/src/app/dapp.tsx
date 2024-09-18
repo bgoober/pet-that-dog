@@ -69,20 +69,20 @@ const Dapp: React.FC = () => {
   let house = new PublicKey('4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp');
 
   let petsMint = PublicKey.findProgramAddressSync(
-    [Buffer.from('pets'), house.toBuffer()],
+    [Buffer.from('pets')],
     program?.programId || PublicKey.default
   )[0];
   // console.log("PETS Mint: ", petsMint.toBase58());
 
   let mintAuth = PublicKey.findProgramAddressSync(
-    [Buffer.from('auth'), house.toBuffer()],
+    [Buffer.from('auth')],
     program?.programId || PublicKey.default
   )[0];
   // console.log("PETS Mint Auth: ", mintAuth.toBase58());
 
   const dogName = ['Max'];
   const [dog] = PublicKey.findProgramAddressSync(
-    [Buffer.from('dog'), Buffer.from(dogName.toString())],
+    [Buffer.from('dog'), Buffer.from(dogName.toString()), house.toBuffer()],
     program?.programId || PublicKey.default
   );
   // console.log("Dog account: ", dog.toBase58());
@@ -94,7 +94,7 @@ const Dapp: React.FC = () => {
   // console.log("Dog Auth account: ", dogAuth.toBase58());
 
   // for testnet
-  let bonkMint = new PublicKey('G8cNy5gWGCSQpyGQeSZpNoTqwxmH8Q87QLX23Lcp1hzd');
+  let bonkMint = new PublicKey('2o34iUhwaZKMQQLxoFQnFdYZf1ZYbUfXwPErNX9JPpaq');
 
   // for devnet and mainnet -- actual BONK mint address
   // bonkMint = new PublicKey('DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263');
@@ -112,15 +112,17 @@ const Dapp: React.FC = () => {
     : PublicKey.default;
   // console.log("User bonkAta account: ", userBonkAta.toBase58());
 
-  const PROGRAM_ID = new PublicKey("DNHVjKARnjUuTykjqhbrQ1veV8YFkmqiwP65EKd19YPT");
-
+  // console.log('Program ID: ', program?.programId.toBase58());
   let user = wallet
     ? PublicKey.findProgramAddressSync(
         [wallet.publicKey.toBuffer()],
-        PROGRAM_ID
+        program?.programId || PublicKey.default
       )[0]
     : PublicKey.default;
   // console.log('User account: ', user.toBase58());
+
+  // console.log the rpc and network we are connected to
+  // console.log('RPC URL: ', connection);
 
   const handlePetInstruction = async () => {
     if (!program || !wallet) return;
