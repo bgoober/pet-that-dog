@@ -24,12 +24,12 @@ import { Provider } from '@project-serum/anchor';
 
 // Define the states
 const states = {
-  intro: { file: "1-sunriseIntro.gif", timeout: 12000, duration: 2700 },
-  sitUp: { file: "2-sitUp.gif", timeout: 30000, duration: 1000 },
-  pet: { file: "3-petDog.gif", timeout: 30000, duration: 2000 },
-  layDown: { file: "4-layDown.gif", timeout: 10000, duration: 1200 },
-  idle: { file: "5-idleWind.gif", timeout: 20000, duration: 1750 },
-  bonk: { file: "BONK.gif", timeout: 30000, duration: 2700 },
+  intro: { file: '1-sunriseIntro.gif', timeout: 12000, duration: 2700 },
+  sitUp: { file: '2-sitUp.gif', timeout: 30000, duration: 1000 },
+  pet: { file: '3-petDog.gif', timeout: 30000, duration: 2000 },
+  layDown: { file: '4-layDown.gif', timeout: 10000, duration: 1200 },
+  idle: { file: '5-idleWind.gif', timeout: 20000, duration: 1750 },
+  bonk: { file: 'BONK.gif', timeout: 30000, duration: 2700 },
 };
 
 // Preload GIFs
@@ -41,7 +41,8 @@ Object.values(states).forEach((state) => {
 });
 
 const Dapp: React.FC = () => {
-  const [currentState, setCurrentState] = useState<keyof typeof states>('intro');
+  const [currentState, setCurrentState] =
+    useState<keyof typeof states>('intro');
   const [isAnimating, setIsAnimating] = useState(false);
   const [clicked, setClicked] = useState(false);
   const dogImageRef = useRef<HTMLImageElement>(null);
@@ -68,32 +69,32 @@ const Dapp: React.FC = () => {
   let house = new PublicKey('4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp');
 
   let petsMint = PublicKey.findProgramAddressSync(
-    [Buffer.from("pets"), house.toBuffer()],
+    [Buffer.from('pets'), house.toBuffer()],
     program?.programId || PublicKey.default
   )[0];
   // console.log("PETS Mint: ", petsMint.toBase58());
 
   let mintAuth = PublicKey.findProgramAddressSync(
-    [Buffer.from("auth"), house.toBuffer()],
+    [Buffer.from('auth'), house.toBuffer()],
     program?.programId || PublicKey.default
   )[0];
   // console.log("PETS Mint Auth: ", mintAuth.toBase58());
 
-  const dogName = ["Max"];
+  const dogName = ['Max'];
   const [dog] = PublicKey.findProgramAddressSync(
-    [Buffer.from("dog"), Buffer.from(dogName.toString())],
+    [Buffer.from('dog'), Buffer.from(dogName.toString())],
     program?.programId || PublicKey.default
   );
   // console.log("Dog account: ", dog.toBase58());
 
   const [dogAuth] = PublicKey.findProgramAddressSync(
-    [Buffer.from("auth"), dog.toBuffer()],
+    [Buffer.from('auth'), dog.toBuffer()],
     program?.programId || PublicKey.default
   );
   // console.log("Dog Auth account: ", dogAuth.toBase58());
 
-  // for testnet 
-  let bonkMint = new PublicKey('5FRW92nraRQz8z8ma8gCuA7A4r5dLpyY79HSfhoMonyk');
+  // for testnet
+  let bonkMint = new PublicKey('G8cNy5gWGCSQpyGQeSZpNoTqwxmH8Q87QLX23Lcp1hzd');
 
   // for devnet and mainnet -- actual BONK mint address
   // bonkMint = new PublicKey('DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263');
@@ -111,13 +112,15 @@ const Dapp: React.FC = () => {
     : PublicKey.default;
   // console.log("User bonkAta account: ", userBonkAta.toBase58());
 
+  const PROGRAM_ID = new PublicKey("DNHVjKARnjUuTykjqhbrQ1veV8YFkmqiwP65EKd19YPT");
+
   let user = wallet
-  ? PublicKey.findProgramAddressSync(
-      [wallet.publicKey.toBuffer()],
-      program?.programId || PublicKey.default
-    )[0]
-  : PublicKey.default;
-// console.log("User account: ", user.toBase58());
+    ? PublicKey.findProgramAddressSync(
+        [wallet.publicKey.toBuffer()],
+        PROGRAM_ID
+      )[0]
+    : PublicKey.default;
+  // console.log('User account: ', user.toBase58());
 
   const handlePetInstruction = async () => {
     if (!program || !wallet) return;
@@ -128,6 +131,7 @@ const Dapp: React.FC = () => {
           house,
           dog,
           user,
+          owner: house,
           petsMint,
           mintAuth,
           userPetsAta,
@@ -137,7 +141,7 @@ const Dapp: React.FC = () => {
         })
         .rpc()
         .then(confirm);
-      console.log("Your pet tx signature is: ", tx);
+      console.log('Your pet tx signature is: ', tx);
       changeState('pet');
     } catch (error) {
       console.error('Error executing instruction', error);
@@ -161,7 +165,7 @@ const Dapp: React.FC = () => {
         })
         .rpc()
         .then(confirm);
-      console.log("Your bonk tx signature is: ", tx);
+      console.log('Your bonk tx signature is: ', tx);
       changeState('bonk');
     } catch (error) {
       console.error('Error executing instruction', error);
@@ -255,7 +259,7 @@ const Dapp: React.FC = () => {
       changeState('pet');
     }
   };
-  
+
   const handleBonkBoxClick = async () => {
     if (isAnimating) return; // Lockout during animation
     // Call bonk instruction and wait for confirmation

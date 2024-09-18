@@ -41,6 +41,11 @@ export type IDLType = {
                 kind: 'account';
                 path: 'dog.name';
                 account: 'Dog';
+              },
+              {
+                kind: 'account';
+                path: 'dog.owner';
+                account: 'Dog';
               }
             ];
           };
@@ -107,6 +112,10 @@ export type IDLType = {
               {
                 kind: 'arg';
                 path: 'name';
+              },
+              {
+                kind: 'account';
+                path: 'owner';
               }
             ];
           };
@@ -122,6 +131,26 @@ export type IDLType = {
               {
                 kind: 'account';
                 path: 'dog';
+              }
+            ];
+          };
+        },
+        {
+          name: 'house';
+          writable: true;
+        },
+        {
+          name: 'global';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [103, 108, 111, 98, 97, 108];
+              },
+              {
+                kind: 'account';
+                path: 'house';
               }
             ];
           };
@@ -186,10 +215,6 @@ export type IDLType = {
               {
                 kind: 'const';
                 value: [112, 101, 116, 115];
-              },
-              {
-                kind: 'account';
-                path: 'house';
               }
             ];
           };
@@ -201,10 +226,6 @@ export type IDLType = {
               {
                 kind: 'const';
                 value: [97, 117, 116, 104];
-              },
-              {
-                kind: 'account';
-                path: 'house';
               }
             ];
           };
@@ -283,6 +304,10 @@ export type IDLType = {
           writable: true;
         },
         {
+          name: 'owner';
+          writable: true;
+        },
+        {
           name: 'global';
           writable: true;
           pda: {
@@ -323,6 +348,11 @@ export type IDLType = {
                 kind: 'account';
                 path: 'dog.name';
                 account: 'Dog';
+              },
+              {
+                kind: 'account';
+                path: 'dog.owner';
+                account: 'Dog';
               }
             ];
           };
@@ -335,10 +365,6 @@ export type IDLType = {
               {
                 kind: 'const';
                 value: [112, 101, 116, 115];
-              },
-              {
-                kind: 'account';
-                path: 'house';
               }
             ];
           };
@@ -350,10 +376,6 @@ export type IDLType = {
               {
                 kind: 'const';
                 value: [97, 117, 116, 104];
-              },
-              {
-                kind: 'account';
-                path: 'house';
               }
             ];
           };
@@ -442,7 +464,6 @@ export type IDLType = {
         ];
       };
     },
-
     {
       name: 'Global';
       type: {
