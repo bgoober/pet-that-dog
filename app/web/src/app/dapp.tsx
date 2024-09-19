@@ -94,7 +94,7 @@ const Dapp: React.FC = () => {
   // console.log("Dog Auth account: ", dogAuth.toBase58());
 
   // for testnet
-  let bonkMint = new PublicKey('2o34iUhwaZKMQQLxoFQnFdYZf1ZYbUfXwPErNX9JPpaq');
+  let bonkMint = new PublicKey('9ugLtXL6Ck2GmbqfaH9fzSSLEdQQCAonXatadhSfhPFK');
 
   // for devnet and mainnet -- actual BONK mint address
   // bonkMint = new PublicKey('DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263');
@@ -143,7 +143,7 @@ const Dapp: React.FC = () => {
         })
         .rpc()
       //   .then(confirm);
-      // console.log('Your pet tx signature is: ', tx);
+      console.log('Your pet tx signature is: ', tx);
       changeState('pet');
     } catch (error) {
       console.error('Error executing instruction', error);
@@ -167,7 +167,7 @@ const Dapp: React.FC = () => {
         })
         .rpc()
       //   .then(confirm);
-      // console.log('Your bonk tx signature is: ', tx);
+      console.log('Your bonk tx signature is: ', tx);
       changeState('bonk');
     } catch (error) {
       console.error('Error executing instruction', error);
