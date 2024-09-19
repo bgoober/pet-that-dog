@@ -142,8 +142,8 @@ const Dapp: React.FC = () => {
           systemProgram: SystemProgram.programId,
         })
         .rpc()
-        .then(confirm);
-      console.log('Your pet tx signature is: ', tx);
+      //   .then(confirm);
+      // console.log('Your pet tx signature is: ', tx);
       changeState('pet');
     } catch (error) {
       console.error('Error executing instruction', error);
@@ -166,8 +166,8 @@ const Dapp: React.FC = () => {
           systemProgram: SystemProgram.programId,
         })
         .rpc()
-        .then(confirm);
-      console.log('Your bonk tx signature is: ', tx);
+      //   .then(confirm);
+      // console.log('Your bonk tx signature is: ', tx);
       changeState('bonk');
     } catch (error) {
       console.error('Error executing instruction', error);
