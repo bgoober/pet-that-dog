@@ -248,7 +248,7 @@ impl<'info> PetC<'info> {
 
         let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
 
-        transfer(ctx, 10)?; // this is equal 1x10^-9 SOL. 10M pets would repay the dog creation for for the owner.
+        transfer(ctx, 10)?; // this is equal 1x10^-8 SOL. 1M pets would repay the dog creation for for the owner.
 
         Ok(())
     }
