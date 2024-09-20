@@ -37,7 +37,7 @@ pub struct GlobalC<'info> {
         seeds = [b"auth"],
         bump
     )]
-    pub mint_auth: UncheckedAccount<'info>,
+    pub mint_auth: AccountInfo<'info>,
 
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
@@ -50,7 +50,7 @@ pub struct GlobalC<'info> {
         bump,
         seeds::program = token_metadata_program.key(),
     )]
-    pub metadata: UncheckedAccount<'info>,
+    pub metadata: AccountInfo<'info>,
 
     pub token_metadata_program: Program<'info, Metadata>,
 
@@ -127,11 +127,11 @@ pub struct DogC<'info> {
         seeds = [b"auth", dog.key().as_ref()],
         bump
     )]
-    pub dog_auth: UncheckedAccount<'info>,
+    pub dog_auth: AccountInfo<'info>,
 
     /// CHECK: this is the signer of the GlobalC context
     #[account(mut, constraint = house.key() == global.house.key())]
-    pub house: UncheckedAccount<'info>,
+    pub house: AccountInfo<'info>,
 
     #[account(mut, seeds = [b"global", house.key().as_ref()], bump = global.global_bump)]
     pub global: Account<'info, Global>,
@@ -179,11 +179,11 @@ pub struct PetC<'info> {
 
     /// CHECK: this is the signer of the GlobalC context
     #[account(mut, constraint = house.key() == global.house.key())]
-    pub house: UncheckedAccount<'info>,
+    pub house: AccountInfo<'info>,
 
     /// CHECK: this is the signer of the GlobalC context
     #[account(mut, constraint = owner.key() == dog.owner.key())]
-    pub owner: UncheckedAccount<'info>,
+    pub owner: AccountInfo<'info>,
 
     #[account(mut, seeds = [b"global", house.key().as_ref()], bump = global.global_bump)]
     pub global: Account<'info, Global>,
@@ -202,7 +202,7 @@ pub struct PetC<'info> {
         seeds = [b"auth"],
         bump = global.auth_bump
     )]
-    pub mint_auth: UncheckedAccount<'info>,
+    pub mint_auth: AccountInfo<'info>,
 
     #[account(init_if_needed, payer = signer, associated_token::mint = pets_mint, associated_token::authority = signer)]
     pub user_pets_ata: Account<'info, TokenAccount>,
@@ -250,6 +250,7 @@ impl<'info> PetC<'info> {
 
         transfer(ctx, 1000)?; // this is equal 1x10^-6 SOL (1 micro SOL, or 1/1Millionth SOL). 10k pets would repay the dog creation for for the owner. 1 million pets would be 1 SOL.
                                        // 10^-6 seems to be the lowest we can go to actually see a change in the account balance on the explorer, anything less and it bleeds the recipient account or doesn't move it at all.
+                                        // on localnet, the owner is receiving 9.6x10^-7 SOL per pet from a user, or 0.00000096 SOL per pet.
         Ok(())
     }
 }
@@ -278,7 +279,7 @@ pub struct BonkC<'info> {
         seeds = [b"auth", dog.key().as_ref()],
         bump = dog.auth_bump
     )]
-    pub dog_auth: UncheckedAccount<'info>,
+    pub dog_auth: AccountInfo<'info>,
 
     // dog's bonk ata
     #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]

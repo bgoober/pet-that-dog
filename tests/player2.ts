@@ -154,7 +154,7 @@ describe("pet-dat-dog", () => {
     const txHash = await program.methods
       .createDog(dog2Name.toString())
       .accountsPartial({
-        signer: player2.publicKey,
+       // signer: player2.publicKey,
         dog: dog2,
         owner: player2.publicKey,
         dogAuth: dog2Auth,

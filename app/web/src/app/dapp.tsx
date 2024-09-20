@@ -1,26 +1,18 @@
 import * as anchor from '@coral-xyz/anchor';
-import { Program, web3 } from '@coral-xyz/anchor';
-import { PetDatDog } from '../utils/_';
 
 import idl from '../utils/pet_dat_dog.json';
 import {
   TOKEN_PROGRAM_ID,
-  createMint,
   getAssociatedTokenAddressSync,
-  getOrCreateAssociatedTokenAccount,
-  mintTo,
 } from '@solana/spl-token';
 import { Keypair, PublicKey, SystemProgram } from '@solana/web3.js';
 // import wallet from "~/.config/solana/id.json";
 import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
-import { token } from '@coral-xyz/anchor/dist/cjs/utils';
 
-import { useProgram } from '../utils/useProgram';
 import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import React, { useEffect, useState, useRef } from 'react';
 
-import { Provider } from '@project-serum/anchor';
 
 // Define the states
 const states = {
@@ -94,7 +86,7 @@ const Dapp: React.FC = () => {
   // console.log("Dog Auth account: ", dogAuth.toBase58());
 
   // for testnet
-  let bonkMint = new PublicKey('BJ9P375zSP5iXXqkJWaKHubMz5isPfYJzix1qjQ7drsP');
+  let bonkMint = new PublicKey('FqCKB3EgDxWmmXnwvxVo9meAMxgDsEx6Pjw8gWfGMqBi');
 
   // for devnet and mainnet -- actual BONK mint address
   // bonkMint = new PublicKey('DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263');
