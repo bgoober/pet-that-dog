@@ -94,7 +94,7 @@ const Dapp: React.FC = () => {
   // console.log("Dog Auth account: ", dogAuth.toBase58());
 
   // for testnet
-  let bonkMint = new PublicKey('9ugLtXL6Ck2GmbqfaH9fzSSLEdQQCAonXatadhSfhPFK');
+  let bonkMint = new PublicKey('BJ9P375zSP5iXXqkJWaKHubMz5isPfYJzix1qjQ7drsP');
 
   // for devnet and mainnet -- actual BONK mint address
   // bonkMint = new PublicKey('DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263');
