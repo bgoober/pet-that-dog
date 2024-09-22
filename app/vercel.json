@@ -1,0 +1,13 @@
+{
+    "version": 2,
+    "routes": [
+        {
+          "src": "/(.*)",
+          "dest": "/dist/web/$1"
+        },
+        {
+          "src": "/",
+          "dest": "/index.html"
+        }
+      ]
+  }
