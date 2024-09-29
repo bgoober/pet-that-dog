@@ -1,17 +1,16 @@
 use anchor_lang::prelude::*;
 
-
 #[account]
 pub struct Global {
     pub house: Pubkey,
     pub mint: Pubkey,
     pub auth_bump: u8,
     pub mint_bump: u8,
-    pub global_bump: u8
+    pub global_bump: u8,
 }
 
 impl Global {
-    pub const LEN: usize = 8+32+32+1+1+1; 
+    pub const LEN: usize = 8 + 32 + 32 + 1 + 1 + 1;
 }
 
 #[account]
@@ -25,9 +24,8 @@ pub struct Dog {
 }
 
 impl Dog {
-    pub const LEN: usize = 8+24+32+8+8+1+1;
+    pub const LEN: usize = 8 + 24 + 32 + 8 + 8 + 1 + 1;
 }
-
 
 #[account]
 pub struct User {
@@ -37,9 +35,8 @@ pub struct User {
 }
 
 impl User {
-    pub const LEN: usize = 8+8+8+1;
+    pub const LEN: usize = 8 + 8 + 8 + 1;
 }
-
 
 // #[account]
 // pub struct Team {

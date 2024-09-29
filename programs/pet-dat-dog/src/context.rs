@@ -14,10 +14,11 @@ use std::str::FromStr;
 
 use crate::state::*;
 
+// admin addressed to be changed to Squads DAO/Multisig in the future
 const ADMIN: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
 
 // this is the main net $BONK Mint address
-// const BONK_MINT: &str = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
+const BONK_MINT: &str = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
 
 /// DOCS: GlobalC now inits a global PETS token mint, to be used during any PetC context for any dog.
 /// There is now 1 token for ALL dogs made within the program, by any user.
@@ -137,7 +138,7 @@ pub struct DogC<'info> {
     pub global: Account<'info, Global>,
 
     //bonk mint
-    // #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
+    #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
     pub bonk_mint: Account<'info, Mint>,
 
     // dog's bonk ata
@@ -249,8 +250,8 @@ impl<'info> PetC<'info> {
         let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
 
         transfer(ctx, 1000)?; // this is equal 1x10^-6 SOL (1 micro SOL, or 1/1Millionth SOL). 10k pets would repay the dog creation for for the owner. 1 million pets would be 1 SOL.
-                                       // 10^-6 seems to be the lowest we can go to actually see a change in the account balance on the explorer, anything less and it bleeds the recipient account or doesn't move it at all.
-                                        // on localnet, the owner is receiving 9.6x10^-7 SOL per pet from a user, or 0.00000096 SOL per pet.
+                              // 10^-6 seems to be the lowest we can go to actually see a change in the account balance on the explorer, anything less and it bleeds the recipient account or doesn't move it at all.
+                              // on localnet, the owner is receiving 9.6x10^-7 SOL per pet from a user, or 0.00000096 SOL per pet.
         Ok(())
     }
 }
@@ -267,7 +268,7 @@ pub struct BonkC<'info> {
     pub dog: Account<'info, Dog>,
 
     //bonk mint
-    // #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
+    #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
     pub bonk_mint: Account<'info, Mint>,
 
     // user's bonk ata
