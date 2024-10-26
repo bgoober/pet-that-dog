@@ -10,6 +10,12 @@ use anchor_spl::{
     },
     token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked},
 };
+use mpl_core::{
+    accounts::BaseCollectionV1,
+    instructions::{CreateCollectionV2CpiBuilder, CreateV2CpiBuilder},
+    types::{Creator, Plugin, PluginAuthority, PluginAuthorityPair, Royalties, RuleSet},
+    ID as MPL_CORE_PROGRAM_ID,
+};
 use std::str::FromStr;
 
 use crate::state::*;
@@ -317,6 +323,103 @@ impl<'info> BonkC<'info> {
         msg!("{} has been bonked {} times", self.dog.name, self.dog.bonks);
 
         msg!("User's last bonk: {}", self.user.last_bonk);
+
+        Ok(())
+    }
+}
+
+// NFT Collection and Asset creation contexts
+#[derive(Accounts)]
+pub struct CreateCollection<'info> {
+    pub signer: Signer<'info>,
+    #[account(mut)]
+    pub payer: Signer<'info>,
+    #[account(mut)]
+    pub collection: Signer<'info>,
+    #[account(address = MPL_CORE_PROGRAM_ID)]
+    /// CHECK: This doesn't need to be checked, because there is the address constraint
+    pub mpl_core_program: UncheckedAccount<'info>,
+    pub system_program: Program<'info, System>,
+}
+// impl<'info> BonkC<'info> {
+//     pub fn bonk(&mut self) -> Result<()> {
+impl<'info> CreateCollection<'info> {
+    pub fn create_collection(&mut self) -> Result<()> {
+        // sumwut srs. house address
+        let creator1 = Pubkey::from_str("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp").unwrap();
+        // pet dat dog! squads multi-sig
+        let creator2 = Pubkey::from_str("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp").unwrap();
+        // flarnrule's address
+        let creator3 = Pubkey::from_str("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp").unwrap();
+
+        let mut collection_plugins = vec![];
+
+        collection_plugins.push(PluginAuthorityPair {
+            plugin: Plugin::Royalties(Royalties {
+                basis_points: 200,
+                creators: vec![
+                    Creator {
+                        address: creator1,
+                        percentage: 50,
+                    },
+                    Creator {
+                        address: creator2,
+                        percentage: 40,
+                    },
+                    Creator {
+                        address: creator3,
+                        percentage: 10,
+                    },
+                ],
+                rule_set: RuleSet::None,
+            }),
+            // set the plugin update authority to the payer, which should be our own house address
+            authority: Some(PluginAuthority::Address {
+                address: self.payer.key(),
+            }),
+        });
+
+        CreateCollectionV2CpiBuilder::new(&self.mpl_core_program.to_account_info())
+            .collection(&self.collection.to_account_info())
+            .payer(&self.payer.to_account_info())
+            .system_program(&self.system_program.to_account_info())
+            .name("pet dat dog!".to_string())
+            .uri("https://example.com".to_string())
+            .plugins(collection_plugins)
+            .invoke()?;
+
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct CreateAsset<'info> {
+    pub signer: Signer<'info>,
+    #[account(mut)]
+    pub payer: Signer<'info>,
+    #[account(
+        mut,
+        constraint = collection.update_authority == signer.key(),
+    )]
+    pub collection: Account<'info, BaseCollectionV1>,
+    #[account(mut)]
+    pub asset: Signer<'info>,
+    #[account(address = MPL_CORE_PROGRAM_ID)]
+    /// CHECK: This doesn't need to be checked, because there is the address constraint
+    pub mpl_core_program: UncheckedAccount<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+impl<'info> CreateAsset<'info> {
+    pub fn create_asset(&mut self) -> Result<()> {
+        CreateV2CpiBuilder::new(&self.mpl_core_program.to_account_info())
+            .asset(&self.asset.to_account_info())
+            .collection(Some(&self.collection.to_account_info()))
+            .payer(&self.payer.to_account_info())
+            .system_program(&self.system_program.to_account_info())
+            .name("pet dat dog!".to_string())
+            .uri("https://example.com".to_string())
+            .invoke()?;
 
         Ok(())
     }
