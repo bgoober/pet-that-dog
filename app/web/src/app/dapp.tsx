@@ -89,7 +89,7 @@ const Dapp: React.FC = () => {
   // let bonkMint = new PublicKey('Az8AfogXAE3XgiqeBuJg9pjNKTPhgkBtijR7CjToT8pM');
 
   // for devnet and mainnet -- actual BONK mint address
-  let bonkMint = new PublicKey('DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263');
+  let bonkMint = new PublicKey('4GtBDByccFJbUM2iS9RHyGLKNm4UktTunZASVMTMNZvN');
 
   let dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
   // console.log("dogBonkAta account: ", dogBonkAta.toBase58());

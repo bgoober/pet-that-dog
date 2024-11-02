@@ -1,0 +1,24 @@
+pet dat dog! feature wish list and road map: (This list is not yet prioritized top-down.)
+
+1. Session keys
+	Session keys will improve user experience by removing the need for the user to manually approve every pet or bonk transaction. Instead 1 transaction will fund an account from which X number of transaction will be approved until the need for gas refill.
+
+2. Dog is now an NFT
+	The novel Dog account is now coupled, or entirely an NFT. The Dog and NFT carry through the existing account constraints and intentions.
+	
+3. Transfer of Dog changes Dog owner state for NFT and novel Dog.
+	In order to allow petting fees to pass to the correct owner, a sale or transfer CPI should include Dog state owner update.
+	
+4. Collection JSON
+	Need proper collection JSON.
+	
+5. Asset JSON
+	Max first. Template.
+
+6. Cleanup Dog state, initGlobal context and accounts
+	Review and reconsider the need for, and structure of global context as it relates to the formation of assets and the global program state, to accomplish administration of the collection, assets, as well as the PETS spl token, and the House/Team and program revenue addresses.
+	
+7. Figure out how the React app fits into the NFT
+	The React app/script for each dog needs to be unique, yet uniform in experience. How does a script with multiple .gif states execute as an interactive NFT?
+	
+8. 
