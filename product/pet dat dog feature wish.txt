@@ -10,10 +10,10 @@ pet dat dog! feature wish list and road map: (This list is not yet prioritized t
 	In order to allow petting fees to pass to the correct owner, a sale or transfer CPI should include Dog state owner update.
 	
 4. Collection JSON
-	Need proper collection JSON.
+	Need proper collection JSON. Include Royalty plugin with flexible settings. Authority given to Squads address.
 	
 5. Asset JSON
-	Max first. Template.
+	Max first. Dog/NFT Template.
 
 6. Cleanup Dog state, initGlobal context and accounts
 	Review and reconsider the need for, and structure of global context as it relates to the formation of assets and the global program state, to accomplish administration of the collection, assets, as well as the PETS spl token, and the House/Team and program revenue addresses.
@@ -21,4 +21,18 @@ pet dat dog! feature wish list and road map: (This list is not yet prioritized t
 7. Figure out how the React app fits into the NFT
 	The React app/script for each dog needs to be unique, yet uniform in experience. How does a script with multiple .gif states execute as an interactive NFT?
 	
-8. 
+8. Add bonk mini game in 1 transaction with VRF
+	The user would benefit from a signle-transaction VRF function. Perhaps Schnorr signatures?
+
+9. Squads program multi-sig
+	Automatic handling of program revenues, and upgrade authority. Consider fail safe security in terms of blind signing hack.
+
+10. Make more dogs
+	Make more dogs.
+
+12. NFT auction.
+	Let's auction the dogs to whitelisted users who with the auction. Do we use candy machine?
+
+13. 
+
+
