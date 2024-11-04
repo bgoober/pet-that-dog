@@ -12,8 +12,11 @@ use anchor_spl::{
 };
 use mpl_core::{
     accounts::BaseCollectionV1,
+<<<<<<< Updated upstream
     instructions::{CreateCollectionV2CpiBuilder, CreateV2CpiBuilder},
     types::{Creator, Plugin, PluginAuthority, PluginAuthorityPair, Royalties, RuleSet},
+=======
+>>>>>>> Stashed changes
     ID as MPL_CORE_PROGRAM_ID,
 };
 use std::str::FromStr;
@@ -30,13 +33,18 @@ const BONK_MINT: &str = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
 /// There is now 1 token for ALL dogs made within the program, by any user.
 #[derive(Accounts)]
 pub struct GlobalC<'info> {
-    #[account(mut, constraint = house.key() == Pubkey::from_str(ADMIN).unwrap())]
-    pub house: Signer<'info>,
+    // payer is now not the House, but is instead a separate address, but House is still constrained to a known squads multisig address controlled by the House/Development Team
+    #[account(mut)]
+    pub payer: Signer<'info>,
 
-    #[account(init, payer = house, seeds = [b"global", house.key().as_ref()], space = Global::LEN, bump)]
+    /// CHECK: This is safe, it is constrained to the house pubkey
+    #[account(constraint = house.key() == Pubkey::from_str(ADMIN).unwrap())]
+    pub house: UncheckedAccount<'info>,
+
+    #[account(init, payer = payer, seeds = [b"global", house.key().as_ref()], space = Global::LEN, bump)]
     pub global: Account<'info, Global>,
 
-    #[account(init, payer = house, seeds = [b"pets"], mint::decimals=5, mint::authority = mint_auth, bump)]
+    #[account(init, payer = payer, seeds = [b"pets"], mint::decimals=5, mint::authority = mint_auth, bump)]
     pub pets_mint: Account<'info, Mint>,
 
     /// CHECK: this is safe
@@ -144,7 +152,8 @@ pub struct DogC<'info> {
     pub global: Account<'info, Global>,
 
     //bonk mint
-    #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
+    // #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
+    #[account()]
     pub bonk_mint: Account<'info, Mint>,
 
     // dog's bonk ata
@@ -341,6 +350,7 @@ pub struct CreateCollection<'info> {
     pub mpl_core_program: UncheckedAccount<'info>,
     pub system_program: Program<'info, System>,
 }
+<<<<<<< Updated upstream
 // impl<'info> BonkC<'info> {
 //     pub fn bonk(&mut self) -> Result<()> {
 impl<'info> CreateCollection<'info> {
@@ -391,6 +401,8 @@ impl<'info> CreateCollection<'info> {
         Ok(())
     }
 }
+=======
+>>>>>>> Stashed changes
 
 #[derive(Accounts)]
 pub struct CreateAsset<'info> {
@@ -410,6 +422,7 @@ pub struct CreateAsset<'info> {
     pub system_program: Program<'info, System>,
 }
 
+<<<<<<< Updated upstream
 impl<'info> CreateAsset<'info> {
     pub fn create_asset(&mut self) -> Result<()> {
         CreateV2CpiBuilder::new(&self.mpl_core_program.to_account_info())
@@ -424,6 +437,8 @@ impl<'info> CreateAsset<'info> {
         Ok(())
     }
 }
+=======
+>>>>>>> Stashed changes
 
 #[error_code]
 pub enum ErrorCode {
