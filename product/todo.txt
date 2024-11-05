@@ -1,6 +1,2 @@
-1. Add switchboard randomness as source for complete BONK mini game
-2. Add vector of public keys to the GlobalC context to allow the signer to buy my trusted address, plus a main net multi-signature address as well
-3. Add a tresury account to the GlobalC context that is equal to the multi-signature address for use as the Treasury
-4. Rename how to Treasury
-5. Separate signer from Treasury
-6. Make each Dog its own NFT, with files equal to each gif state including animation duration and lockout values
+1. Refactor necessary accounts for both payer and house/Squads
+2. 

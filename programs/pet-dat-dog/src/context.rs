@@ -10,7 +10,7 @@ use anchor_spl::{
     },
     token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked},
 };
-use std::str::FromStr;
+// use std::str::FromStr;
 
 use crate::state::*;
 
@@ -24,14 +24,18 @@ use crate::state::*;
 /// There is now 1 token for ALL dogs made within the program, by any user.
 #[derive(Accounts)]
 pub struct GlobalC<'info> {
+    /// CHECK: This account will be constrained to the Squads/Programs/Dev Team's multi-sig account
     // #[account(mut, constraint = house.key() == Pubkey::from_str(ADMIN).unwrap())]
-    #[account(mut)]
-    pub house: Signer<'info>,
+    #[account()]
+    pub house: UncheckedAccount<'info>,
 
-    #[account(init, payer = house, seeds = [b"global", house.key().as_ref()], space = Global::LEN, bump)]
+    #[account(mut)]
+    pub payer: Signer<'info>,
+
+    #[account(init, payer = payer, seeds = [b"global", house.key().as_ref()], space = Global::LEN, bump)]
     pub global: Account<'info, Global>,
 
-    #[account(init, payer = house, seeds = [b"pets"], mint::decimals=5, mint::authority = mint_auth, bump)]
+    #[account(init, payer = payer, seeds = [b"pets"], mint::decimals=5, mint::authority = mint_auth, bump)]
     pub pets_mint: Account<'info, Mint>,
 
     /// CHECK: this is safe
@@ -85,9 +89,9 @@ impl<'info> GlobalC<'info> {
                 CreateMetadataAccountsV3 {
                     metadata: self.metadata.to_account_info(),
                     mint: self.pets_mint.to_account_info(),
-                    mint_authority: self.mint_auth.to_account_info(), // is this safe? this makes the mint authority a PDA that is then invoked in the PetC for evey dog.
+                    mint_authority: self.mint_auth.to_account_info(),
                     update_authority: self.house.to_account_info(),
-                    payer: self.house.to_account_info(),
+                    payer: self.payer.to_account_info(),
                     system_program: self.system_program.to_account_info(),
                     rent: self.rent.to_account_info(),
                 },
@@ -131,7 +135,7 @@ pub struct DogC<'info> {
     )]
     pub dog_auth: AccountInfo<'info>,
 
-    /// CHECK: this is the signer of the GlobalC context
+    /// CHECK: this is the squads multi-sig that was defined and stored in the GlobalC context
     #[account(mut, constraint = house.key() == global.house.key())]
     pub house: AccountInfo<'info>,
 
