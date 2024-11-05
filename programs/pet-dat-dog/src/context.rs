@@ -27,7 +27,7 @@ pub struct GlobalC<'info> {
     /// CHECK: This account will be constrained to the Squads/Programs/Dev Team's multi-sig account
     // #[account(mut, constraint = house.key() == Pubkey::from_str(ADMIN).unwrap())]
     #[account()]
-    pub house: UncheckedAccount<'info>,
+    pub house: AccountInfo<'info>,
 
     #[account(mut)]
     pub payer: Signer<'info>,
