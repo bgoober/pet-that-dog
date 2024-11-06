@@ -51,6 +51,25 @@ export function AppLayout({ children }: { children: ReactNode }) {
           loading="lazy"
         ></iframe>
       </div>
+      <div style={{ position: 'absolute', bottom: '10px', left: '5px' }}>
+        <a
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            // background: '#512da8',
+            color: '#fffcee',
+            border: 'none',
+            borderRadius: '5px',
+            padding: '10px',
+            fontSize: '12px',
+            fontFamily: 'Arial, sans-serif',
+            textDecoration: 'none',
+          }}
+        >
+          Disclaimer / Terms of Service
+        </a>
+      </div>
       <div
         style={{
           display: 'flex',
