@@ -35,18 +35,19 @@ export function AppLayout({ children }: { children: ReactNode }) {
             border: 'none',
             borderRadius: '5px',
             fontSize: '15px',
+            fontFamily: 'Arial, sans-serif',
           }}
         >
-          {isCollapsed ? 'Expand Spotify' : 'Collapse Spotify'}
+          {isCollapsed ? 'Show Spotify' : 'Hide Spotify'}
         </button>
         <iframe
           className={isCollapsed ? 'collapsed' : ''}
-          style={{ borderRadius: '15px', transition: 'opacity 0.5s' }}
+          style={{ borderRadius: '15px', transition: 'opacity 0.5s', border: 'none' }}
           src="https://open.spotify.com/embed/playlist/0vvXsWCC9xrXsKd4FyS8kM?utm_source=generator&theme=1"
           width="100%"
-          height="152"
+          height="352"
           allowFullScreen
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          allow="autoplay; clipboard-write; encrypted-media"
           loading="lazy"
         ></iframe>
       </div>
