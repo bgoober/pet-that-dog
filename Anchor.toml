@@ -28,3 +28,5 @@ gm = "npx ts-mocha -p tsconfig.json -t 1000000 tests/global_max_mainnet.ts"
 [[test.genesis]]
 address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
 program = "metadata.so"
+session_keys = "KeyspM2ssCJbqUhQ4k7sveSiY4WjnYsrXkC8oDbwde5"
+sk_program = "session-keys.so"

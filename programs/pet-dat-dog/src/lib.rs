@@ -1,4 +1,5 @@
 use anchor_lang::prelude::*;
+use session_keys::{session_auth_or, Session, SessionError};
 
 mod context;
 
@@ -29,15 +30,21 @@ pub mod pet_dat_dog {
         Ok(())
     }
 
-    // pet, taking a User as context
+    #[session_auth_or(
+        ctx.accounts.user.authority.key() == ctx.accounts.signer.key(),
+        ErrorCode::SessionError
+    )]
     pub fn pet(ctx: Context<PetC>) -> Result<()> {
-        ctx.accounts.pet()?;
+        ctx.accounts.pet(&ctx.bumps)?;
         Ok(())
     }
 
-    // bonk, taking a User as context
+    #[session_auth_or(
+        ctx.accounts.user.authority.key() == ctx.accounts.signer.key(),
+        ErrorCode::SessionError
+    )]
     pub fn bonk(ctx: Context<BonkC>) -> Result<()> {
-        ctx.accounts.bonk()?;
+        ctx.accounts.bonk(&ctx.bumps)?;
         Ok(())
     }
 }
@@ -48,6 +55,6 @@ pub enum ErrorCode {
     TooManyPets,
     #[msg("Too many bonksin one slot!")]
     TooManyBonks,
-    #[msg("Session error")]
-    SessionError,
+    #[msg("Session error, wrong authority.")]
+    SessionError
 }

@@ -10,6 +10,9 @@ use anchor_spl::{
     },
     token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked},
 };
+
+use session_keys::{SessionToken, Session};
+
 // use std::str::FromStr;
 
 use crate::state::*;
@@ -179,10 +182,19 @@ impl<'info> DogC<'info> {
     }
 }
 
-#[derive(Accounts)]
+#[derive(Accounts, Session)]
 pub struct PetC<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
+
+    #[session(
+        // The ephemeral key pair signing the transaction
+        signer = signer,
+        // The authority of the user account which must have created the session
+        authority = user.authority.key()
+    )]
+    // Session Tokens are passed as optional accounts
+    pub session_token: Option<Account<'info, SessionToken>>,
 
     /// CHECK: this is the signer of the GlobalC context
     #[account(mut, constraint = house.key() == global.house.key())]
@@ -200,7 +212,7 @@ pub struct PetC<'info> {
 
     #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
-
+ 
     #[account(mut, seeds = [b"pets"], bump = global.mint_bump)]
     pub pets_mint: Account<'info, Mint>,
 
@@ -220,7 +232,15 @@ pub struct PetC<'info> {
 }
 
 impl<'info> PetC<'info> {
-    pub fn pet(&mut self) -> Result<()> {
+    pub fn pet(&mut self, bumps: &PetCBumps) -> Result<()> {
+        if self.user.authority != self.signer.key() {
+            self.user.set_inner( User{
+                authority: self.signer.key(),
+                last_pet: 0,
+                last_bonk: 0,
+                bump: bumps.user
+
+            });}
         if self.user.last_pet == Clock::get()?.slot {
             return Err(ErrorCode::TooManyPets.into());
         }
@@ -262,10 +282,16 @@ impl<'info> PetC<'info> {
     }
 }
 
-#[derive(Accounts)]
+#[derive(Accounts, Session)]
 pub struct BonkC<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
+
+    #[session(
+        signer = signer,
+        authority = user.authority.key() 
+    )]
+    pub session_token: Option<Account<'info, SessionToken>>,
 
     #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
     pub user: Account<'info, User>,
@@ -298,7 +324,18 @@ pub struct BonkC<'info> {
 }
 
 impl<'info> BonkC<'info> {
-    pub fn bonk(&mut self) -> Result<()> {
+    pub fn bonk(&mut self, bumps: &BonkCBumps) -> Result<()> {
+        if self.user.authority != self.signer.key() {
+            self.user.set_inner( User{
+                authority: self.signer.key(),
+                last_pet: 0,
+                last_bonk: 0,
+                bump: bumps.user
+
+            });
+        } // because this comes after this account macro, it may ALWAYS end in an error, because the user would never have the chance to get to this point to set there user.authority value equal to their pubkey
+          // The user will never even get to this part of the transaction where they get to overwrite the Null value in user.authority
+
         if self.user.last_bonk == Clock::get()?.slot {
             return Err(ErrorCode::TooManyBonks.into());
         }
