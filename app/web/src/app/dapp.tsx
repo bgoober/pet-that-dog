@@ -13,7 +13,6 @@ import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import React, { useEffect, useState, useRef } from 'react';
 
-
 // Define the states
 const states = {
   intro: { file: '1-sunriseIntro.gif', timeout: 12000, duration: 2700 },
@@ -133,7 +132,7 @@ const Dapp: React.FC = () => {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .rpc()
+        .rpc();
       //   .then(confirm);
       console.log('Your pet tx signature is: ', tx);
       changeState('pet');
@@ -157,7 +156,7 @@ const Dapp: React.FC = () => {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .rpc()
+        .rpc();
       //   .then(confirm);
       console.log('Your bonk tx signature is: ', tx);
       changeState('bonk');

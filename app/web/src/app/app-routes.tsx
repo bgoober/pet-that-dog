@@ -21,6 +21,6 @@ export function AppRoutes() {
           <Link to="/home">Home</Link>
         </div>
       ),
-    },
+    }
   ]);
 }
