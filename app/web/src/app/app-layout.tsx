@@ -1,10 +1,9 @@
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { ReactNode, useState } from 'react';
 import Dapp from './dapp';
-
-import Modal from './modal'; // Import the Modal component
-
-import { Link } from 'react-router-dom';
+import Modal from './modal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import React from 'react';
 
 export function AppLayout({ children }: { children: ReactNode }) {
@@ -103,13 +102,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
             the Dog.
           </li>
           <li>Creating your own Dog costs 0.01 SOL.</li>
+          <li>Mint 1 $PETS token to your wallet by petting a Dog.</li>
           <li>
-            Mint 1 $PETS token to your wallet by petting a Dog.
+            The $PETS token has an initial supply of 0. There is no pre-mine, no
+            insider allocations, nor VC's.
           </li>
           <li>
-            The $PETS token has an initial supply of 0. There is no pre-mine, no insider allocations, nor VC's.
+            Expect no return nor expectation of profit from the developer's
+            continued work, your Dog, or the $PETS token.
           </li>
-          <li>Expect no return nor expectation of profit from the developer's continued work, your Dog, or the $PETS token.</li>
         </ul>
       </Modal>
       <div
@@ -133,6 +134,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
         >
           <Dapp />
         </div>
+      </div>
+      <div style={{ position: 'absolute', bottom: '5px', right: '5px' }}>
+        <a
+          href="https://github.com/bgoober/pet-dat-dog"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: '#fffcee' }}
+        >
+          <FontAwesomeIcon icon={faGithub} size="2x" />
+        </a>
       </div>
       <style>{`
         .collapsed {
