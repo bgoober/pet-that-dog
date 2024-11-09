@@ -65,7 +65,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <button
           onClick={toggleModal}
           style={{
-            background: '#512da8',
+            background: '#111827',
             color: '#fffcee',
             border: 'none',
             borderRadius: '5px',
