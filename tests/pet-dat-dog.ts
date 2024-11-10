@@ -77,6 +77,14 @@ describe("pet-dat-dog", () => {
     program.programId
   )[0];
 
+  const [global] = web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("global")],
+    program.programId
+  );
+  console.log("Global account: ", global.toBase58());
+
+
+
   const metadata = {
     name: "pet dat dog",
     symbol: "PETS",
@@ -163,6 +171,7 @@ describe("pet-dat-dog", () => {
     const txHash = await program.methods
       .initGlobal(metadata.name, metadata.symbol, metadata.uri)
       .accountsPartial({
+        global,
         house: keypair.publicKey,
         petsMint,
         mintAuth,
@@ -178,7 +187,7 @@ describe("pet-dat-dog", () => {
   });
 
   it(`Dog created - ${dogName}`, async () => {
-    let global = new PublicKey("EPEcGyW9uxqbMBkAmFcNZ37iCLFYhmAzzZviJ8jmYeSV");
+    let global = new PublicKey("3H6m4MEfSeZCnwsXiP2XrhEKFs78BEGUrq8Rs5PDZd8H");
 
     console.log("test1");
     const txHash = await program.methods
@@ -208,7 +217,7 @@ describe("pet-dat-dog", () => {
     const tx = await program.methods
       .pet()
       .accountsPartial({
-        house: keypair.publicKey,
+        sessionToken: null,
         dog,
         user,
         owner: keypair.publicKey,
@@ -218,6 +227,7 @@ describe("pet-dat-dog", () => {
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
+        // signer: signer.publicKey
       })
       .rpc()
       .then(confirm)
@@ -229,6 +239,7 @@ describe("pet-dat-dog", () => {
     const tx = await program.methods
       .bonk()
       .accountsPartial({
+        sessionToken: null,
         dog,
         user,
         bonkMint,

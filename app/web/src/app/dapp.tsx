@@ -1,4 +1,5 @@
 import * as anchor from '@coral-xyz/anchor';
+import { useSessionWallet } from "@magicblock-labs/gum-react-sdk"
 
 import idl from '../utils/pet_dat_dog.json';
 import {
@@ -40,6 +41,8 @@ const Dapp: React.FC = () => {
   const petBoxRef = useRef<HTMLDivElement>(null);
   const bonkBoxRef = useRef<HTMLDivElement>(null);
   const nextTimeoutRef = useRef<number | null>(null);
+  const sessionWallet = useSessionWallet()
+  const [isLoadingSession, setIsLoadingSession] = useState(false)
 
   const wallet = useAnchorWallet();
   const { connection } = useConnection(); // Extract the connection object
@@ -116,11 +119,14 @@ const Dapp: React.FC = () => {
   // console.log('RPC URL: ', connection);
 
   const handlePetInstruction = async () => {
-    if (!program || !wallet) return;
+    // if (!program || !wallet) return;
+    setIsLoadingSession(true)
+    if ( !program || !sessionWallet) return
     try {
       const tx = await program.methods
         .pet()
         .accountsPartial({
+          sessionToken: sessionWallet.sessionToken,
           house,
           dog,
           user,
@@ -142,11 +148,14 @@ const Dapp: React.FC = () => {
   };
 
   const handleBonkInstruction = async () => {
-    if (!program || !wallet) return;
+    // if (!program || !wallet) return;
+    setIsLoadingSession(true)
+    if ( !program || !sessionWallet) return
     try {
       const tx = await program.methods
         .bonk()
         .accountsPartial({
+          sessionToken: sessionWallet.sessionToken,
           dog,
           user,
           bonkMint,

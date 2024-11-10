@@ -106,7 +106,6 @@ describe("pet-dat-dog", () => {
       .pet()
       .accountsPartial({
         signer: player2.publicKey,
-        house: keypair.publicKey,
         dog,
         user,
         owner: keypair.publicKey,
@@ -132,7 +131,7 @@ describe("pet-dat-dog", () => {
   });
 
   it(`Dog created - ${dog2Name}`, async () => {
-    let global = new PublicKey("EPEcGyW9uxqbMBkAmFcNZ37iCLFYhmAzzZviJ8jmYeSV");
+    let global = new PublicKey("3H6m4MEfSeZCnwsXiP2XrhEKFs78BEGUrq8Rs5PDZd8H");
 
     const dog2Name = ["Petey"];
     const [dog2] = web3.PublicKey.findProgramAddressSync(
@@ -179,7 +178,6 @@ describe("pet-dat-dog", () => {
       .pet()
       .accountsPartial({
         signer: keypair.publicKey,
-        house: keypair.publicKey,
         dog: dog2,
         user: user2, // user2 is keypair here
         owner: player2.publicKey,

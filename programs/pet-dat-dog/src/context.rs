@@ -35,7 +35,7 @@ pub struct GlobalC<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
 
-    #[account(init, payer = payer, seeds = [b"global", house.key().as_ref()], space = Global::LEN, bump)]
+    #[account(init, payer = payer, seeds = [b"global"], space = Global::LEN, bump)]
     pub global: Account<'info, Global>,
 
     #[account(init, payer = payer, seeds = [b"pets"], mint::decimals=5, mint::authority = mint_auth, bump)]
@@ -142,7 +142,7 @@ pub struct DogC<'info> {
     #[account(mut, constraint = house.key() == global.house.key())]
     pub house: AccountInfo<'info>,
 
-    #[account(mut, seeds = [b"global", house.key().as_ref()], bump = global.global_bump)]
+    #[account(mut, seeds = [b"global"], bump = global.global_bump)]
     pub global: Account<'info, Global>,
 
     //bonk mint
@@ -197,14 +197,10 @@ pub struct PetC<'info> {
     pub session_token: Option<Account<'info, SessionToken>>,
 
     /// CHECK: this is the signer of the GlobalC context
-    #[account(mut, constraint = house.key() == global.house.key())]
-    pub house: AccountInfo<'info>,
-
-    /// CHECK: this is the signer of the GlobalC context
     #[account(mut, constraint = owner.key() == dog.owner.key())]
     pub owner: AccountInfo<'info>,
 
-    #[account(mut, seeds = [b"global", house.key().as_ref()], bump = global.global_bump)]
+    #[account(mut, seeds = [b"global"], bump = global.global_bump)]
     pub global: Account<'info, Global>,
 
     #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]

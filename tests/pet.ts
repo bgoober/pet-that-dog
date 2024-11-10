@@ -69,8 +69,8 @@ describe("pet-dat-dog", () => {
     const tx = await program.methods
       .pet()
       .accountsPartial({
+        sessionToken: null,
         signer: keypair.publicKey,
-        house: keypair.publicKey,
         dog,
         user,
         owner: keypair.publicKey,
