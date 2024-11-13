@@ -3,3 +3,13 @@
 3. Figure out how to turn it into an interactive BLINK
 4. Make more front end UI art and interactive experiences
 5. Add product disclaimer to front end UI -- cookies, 3rd party, program bugs, etc..
+
+
+Session keys button flow:
+
+1. The user can click a button to start a session for signing
+2. The user can end a session if one exists by clicking a button
+3. The user can pet or bonk the dog if no session exists which they will be required to manually sign for
+4. If the user pets or bonks the dog while a session exists, and that session has enough SOL for fees, then the session key signs for either transaction with no UI/signature request intrusion
+5. If a session exists, and there is not enough SOL left for fees, then the button will prompt the user to top-up the session's gas tank
+6. The Start, Stop, and Top Up button are all the same button, depending on the existence of the user's session, and its balance.

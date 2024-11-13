@@ -1,0 +1,120 @@
+lib.rs
+
+There are 4 instructions defined in lib.rs that call a single implementation function for each Context:
+
+1. init_global() + token metadata inputs
+	- Initializes a global state PDA. Initializes the PETS spl token and its metadata, and a minting authority which is a PDA at the global level to make MintTo CPI calls during pet().
+2. create_dog()
+	- Creates a Dog state PDA with name, owner, the Dog's $BONK A-T-A, and its own "auth" PDA to sign for future $BONK disbursements to game winners.	
+3. pet() -- SESSTION TOKEN CONSTRAINT IS ENFORCED HERE, NOT IN THE PETC CONTEXT'S IMPLEMENTATION!
+	- Initializes-if-needed a User PDA with an authority, last_pet, and last_bonk slot tracker. Updates this state accordingly. Update Dog's pets counter +1.
+4. bonk() -- SESSTION TOKEN CONSTRAINT IS ENFORCED HERE, NOT IN THE BONKC CONTEXT'S IMPLEMENTATION!
+	- Initializes-if-needed a User PDA with an authority, last_pet, and last_bonk slot tracker. Updates this state accordingly. Update Dog's bonk counter +1.
+
+---
+
+context.rs
+
+There are 4 Contexts, with their own single implementation function each. (I have removed constraints for cleanliness in this .txt file.)
+
+1. GlobalC
+    pub house: AccountInfo<'info>,
+    	- The House is the address that create_dog(), and eventual bonk() game-winner fee split will be sent to.
+    pub payer: Signer<'info>,
+    	- To keep House (a Squads multi-sig) from having to call init_global().
+    pub global: Account<'info, Global>,
+    pub pets_mint: Account<'info, Mint>,
+    pub mint_auth: AccountInfo<'info>,
+    pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub system_program: Program<'info, System>,
+    pub metadata: AccountInfo<'info>,
+    pub token_metadata_program: Program<'info, Metadata>,
+    pub rent: Sysvar<'info, Rent>,
+    
+2. DogC (takes a name: String instruction)
+    pub owner: Signer<'info>,
+    pub dog: Account<'info, Dog>,
+    pub dog_auth: AccountInfo<'info>,
+    pub house: AccountInfo<'info>,
+    	- The House is paid 0.01 SOL by the signer to create a Dog.
+    pub global: Account<'info, Global>,
+    pub bonk_mint: Account<'info, Mint>,
+    pub dog_bonk_ata: Account<'info, TokenAccount>,
+    pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub system_program: Program<'info, System>,
+    
+3. PetC
+    pub signer: Signer<'info>,
+    pub session_token: Option<Account<'info, SessionToken>>,
+    	- Use a Session Token if one exists, otherwise the signer must manually sign
+    pub owner: AccountInfo<'info>,
+    	- The Dog's owner receives a 1x10^-6 SOL fee for each pet from the signer.
+    pub global: Account<'info, Global>,
+    pub user: Account<'info, User>,
+    pub dog: Account<'info, Dog>,
+    pub pets_mint: Account<'info, Mint>,
+    pub mint_auth: AccountInfo<'info>,
+    	- The mint_auth (set in GlobalC) calls a MintTo CPI here to the user's PETS A-T-A.
+    pub user_pets_ata: Account<'info, TokenAccount>,
+    pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub system_program: Program<'info, System>,
+    
+4. BonkC
+    pub signer: Signer<'info>,
+    pub session_token: Option<Account<'info, SessionToken>>,
+	- Use a Session Token if one exists, otherwise the signer must manually sign.
+    pub user: Account<'info, User>,
+    pub dog: Account<'info, Dog>,
+    pub bonk_mint: Account<'info, Mint>,
+    pub user_bonk_ata: Account<'info, TokenAccount>,
+    pub dog_auth: AccountInfo<'info>,
+    	- Eventually, when the BONK mini-game is complete, and a rand_number is created during the instruction call; if the User wins, then dog_auth will sign for disbursement of $BONK from the Dog's dog_bonk_ata.
+    pub dog_bonk_ata: Account<'info, TokenAccount>,
+    	- A TransferChecked CPI is made here from the user_bonk_ata to the dog_bonk_ata for the constrained $BONK token address. (Constrained during DogC.)
+    pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub system_program: Program<'info, System>,
+    
+    
+I use the program's and user's novel state PDA's to constrain the relevant global, house, dog, user, auth PDA's, and token accounts. $PETS and $BONK are both constrained to the correct mint accounts.
+
+---
+
+state.rs 
+
+(init space implementations left-out.)
+
+#[account]
+pub struct Global {
+    pub house: Pubkey,
+    pub mint: Pubkey,
+    pub auth_bump: u8,
+    pub mint_bump: u8,
+    pub global_bump: u8,
+}
+
+#[account]
+pub struct Dog {
+    pub name: String,
+    pub owner: Pubkey,
+    pub pets: u64,
+    pub bonks: u64,
+    pub dog_bump: u8,
+    pub auth_bump: u8,
+}
+
+#[account]
+pub struct User {
+    pub authority: Pubkey,
+    pub last_pet: u64,
+    pub last_bonk: u64,
+    pub bump: u8,
+}
+
+---
+
+After init_global() has been called by a known, constrained address; the upgrade authority will be transferred to the House address, which is a Squad's multi-signature wallet. Is this advisable?
+
