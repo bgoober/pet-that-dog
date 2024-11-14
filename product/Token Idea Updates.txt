@@ -1,0 +1,18 @@
+Product idea update:
+
+1. Add CreateSquirrel (Potentially)
+
+2. Add ability to pet and feed the squirrel
+
+3. Giving the squirrel a peanut requires 1 PNUT, just like bonk requires 1 BONK
+
+4. Add wif() action to dog and squirrel, which requires 1 WIF
+
+5. Now that BONK, WIF, PNUT, and PETS tokens are a part of the program, we create a 4 token liquidity pool of PETS/BONK/WIF/PNUT at a 25%/25%/25%/25% ratio.
+
+6. Instead of giving the Dog, or Squirrel the BONK, PNUT, and WIF coins, to be part of an eventual random-number game, I think we should instead initialize this multi-token pool, and then when the user calls these instructions, their tokens should instead be deposited into the pool, and they should receive the LP token back. This way it acts as an index of meme coins + an interest bearing SOL LST, in the form of Sanctum's INF. 
+
+
+We could add INF to the pool so that it is now PETS/BONK/WIF/PNUT/INF at a 20/20/20/20/20 % ratio. This would mean that INF, which is a SOL LST, would basically always be adding upward price pressure on the pool.
+
+Either way, the introduction of PNUT, and WIF to the meme coin occasion is desired. An index of these 4 meme coins + LST SOL would be cool I think, instead of a lotto game.
