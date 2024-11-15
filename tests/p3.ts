@@ -111,7 +111,6 @@ describe("pet-dat-dog", () => {
       .pet()
       .accountsPartial({
         signer: player2.publicKey,
-        house: adminPublicKey,
         dog,
         user,
         owner: adminPublicKey,

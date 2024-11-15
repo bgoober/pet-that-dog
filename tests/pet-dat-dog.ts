@@ -83,7 +83,9 @@ describe("pet-dat-dog", () => {
   );
   console.log("Global account: ", global.toBase58());
 
-
+  // const [user1] = web3.PublicKey.findProgramAddressSync(
+  //   [keypair.publicKey.toBuffer()], program.programId
+  // )
 
   const metadata = {
     name: "pet dat dog",
@@ -211,8 +213,26 @@ describe("pet-dat-dog", () => {
     if (!txHash) throw new Error("Failed to initialize.");
   });
 
+  it(`User (wallet pubkey) created! - ${user}`, async () =>  {
+    const txHash = await program.methods
+    .createUser()
+    .accountsPartial({
+      user,
+      systemProgram: SystemProgram.programId
+    })
+    .rpc()
+    .then(confirm)
+    .then(log);
+    console.log("Create User tx signature is: ", txHash)
+  });
+
   it(`Is pet! - ${dogName}`, async () => {
-    //
+    const [user1Account] = web3.PublicKey.findProgramAddressSync(
+      [keypair.publicKey.toBuffer()],
+      program.programId
+    );
+
+    console.log("User 1 Account: ", user1Account.toBase58());
 
     const tx = await program.methods
       .pet()
@@ -233,6 +253,10 @@ describe("pet-dat-dog", () => {
       .then(confirm)
       .then(log);
     console.log("Your pet tx signature is: ", tx);
+
+    const user1Account_ = await program.account.user.fetch(user1Account);
+
+    console.log("User 1 Account Authority: ", user1Account_.authority.toBase58());
   });
 
   it(`Is bonked! - ${dogName}`, async () => {

@@ -30,12 +30,17 @@ pub mod pet_dat_dog {
         Ok(())
     }
 
+    pub fn create_user(ctx: Context<UserC>) -> Result<()> {
+        ctx.accounts.init(&ctx.bumps)?;
+        Ok(())
+    }
+
     #[session_auth_or(
         ctx.accounts.user.authority.key() == ctx.accounts.signer.key(),
         ErrorCode::SessionError
     )]
     pub fn pet(ctx: Context<PetC>) -> Result<()> {
-        ctx.accounts.pet(&ctx.bumps)?;
+        ctx.accounts.pet()?;
         Ok(())
     }
 
@@ -44,7 +49,7 @@ pub mod pet_dat_dog {
         ErrorCode::SessionError
     )]
     pub fn bonk(ctx: Context<BonkC>) -> Result<()> {
-        ctx.accounts.bonk(&ctx.bumps)?;
+        ctx.accounts.bonk()?;
         Ok(())
     }
 }
