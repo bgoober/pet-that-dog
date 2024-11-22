@@ -356,6 +356,10 @@ impl<'info> BonkC<'info> {
             });
         }
 
+        // DOCS: Redesign from a TransferChecked of 1 $BONK token to the Dog's BONK ATA to a new idea of :
+        // Use deposits the specific token 1-sided into PETS/BONK/PNUT/WIF (and possibly LST/SOL) at a 25/25/25/25% weight (or 20/20/20/20/20% weight if LST/SOL is included) 
+        // Liquidity pool on Raydium or Meteora
+
         // if self.user.last_bonk == Clock::get()?.slot {
         //     return Err(ErrorCode::TooManyBonks.into());
         // }
@@ -437,6 +441,10 @@ impl<'info> PnutC<'info> {
             });
         }
 
+        // DOCS: Redesign from a TransferChecked of 1 $BONK token to the Dog's BONK ATA to a new idea of :
+        // Use deposits the specific token 1-sided into PETS/BONK/PNUT/WIF (and possibly LST/SOL) at a 25/25/25/25% weight (or 20/20/20/20/20% weight if LST/SOL is included) 
+        // Liquidity pool on Raydium or Meteora
+
         // if self.user.last_bonk == Clock::get()?.slot {
         //     return Err(ErrorCode::TooManyBonks.into());
         // }
@@ -517,6 +525,10 @@ impl<'info> WifC<'info> {
                 bump: bumps.user,
             });
         }
+
+        // DOCS: Redesign from a TransferChecked of 1 $BONK token to the Dog's BONK ATA to a new idea of :
+        // Use deposits the specific token 1-sided into PETS/BONK/PNUT/WIF (and possibly LST/SOL) at a 25/25/25/25% weight (or 20/20/20/20/20% weight if LST/SOL is included) 
+        // Liquidity pool on Raydium or Meteora
 
         // if self.user.last_bonk == Clock::get()?.slot {
         //     return Err(ErrorCode::TooManyBonks.into());
