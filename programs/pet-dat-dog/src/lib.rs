@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use session_keys::{session_auth_or, Session, SessionError};
+// use session_keys::{session_auth_or, Session, SessionError};
 
 mod context;
 
@@ -30,26 +30,46 @@ pub mod pet_dat_dog {
         Ok(())
     }
 
-    pub fn create_user(ctx: Context<UserC>) -> Result<()> {
-        ctx.accounts.init(&ctx.bumps)?;
-        Ok(())
-    }
+    // I am removing create_user in an effort to do it all in the context of a pet() or bonk() instruction call.
 
-    #[session_auth_or(
-        ctx.accounts.user.authority.key() == ctx.accounts.signer.key(),
-        ErrorCode::SessionError
-    )]
+    // pub fn create_user(ctx: Context<UserC>) -> Result<()> {
+    //     ctx.accounts.init(&ctx.bumps)?;
+    //     Ok(())
+    // }
+
+    // #[session_auth_or(
+    //     ctx.accounts.user.authority.key() == ctx.accounts.signer.key(),
+    //     ErrorCode::SessionError
+    // )]
     pub fn pet(ctx: Context<PetC>) -> Result<()> {
-        ctx.accounts.pet()?;
+        ctx.accounts.pet(&ctx.bumps)?;
         Ok(())
     }
 
-    #[session_auth_or(
-        ctx.accounts.user.authority.key() == ctx.accounts.signer.key(),
-        ErrorCode::SessionError
-    )]
+    // #[session_auth_or(
+    //     ctx.accounts.user.authority.key() == ctx.accounts.signer.key(),
+    //     ErrorCode::SessionError
+    // )]
     pub fn bonk(ctx: Context<BonkC>) -> Result<()> {
-        ctx.accounts.bonk()?;
+        ctx.accounts.bonk(&ctx.bumps)?;
+        Ok(())
+    }
+
+    // #[session_auth_or(
+    //     ctx.accounts.user.authority.key() == ctx.accounts.signer.key(),
+    //     ErrorCode::SessionError
+    // )]
+    pub fn pnut(ctx: Context<PnutC>) -> Result<()> {
+        ctx.accounts.pnut(&ctx.bumps)?;
+        Ok(())
+    }
+
+    // #[session_auth_or(
+    //     ctx.accounts.user.authority.key() == ctx.accounts.signer.key(),
+    //     ErrorCode::SessionError
+    // )]
+    pub fn wif(ctx: Context<WifC>) -> Result<()> {
+        ctx.accounts.wif(&ctx.bumps)?;
         Ok(())
     }
 }

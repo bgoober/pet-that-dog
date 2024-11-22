@@ -34,10 +34,14 @@ describe("pet-dat-dog", () => {
   };
 
   let bonkMint: anchor.web3.PublicKey;
+  let pnutMint: anchor.web3.PublicKey;
+  let wifMint: anchor.web3.PublicKey;
   let dogBonkAta: anchor.web3.PublicKey;
   let userPetsAta: anchor.web3.PublicKey;
   let userBonkAta: anchor.web3.PublicKey;
   let devuserBonkAta: anchor.web3.PublicKey;
+  let userPnutAta: anchor.web3.PublicKey;
+  let userWifAta: anchor.web3.PublicKey;
 
   const DEVNETWALLET = new PublicKey(
     "J4JHaaMFpo8oPKB5DoHh7YZxXLdzkqvkLnMUQiSD3NrF"
@@ -83,10 +87,6 @@ describe("pet-dat-dog", () => {
   );
   console.log("Global account: ", global.toBase58());
 
-  // const [user1] = web3.PublicKey.findProgramAddressSync(
-  //   [keypair.publicKey.toBuffer()], program.programId
-  // )
-
   const metadata = {
     name: "pet dat dog",
     symbol: "PETS",
@@ -111,8 +111,45 @@ describe("pet-dat-dog", () => {
       keypair.publicKey
     );
     userBonkAta = userBonkAtaResult.address;
-    // Verify userBonkAta creation
     if (!userBonkAta) throw new Error("Failed to create or get userBonkAta");
+
+    pnutMint = await createMint(
+      provider.connection,
+      keypair,
+      provider.publicKey,
+      null,
+      5
+    );
+    if (!pnutMint) throw new Error("Failed to create pnutMint");
+    console.log("Pnut Mint account: ", pnutMint.toBase58());
+
+    const userPnutAtaResult = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      keypair,
+      pnutMint,
+      keypair.publicKey
+    );
+    userPnutAta = userPnutAtaResult.address;
+    if (!userPnutAta) throw new Error("Failed to create or get userPnutAta");
+
+    wifMint = await createMint(
+      provider.connection,
+      keypair,
+      provider.publicKey,
+      null,
+      5
+    );
+    if (!wifMint) throw new Error("Failed to create wifMint");
+    console.log("Wif Mint account: ", wifMint.toBase58());
+
+    const userWifAtaResult = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      keypair,
+      wifMint,
+      keypair.publicKey
+    );
+    const userWifAta = userWifAtaResult.address;
+    if (!userWifAta) throw new Error("Failed to create or get userWifAta");
 
     // player2 bonk ata
     const player2BonkAtaResult = await getOrCreateAssociatedTokenAccount(
@@ -159,7 +196,6 @@ describe("pet-dat-dog", () => {
       keypair,
       1_000_000_000
     );
-    console.log("User bonkAta account: ", userBonkAta.toBase58());
     // refactor the accounts that you have init or init_if_needed to use getAssociatedTokenAddressSync, and remove the await.
     // Move the dogBonkAta calculation here and ensure it's assigned to the higher scope variable.
     dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
@@ -197,9 +233,9 @@ describe("pet-dat-dog", () => {
       .accountsPartial({
         dog,
         owner: keypair.publicKey,
-        dogAuth,
+        // dogAuth,
         bonkMint,
-        dogBonkAta,
+        // dogBonkAta,
         house: keypair.publicKey, // defined by the local wallet now, but will need to be derived later
         global,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -213,18 +249,18 @@ describe("pet-dat-dog", () => {
     if (!txHash) throw new Error("Failed to initialize.");
   });
 
-  it(`User (wallet pubkey) created! - ${user}`, async () =>  {
-    const txHash = await program.methods
-    .createUser()
-    .accountsPartial({
-      user,
-      systemProgram: SystemProgram.programId
-    })
-    .rpc()
-    .then(confirm)
-    .then(log);
-    console.log("Create User tx signature is: ", txHash)
-  });
+  // it(`User (wallet pubkey) created! - ${user}`, async () =>  {
+  //   const txHash = await program.methods
+  //   .createUser()
+  //   .accountsPartial({
+  //     user,
+  //     systemProgram: SystemProgram.programId
+  //   })
+  //   .rpc()
+  //   .then(confirm)
+  //   .then(log);
+  //   console.log("Create User tx signature is: ", txHash)
+  // });
 
   it(`Is pet! - ${dogName}`, async () => {
     const [user1Account] = web3.PublicKey.findProgramAddressSync(
@@ -267,8 +303,50 @@ describe("pet-dat-dog", () => {
         dog,
         user,
         bonkMint,
-        dogBonkAta,
+        // dogBonkAta,
         userBonkAta,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .signers([keypair])
+      .rpc()
+      .then(confirm)
+      .then(log);
+    console.log("Your bonk tx signature is: ", tx);
+  });
+
+  it(`Is given a pnut!! - ${dogName}`, async () => {
+    const tx = await program.methods
+      .pnut()
+      .accountsPartial({
+        sessionToken: null,
+        dog,
+        user,
+        pnutMint,
+        // dogBonkAta,
+        userPnutAta,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .signers([keypair])
+      .rpc()
+      .then(confirm)
+      .then(log);
+    console.log("Your bonk tx signature is: ", tx);
+  });
+
+  it(`It is wearing a hat! - ${dogName}`, async () => {
+    const tx = await program.methods
+      .wif()
+      .accountsPartial({
+        sessionToken: null,
+        dog,
+        user,
+        wifMint,
+        // dogBonkAta,
+        userWifAta,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
@@ -284,7 +362,7 @@ describe("pet-dat-dog", () => {
     const dogAccount = await program.account.dog.fetch(dog);
 
     console.log(`Dog's pets: ${dogName}`, dogAccount.pets.toString());
-    console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
+    // console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
 
     // find all the accounts underneath the dog account
   });

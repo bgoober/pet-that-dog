@@ -10,8 +10,12 @@ module.exports = composePlugins(withNx(), withReact(), (config) => {
   config.resolve.fallback = {
     crypto: require.resolve('crypto-browserify'),
     stream: require.resolve('stream-browserify'),
-    vm: require.resolve('vm-browserify'), // Add this line
-    process: require.resolve('process/browser'), // Add this line
+    vm: require.resolve('vm-browserify'),
+    process: require.resolve('process/browser'),
+    assert: require.resolve('assert/'),
+    zlib: require.resolve('browserify-zlib'),
+    path: require.resolve('path-browserify'),
+    "next/navigation.js": false,
   };
 
   config.plugins.push(

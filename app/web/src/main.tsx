@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './polyfills';
 import React from 'react';
-
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { App } from './app/app';
 
 const root = ReactDOM.createRoot(
@@ -13,6 +13,7 @@ root.render(
   <StrictMode>
     <BrowserRouter>
       <App />
+      <SpeedInsights />
     </BrowserRouter>
   </StrictMode>
 );

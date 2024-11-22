@@ -126,7 +126,7 @@ const Dapp: React.FC = () => {
       const tx = await program.methods
         .pet()
         .accountsPartial({
-          sessionToken: sessionWallet.sessionToken,
+          sessionToken: wallet?.publicKey,
           house,
           dog,
           user,
@@ -155,7 +155,7 @@ const Dapp: React.FC = () => {
       const tx = await program.methods
         .bonk()
         .accountsPartial({
-          sessionToken: sessionWallet.sessionToken,
+          sessionToken: wallet?.publicKey,
           dog,
           user,
           bonkMint,
