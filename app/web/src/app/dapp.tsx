@@ -118,15 +118,35 @@ const Dapp: React.FC = () => {
   // console.log the rpc and network we are connected to
   // console.log('RPC URL: ', connection);
 
+  const handleCreateSession = async () => {
+    console.log(program.programId);
+    const targetProgramPublicKey = program.programId;
+    const topUp = true;
+    const expiryInMinutes = 60;
+
+    const session = await sessionWallet.createSession(targetProgramPublicKey, topUp, expiryInMinutes);
+
+    if (session) {
+      console.log("Session created:", session);
+    } else {
+      console.error("Failed to create session");
+    }
+  };
+
   const handlePetInstruction = async () => {
     // if (!program || !wallet) return;
     setIsLoadingSession(true)
     if ( !program || !sessionWallet) return
+
+    if (!sessionWallet.publicKey) {
+      await handleCreateSession();
+    }
+
     try {
       const tx = await program.methods
         .pet()
         .accountsPartial({
-          sessionToken: wallet?.publicKey,
+          sessionToken: await sessionWallet.sessionToken,
           house,
           dog,
           user,
@@ -151,6 +171,11 @@ const Dapp: React.FC = () => {
     // if (!program || !wallet) return;
     setIsLoadingSession(true)
     if ( !program || !sessionWallet) return
+
+    if (!sessionWallet.publicKey) {
+      await handleCreateSession();
+    }
+    
     try {
       const tx = await program.methods
         .bonk()

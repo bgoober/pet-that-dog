@@ -334,7 +334,7 @@ describe("pet-dat-dog", () => {
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your bonk tx signature is: ", tx);
+    console.log("Your PNUT tx signature is: ", tx);
   });
 
   it(`It is wearing a hat! - ${dogName}`, async () => {
@@ -355,7 +355,7 @@ describe("pet-dat-dog", () => {
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your bonk tx signature is: ", tx);
+    console.log("Your WIF tx signature is: ", tx);
   });
 
   it(`Fetches dog state - ${dogName}`, async () => {

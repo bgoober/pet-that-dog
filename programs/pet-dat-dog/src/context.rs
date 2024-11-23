@@ -18,17 +18,23 @@ use session_keys::{SessionToken, Session};
 use crate::state::*;
 
 // admin addressed to be changed to Squads DAO/Multisig in the future
-// const ADMIN: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
+// const HOUSE: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
 
 // this is the main net $BONK Mint address
 // const BONK_MINT: &str = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
+
+// this is the main net $PNUT Mint address
+// const PNUT_MINT: &str = "2qEHjDLDLbuBgRYvsxhc5D6uDWAivNFZGan56P1tpump";
+
+// this is the main net $WIF Mint address
+// const WIF_MINT: &str = "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm";
 
 /// DOCS: GlobalC now inits a global PETS token mint, to be used during any PetC context for any dog.
 /// There is now 1 token for ALL dogs made within the program, by any user.
 #[derive(Accounts)]
 pub struct GlobalC<'info> {
     /// CHECK: This account will be constrained to the Squads/Programs/Dev Team's multi-sig account
-    // #[account(mut, constraint = house.key() == Pubkey::from_str(ADMIN).unwrap())]
+    // #[account(mut, constraint = house.key() == Pubkey::from_str(HOUSE).unwrap())]
     #[account()]
     pub house: AccountInfo<'info>,
 
@@ -406,11 +412,11 @@ pub struct PnutC<'info> {
     #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
 
-    //bonk mint
-    // #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
+    //pnut mint
+    // #[account(constraint = pnut_mint.key() == Pubkey::from_str(PNUT_MINT).unwrap())]
     pub pnut_mint: Account<'info, Mint>,
 
-    // user's bonk ata
+    // user's pnut ata
     #[account(mut, associated_token::mint = pnut_mint, associated_token::authority = signer)]
     pub user_pnut_ata: Account<'info, TokenAccount>,
 
@@ -491,11 +497,11 @@ pub struct WifC<'info> {
     #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
 
-    //bonk mint
-    // #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
+    //wif mint
+    // #[account(constraint = wif_mint.key() == Pubkey::from_str(WIF_MINT).unwrap())]
     pub wif_mint: Account<'info, Mint>,
 
-    // user's bonk ata
+    // user's wif ata
     #[account(mut, associated_token::mint = wif_mint, associated_token::authority = signer)]
     pub user_wif_ata: Account<'info, TokenAccount>,
 
