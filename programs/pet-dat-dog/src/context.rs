@@ -8,17 +8,21 @@ use anchor_spl::{
         create_metadata_accounts_v3, mpl_token_metadata::types::DataV2, CreateMetadataAccountsV3,
         Metadata,
     },
-    token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked},
+    token::{mint_to, Mint, MintTo, Token, TokenAccount}
 };
 
+// TransferChecked, transfer_checked
 use session_keys::{SessionToken, Session};
 
 // use std::str::FromStr;
 
 use crate::state::*;
 
-// admin addressed to be changed to Squads DAO/Multisig in the future
+// HOUSE addressed to be changed to Squads DAO/Multisig in the future
 // const HOUSE: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
+
+// ADMIN address to be used for calling GlobalC
+// const ADMIN: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
 
 // this is the main net $BONK Mint address
 // const BONK_MINT: &str = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
@@ -38,6 +42,7 @@ pub struct GlobalC<'info> {
     #[account()]
     pub house: AccountInfo<'info>,
 
+    // #[account(mut, constraint = payer.key() == Pubkey::from_str(ADMIN).unwrap())]
     #[account(mut)]
     pub payer: Signer<'info>,
 
@@ -120,14 +125,13 @@ impl<'info> GlobalC<'info> {
             None, // Collection details
         )?;
 
-        msg!("Token mint created successfully.");
+        // msg!("Token mint created successfully.");
         Ok(())
     }
 }
 
 /// DOCS: The DogC now inits a new dog with a name, and an owner.
 /// Each dog no longer has its own token, but will instead use the global mint during a PetC context.
-/// Each dog retains its own BONK vault, auth, and mini-game.
 #[derive(Accounts)]
 #[instruction(name: String)]
 pub struct DogC<'info> {
@@ -136,13 +140,6 @@ pub struct DogC<'info> {
 
     #[account(init, payer = owner, seeds = [b"dog", name.as_str().as_bytes(), owner.key().as_ref()], space = Dog::LEN, bump)]
     pub dog: Account<'info, Dog>,
-
-    /// CHECK: this is safe
-    // #[account(
-    //     seeds = [b"auth", dog.key().as_ref()],
-    //     bump
-    // )]
-    // pub dog_auth: AccountInfo<'info>,
 
     /// CHECK: this is the squads multi-sig that was defined and stored in the GlobalC context
     #[account(mut, constraint = house.key() == global.house.key())]
@@ -153,13 +150,20 @@ pub struct DogC<'info> {
 
     //bonk mint
     // #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
-    #[account()]
-    pub bonk_mint: Account<'info, Mint>,
+    // #[account()]
+    // pub bonk_mint: Account<'info, Mint>,
 
     // dog's bonk ata
     // #[account(init, payer = owner, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
     // pub dog_bonk_ata: Account<'info, TokenAccount>,
 
+    /// CHECK: this is safe
+    // #[account(
+    //     seeds = [b"auth", dog.key().as_ref()],
+    //     bump
+    // )]
+    // pub dog_auth: AccountInfo<'info>,
+    
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
@@ -171,7 +175,9 @@ impl<'info> DogC<'info> {
             name,
             owner: self.owner.key(),
             pets: 0,
-            // bonks: 0,
+            // bonks: 0, 
+            // pnuts: 0,
+            // wifs: 0,
             dog_bump: bumps.dog,
             // auth_bump: bumps.dog_auth,
         });
@@ -329,11 +335,11 @@ pub struct BonkC<'info> {
 
     //bonk mint
     // #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
-    pub bonk_mint: Account<'info, Mint>,
+    // pub bonk_mint: Account<'info, Mint>,
 
     // user's bonk ata
-    #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = signer)]
-    pub user_bonk_ata: Account<'info, TokenAccount>,
+    // #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = signer)]
+    // pub user_bonk_ata: Account<'info, TokenAccount>,
 
     /// CHECK: this is safe
     // #[account(
@@ -414,11 +420,11 @@ pub struct PnutC<'info> {
 
     //pnut mint
     // #[account(constraint = pnut_mint.key() == Pubkey::from_str(PNUT_MINT).unwrap())]
-    pub pnut_mint: Account<'info, Mint>,
+    // pub pnut_mint: Account<'info, Mint>,
 
     // user's pnut ata
-    #[account(mut, associated_token::mint = pnut_mint, associated_token::authority = signer)]
-    pub user_pnut_ata: Account<'info, TokenAccount>,
+    // #[account(mut, associated_token::mint = pnut_mint, associated_token::authority = signer)]
+    // pub user_pnut_ata: Account<'info, TokenAccount>,
 
     /// CHECK: this is safe
     // #[account(
@@ -427,9 +433,9 @@ pub struct PnutC<'info> {
     // )]
     // pub dog_auth: AccountInfo<'info>,
 
-    // dog's bonk ata
-    // #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
-    // pub dog_bonk_ata: Account<'info, TokenAccount>,
+    // dog's pnut ata
+    // #[account(mut, associated_token::mint = pnut_mint, associated_token::authority = dog_auth)]
+    // pub dog_pnut_ata: Account<'info, TokenAccount>,
 
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
@@ -499,11 +505,11 @@ pub struct WifC<'info> {
 
     //wif mint
     // #[account(constraint = wif_mint.key() == Pubkey::from_str(WIF_MINT).unwrap())]
-    pub wif_mint: Account<'info, Mint>,
+    // pub wif_mint: Account<'info, Mint>,
 
     // user's wif ata
-    #[account(mut, associated_token::mint = wif_mint, associated_token::authority = signer)]
-    pub user_wif_ata: Account<'info, TokenAccount>,
+    // #[account(mut, associated_token::mint = wif_mint, associated_token::authority = signer)]
+    // pub user_wif_ata: Account<'info, TokenAccount>,
 
     /// CHECK: this is safe
     // #[account(
@@ -512,9 +518,9 @@ pub struct WifC<'info> {
     // )]
     // pub dog_auth: AccountInfo<'info>,
 
-    // // dog's bonk ata
-    // #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
-    // pub dog_bonk_ata: Account<'info, TokenAccount>,
+    // // dog's wif ata
+    // #[account(mut, associated_token::mint = wif_mint, associated_token::authority = dog_auth)]
+    // pub dog_wif_ata: Account<'info, TokenAccount>,
 
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,

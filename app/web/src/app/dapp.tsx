@@ -290,7 +290,7 @@ const Dapp: React.FC = () => {
   const handleBonkBoxClick = async () => {
     if (isAnimating) return; // Lockout during animation
     // Call bonk instruction and wait for confirmation
-    await handleBonkInstruction();
+    // await handleBonkInstruction();
     if (['sitUp', 'pet', 'bonk'].includes(currentState)) {
       console.log(`Bonk box clicked during ${currentState} state`);
       setClicked(true);

@@ -90,11 +90,12 @@ describe("pet-dat-dog", () => {
     const tx = await program.methods
       .bonk()
       .accountsPartial({
+        sessionToken: null,
         dog,
         user,
-        bonkMint,
-        dogBonkAta,
-        userBonkAta,
+        // bonkMint,
+        // dogBonkAta,
+        // userBonkAta,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
@@ -110,6 +111,6 @@ describe("pet-dat-dog", () => {
     const dogAccount = await program.account.dog.fetch(dog);
 
     console.log(`${dogName}'s pets: `, dogAccount.pets.toString());
-    console.log(`${dogName}'s bonks:`, dogAccount.bonks.toString());
+    // console.log(`${dogName}'s bonks:`, dogAccount.bonks.toString());
   });
 });

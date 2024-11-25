@@ -27,7 +27,7 @@ pub struct Dog {
 }
 
 impl Dog {
-    pub const LEN: usize = 8 + 24 + 32 + 8 + 1 + 1;
+    pub const LEN: usize = 8 + 24 + 32 + 8 + 1;
 }
 
 #[account]
