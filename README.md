@@ -10,5 +10,5 @@ Yes, you can!
 - Petting a Dog costs a transaction fee, plus 0.000001 SOL paid to the Dog's owner.
 - Creating your own Dog costs 0.01 SOL.
 - Mint 1 $PETS token to your wallet by petting a Dog.
-- The $PETS token has an initial supply of 0. There is no pre-mine, no insider allocations, nor VC's.
+- The $PETS token has an initial supply of 0. There is no pre-mine, no insider allocations, and no VC's.
 - Expect no return nor expectation of profit from the developer's continued work, your Dog, or the $PETS token.
