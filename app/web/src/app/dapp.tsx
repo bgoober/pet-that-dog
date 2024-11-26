@@ -6,7 +6,7 @@ import {
   TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,
 } from '@solana/spl-token';
-import { PublicKey, SystemProgram } from '@solana/web3.js';
+import { PublicKey, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
 // import wallet from "~/.config/solana/id.json";
 import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
 
@@ -118,35 +118,81 @@ const Dapp: React.FC = () => {
   // console.log the rpc and network we are connected to
   // console.log('RPC URL: ', connection);
 
-  const handleCreateSession = async () => {
-    console.log(program.programId);
-    const targetProgramPublicKey = program.programId;
-    const topUp = true;
-    const expiryInMinutes = 60;
-
-    const session = await sessionWallet.createSession(targetProgramPublicKey, topUp, expiryInMinutes);
-
-    if (session) {
-      console.log("Session created:", session);
+  const ensureSessionToken = async () => {
+    let sessionToken = sessionWallet.sessionToken;
+    if (!sessionToken) {
+      console.log("Session token is null, creating a new session");
+      const topUp = true;
+      const expiryInMinutes = 60;
+      if (program?.programId) {
+        try {
+          await sessionWallet.createSession(program.programId, topUp, expiryInMinutes);
+          sessionToken = sessionWallet.sessionToken;
+          console.log("Session token created:", sessionToken);
+        } catch (error) {
+          console.error("Failed to create session:", error);
+          return null;
+        }
+      } else {
+        console.error("Program ID is undefined");
+        return null;
+      }
     } else {
-      console.error("Failed to create session");
+      console.log("Using existing session token:", sessionToken);
+    }
+    return sessionToken;
+  };
+
+  const fundSessionKey = async (sessionToken: PublicKey) => {
+    const balance = await connection.getBalance(sessionToken);
+    const minimumLamports = LAMPORTS_PER_SOL / 1000; // this is equal to 0.001 SOL
+    console.log(`Session token balance before funding: ${balance} lamports`);
+  
+    if (balance < minimumLamports) {
+      console.log("Funding session key with 0.01 SOL");
+      const transaction = new anchor.web3.Transaction().add(
+        anchor.web3.SystemProgram.transfer({
+          fromPubkey: wallet?.publicKey || PublicKey.default,
+          toPubkey: sessionToken,
+          lamports: LAMPORTS_PER_SOL / 100, // this is equal to 0.01 SOL
+        })
+      );
+      if (!wallet) {
+        console.error("Wallet is not connected");
+        return;
+      }
+      const signature = await wallet.signTransaction(transaction);
+      console.log("Session key funded with 0.01 SOL");
+  
+      // Fetch and log the updated balance
+      const updatedBalance = await connection.getBalance(sessionToken);
+      console.log(`Session token balance after funding: ${updatedBalance} lamports`);
+    } else {
+      console.log("Session key has sufficient funds");
+      console.log(`Session token balance: ${balance} lamports`);
     }
   };
 
   const handlePetInstruction = async () => {
-    // if (!program || !wallet) return;
-    setIsLoadingSession(true)
-    if ( !program || !sessionWallet) return
+    setIsLoadingSession(true);
+    if (!program || !sessionWallet) return;
 
-    if (!sessionWallet.publicKey) {
-      await handleCreateSession();
+    const sessionToken = await ensureSessionToken();
+
+    if (!sessionToken) {
+      console.error("Failed to create session token");
+      setIsLoadingSession(false);
+      return;
     }
+
+    await fundSessionKey(new PublicKey(sessionToken));
 
     try {
       const tx = await program.methods
         .pet()
         .accountsPartial({
-          sessionToken: await sessionWallet.sessionToken,
+          // signer: sessionWallet?.publicKey || PublicKey.default,
+          sessionToken,
           house,
           dog,
           user,
@@ -158,44 +204,52 @@ const Dapp: React.FC = () => {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
+        // .signers([sessionToken])
         .rpc();
-      //   .then(confirm);
       console.log('Your pet tx signature is: ', tx);
       changeState('pet');
     } catch (error) {
-      console.error('Error executing instruction', error);
+      console.error("Error executing pet instruction:", error);
+    } finally {
+      setIsLoadingSession(false);
     }
   };
 
   const handleBonkInstruction = async () => {
-    // if (!program || !wallet) return;
-    setIsLoadingSession(true)
-    if ( !program || !sessionWallet) return
+    setIsLoadingSession(true);
+    if (!program || !sessionWallet) return;
 
-    if (!sessionWallet.publicKey) {
-      await handleCreateSession();
+    const sessionToken = await ensureSessionToken();
+
+    if (!sessionToken) {
+      console.error("Failed to create session token");
+      setIsLoadingSession(false);
+      return;
     }
-    
+
+    await fundSessionKey(new PublicKey(sessionToken));
+
     try {
       const tx = await program.methods
         .bonk()
         .accountsPartial({
-          sessionToken: wallet?.publicKey,
+          sessionToken,
           dog,
           user,
-          bonkMint,
-          dogBonkAta,
-          userBonkAta,
+          // bonkMint,
+          // dogBonkAta,
+          // userBonkAta,
           associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
         .rpc();
-      //   .then(confirm);
       console.log('Your bonk tx signature is: ', tx);
       changeState('bonk');
     } catch (error) {
       console.error('Error executing instruction', error);
+    } finally {
+      setIsLoadingSession(false);
     }
   };
 

@@ -9,9 +9,8 @@ use anchor_spl::{
         Metadata,
     },
     token::{mint_to, Mint, MintTo, Token, TokenAccount}
-};
+};// TransferChecked, transfer_checked (put these methods back into the token imports above once the need for a TransferChecked CPI is back in-place.)
 
-// TransferChecked, transfer_checked
 use session_keys::{SessionToken, Session};
 
 // use std::str::FromStr;

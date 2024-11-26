@@ -124,9 +124,9 @@ describe("pet-dat-dog", () => {
       .accountsPartial({
         dog,
         owner: keypair.publicKey,
-        dogAuth,
-        bonkMint: BONK_MINT,
-        dogBonkAta,
+        // dogAuth,
+        // bonkMint: BONK_MINT,
+        // dogBonkAta,
         house: ADMIN, // defined by the local wallet now, but will need to be derived later
         global,
         tokenProgram: TOKEN_PROGRAM_ID,

@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { useAnchorWallet, useConnection, useWallet } from "@solana/wallet-adapter-react"
 import { useSessionWallet } from "@magicblock-labs/gum-react-sdk"
-import { useProgram } from "../../utils/useProgram"
+import { useProgram } from "../utils/useProgram"
+import React from "react"
 
 const SessionKeyButton = () => {
   const { publicKey } = useWallet()
@@ -12,10 +13,15 @@ const SessionKeyButton = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleCreateSession = async () => {
-    setIsLoading(true)
-    const topUp = true
-    const expiryInMinutes = 600
-    console.log(program)
+    setIsLoading(true);
+    const topUp = true;
+    const expiryInMinutes = 600;
+
+    if (!program) {
+      console.error("Program is undefined");
+      setIsLoading(false);
+      return;
+    }
     try {
       const session = await sessionWallet.createSession(
         program.programId,

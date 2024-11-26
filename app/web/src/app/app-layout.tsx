@@ -91,21 +91,21 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </li>
           <li>
             The use of this program, its instructions, and its front end is
-            entirely of your own volition. Use at your own risk.
+            entirely of your own volition. Use it at your own risk.
           </li>
           <li>
             Petting a Dog costs a transaction fee, plus 0.000001 SOL paid to the
             Dog's owner.
           </li>
-          <li>
+          {/* <li>
             BONK'ing a Dog costs a transaction fee, plus 1 $BONK token paid to
             the Dog.
-          </li>
+          </li> */}
           <li>Creating your own Dog costs 0.01 SOL.</li>
           <li>Mint 1 $PETS token to your wallet by petting a Dog.</li>
           <li>
             The $PETS token has an initial supply of 0. There is no pre-mine, no
-            insider allocations, nor VC's.
+            insider allocations, and no VC's.
           </li>
           <li>
             Expect no return nor expectation of profit from the developer's

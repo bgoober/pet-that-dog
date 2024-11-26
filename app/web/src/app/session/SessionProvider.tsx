@@ -4,6 +4,7 @@
 
 import { SessionWalletProvider, useSessionKeyManager } from '@magicblock-labs/gum-react-sdk';
 import { AnchorWallet, useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
+import React from 'react';
 
 interface SessionProviderProps {
   children: React.ReactNode;
