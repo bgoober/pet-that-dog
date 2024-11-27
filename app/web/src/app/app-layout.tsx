@@ -101,7 +101,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <li>Mint 1 $PETS token to your wallet by petting a Dog.</li>
           <li>
             The $PETS token has an initial supply of 0. There is no pre-mine, no
-            insider allocations, and no VC's.
+            insider allocations, and no VC's. YOU MINT YOUR OWN TOKENS!
           </li>
           <li>
             Expect no return nor expectation of profit from the developer's
