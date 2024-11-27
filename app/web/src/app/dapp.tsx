@@ -1,5 +1,5 @@
 import * as anchor from '@coral-xyz/anchor';
-import { useSessionWallet } from "@magicblock-labs/gum-react-sdk"
+import { useSessionWallet } from '@magicblock-labs/gum-react-sdk';
 
 import idl from '../utils/pet_dat_dog.json';
 import {
@@ -41,8 +41,8 @@ const Dapp: React.FC = () => {
   const petBoxRef = useRef<HTMLDivElement>(null);
   const bonkBoxRef = useRef<HTMLDivElement>(null);
   const nextTimeoutRef = useRef<number | null>(null);
-  const sessionWallet = useSessionWallet()
-  const [isLoadingSession, setIsLoadingSession] = useState(false)
+  const sessionWallet = useSessionWallet();
+  const [isLoadingSession, setIsLoadingSession] = useState(false);
 
   const wallet = useAnchorWallet();
   const { connection } = useConnection(); // Extract the connection object
@@ -81,19 +81,19 @@ const Dapp: React.FC = () => {
   );
   // console.log("Dog account: ", dog.toBase58());
 
-  const [dogAuth] = PublicKey.findProgramAddressSync(
-    [Buffer.from('auth'), dog.toBuffer()],
-    program?.programId || PublicKey.default
-  );
+  // const [dogAuth] = PublicKey.findProgramAddressSync(
+  //   [Buffer.from('auth'), dog.toBuffer()],
+  //   program?.programId || PublicKey.default
+  // );
   // console.log("Dog Auth account: ", dogAuth.toBase58());
 
   // for testnet
   // let bonkMint = new PublicKey('Az8AfogXAE3XgiqeBuJg9pjNKTPhgkBtijR7CjToT8pM');
 
   // for devnet and mainnet -- actual BONK mint address
-  let bonkMint = new PublicKey('Ah7HUbhXUqUknH8pg2xr7UHFVeF4ErjLG7BnBeWQRB31');
+  // let bonkMint = new PublicKey('Ah7HUbhXUqUknH8pg2xr7UHFVeF4ErjLG7BnBeWQRB31');
 
-  let dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
+  // let dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
   // console.log("dogBonkAta account: ", dogBonkAta.toBase58());
 
   let userPetsAta = wallet
@@ -101,18 +101,18 @@ const Dapp: React.FC = () => {
     : PublicKey.default;
   // console.log("User petsAta account: ", userPetsAta.toBase58());
 
-  let userBonkAta = wallet
-    ? getAssociatedTokenAddressSync(bonkMint, wallet.publicKey)
-    : PublicKey.default;
+  // let userBonkAta = wallet
+  //   ? getAssociatedTokenAddressSync(bonkMint, wallet.publicKey)
+  //   : PublicKey.default;
   // console.log("User bonkAta account: ", userBonkAta.toBase58());
 
   // console.log('Program ID: ', program?.programId.toBase58());
-  let user = wallet
-    ? PublicKey.findProgramAddressSync(
-        [wallet.publicKey.toBuffer()],
-        program?.programId || PublicKey.default
-      )[0]
-    : PublicKey.default;
+  // let user = wallet
+  //   ? PublicKey.findProgramAddressSync(
+  //       [wallet.publicKey.toBuffer()],
+  //       program?.programId || PublicKey.default
+  //     )[0]
+  //   : PublicKey.default;
   // console.log('User account: ', user.toBase58());
 
   // console.log the rpc and network we are connected to
@@ -121,24 +121,28 @@ const Dapp: React.FC = () => {
   const ensureSessionToken = async () => {
     let sessionToken = sessionWallet.sessionToken;
     if (!sessionToken) {
-      console.log("Session token is null, creating a new session");
+      console.log('Session token is null, creating a new session');
       const topUp = true;
       const expiryInMinutes = 60;
       if (program?.programId) {
         try {
-          await sessionWallet.createSession(program.programId, topUp, expiryInMinutes);
+          await sessionWallet.createSession(
+            program.programId,
+            topUp,
+            expiryInMinutes
+          );
           sessionToken = sessionWallet.sessionToken;
-          console.log("Session token created:", sessionToken);
+          console.log('Session token created:', sessionToken);
         } catch (error) {
-          console.error("Failed to create session:", error);
+          console.error('Failed to create session:', error);
           return null;
         }
       } else {
-        console.error("Program ID is undefined");
+        console.error('Program ID is undefined');
         return null;
       }
     } else {
-      console.log("Using existing session token:", sessionToken);
+      console.log('Using existing session token:', sessionToken);
     }
     return sessionToken;
   };
@@ -147,9 +151,9 @@ const Dapp: React.FC = () => {
     const balance = await connection.getBalance(sessionToken);
     const minimumLamports = LAMPORTS_PER_SOL / 1000; // this is equal to 0.001 SOL
     console.log(`Session token balance before funding: ${balance} lamports`);
-  
+
     if (balance < minimumLamports) {
-      console.log("Funding session key with 0.01 SOL");
+      console.log('Funding session key with 0.01 SOL');
       const transaction = new anchor.web3.Transaction().add(
         anchor.web3.SystemProgram.transfer({
           fromPubkey: wallet?.publicKey || PublicKey.default,
@@ -158,17 +162,19 @@ const Dapp: React.FC = () => {
         })
       );
       if (!wallet) {
-        console.error("Wallet is not connected");
+        console.error('Wallet is not connected');
         return;
       }
       const signature = await wallet.signTransaction(transaction);
-      console.log("Session key funded with 0.01 SOL");
-  
+      console.log('Session key funded with 0.01 SOL');
+
       // Fetch and log the updated balance
       const updatedBalance = await connection.getBalance(sessionToken);
-      console.log(`Session token balance after funding: ${updatedBalance} lamports`);
+      console.log(
+        `Session token balance after funding: ${updatedBalance} lamports`
+      );
     } else {
-      console.log("Session key has sufficient funds");
+      console.log('Session key has sufficient funds');
       console.log(`Session token balance: ${balance} lamports`);
     }
   };
@@ -180,7 +186,7 @@ const Dapp: React.FC = () => {
     const sessionToken = await ensureSessionToken();
 
     if (!sessionToken) {
-      console.error("Failed to create session token");
+      console.error('Failed to create session token');
       setIsLoadingSession(false);
       return;
     }
@@ -188,14 +194,22 @@ const Dapp: React.FC = () => {
     await fundSessionKey(new PublicKey(sessionToken));
 
     try {
-      const tx = await program.methods
+      // Derive the user PDA using the session wallet's public key and the program ID
+      const [userPda] = PublicKey.findProgramAddressSync(
+        [sessionWallet.publicKey!.toBuffer()],
+        program.programId
+      );
+
+      console.log('User PDA:', userPda.toBase58());
+
+      const transaction = await program.methods
         .pet()
         .accountsPartial({
-          // signer: sessionWallet?.publicKey || PublicKey.default,
-          sessionToken,
+          signer: sessionWallet.publicKey!,
+          sessionToken: sessionWallet.sessionToken!,
           house,
           dog,
-          user,
+          user: userPda,
           owner: house,
           petsMint,
           mintAuth,
@@ -204,12 +218,33 @@ const Dapp: React.FC = () => {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        // .signers([sessionToken])
-        .rpc();
-      console.log('Your pet tx signature is: ', tx);
+        .transaction();
+
+      // Log all accounts in the transaction
+      transaction.instructions.forEach((ix, index) => {
+        console.log(`Instruction ${index}:`);
+        ix.keys.forEach((key, keyIndex) => {
+          console.log(
+            `  Key ${keyIndex}: ${key.pubkey.toBase58()} (${
+              key.isSigner ? 'signer' : 'not signer'
+            }, ${key.isWritable ? 'writable' : 'not writable'})`
+          );
+        });
+      });
+
+      const txids = await sessionWallet.signAndSendTransaction!(transaction);
+
+      if (txids && txids.length > 0) {
+        console.log('Transaction sent:', txids);
+      } else {
+        console.error('Failed to send transaction');
+      }
       changeState('pet');
     } catch (error) {
-      console.error("Error executing pet instruction:", error);
+      console.error('Error executing pet instruction:', error);
+      if (error instanceof anchor.AnchorError) {
+        console.error('Anchor error:', error.errorLogs);
+      }
     } finally {
       setIsLoadingSession(false);
     }
@@ -222,7 +257,7 @@ const Dapp: React.FC = () => {
     const sessionToken = await ensureSessionToken();
 
     if (!sessionToken) {
-      console.error("Failed to create session token");
+      console.error('Failed to create session token');
       setIsLoadingSession(false);
       return;
     }
@@ -230,6 +265,11 @@ const Dapp: React.FC = () => {
     await fundSessionKey(new PublicKey(sessionToken));
 
     try {
+      const [user] = PublicKey.findProgramAddressSync(
+        [wallet!.publicKey.toBuffer()],
+        program.programId
+      );
+
       const tx = await program.methods
         .bonk()
         .accountsPartial({
