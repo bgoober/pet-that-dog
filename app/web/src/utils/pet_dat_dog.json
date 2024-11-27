@@ -39,7 +39,6 @@
         },
         {
           "name": "dog",
-          "writable": true,
           "pda": {
             "seeds": [
               {
@@ -62,37 +61,6 @@
               }
             ]
           }
-        },
-        {
-          "name": "bonk_mint"
-        },
-        {
-          "name": "user_bonk_ata",
-          "writable": true
-        },
-        {
-          "name": "dog_auth",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  97,
-                  117,
-                  116,
-                  104
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "dog"
-              }
-            ]
-          }
-        },
-        {
-          "name": "dog_bonk_ata",
-          "writable": true
         },
         {
           "name": "token_program",
@@ -152,32 +120,11 @@
           }
         },
         {
-          "name": "dog_auth",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  97,
-                  117,
-                  116,
-                  104
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "dog"
-              }
-            ]
-          }
-        },
-        {
           "name": "house",
           "writable": true
         },
         {
           "name": "global",
-          "writable": true,
           "pda": {
             "seeds": [
               {
@@ -190,20 +137,9 @@
                   97,
                   108
                 ]
-              },
-              {
-                "kind": "account",
-                "path": "house"
               }
             ]
           }
-        },
-        {
-          "name": "bonk_mint"
-        },
-        {
-          "name": "dog_bonk_ata",
-          "writable": true
         },
         {
           "name": "token_program",
@@ -239,7 +175,10 @@
       ],
       "accounts": [
         {
-          "name": "house",
+          "name": "house"
+        },
+        {
+          "name": "payer",
           "writable": true,
           "signer": true
         },
@@ -258,10 +197,6 @@
                   97,
                   108
                 ]
-              },
-              {
-                "kind": "account",
-                "path": "house"
               }
             ]
           }
@@ -396,7 +331,6 @@
         },
         {
           "name": "global",
-          "writable": true,
           "pda": {
             "seeds": [
               {
@@ -409,10 +343,6 @@
                   97,
                   108
                 ]
-              },
-              {
-                "kind": "account",
-                "path": "house"
               }
             ]
           }
@@ -558,7 +488,7 @@
     {
       "code": 6001,
       "name": "TooManyBonks",
-      "msg": "Too many bonksin one slot!"
+      "msg": "Too many bonks in one slot!"
     },
     {
       "code": 6002,
@@ -585,15 +515,7 @@
             "type": "u64"
           },
           {
-            "name": "bonks",
-            "type": "u64"
-          },
-          {
             "name": "dog_bump",
-            "type": "u8"
-          },
-          {
-            "name": "auth_bump",
             "type": "u8"
           }
         ]
@@ -634,10 +556,6 @@
         "fields": [
           {
             "name": "last_pet",
-            "type": "u64"
-          },
-          {
-            "name": "last_bonk",
             "type": "u64"
           },
           {

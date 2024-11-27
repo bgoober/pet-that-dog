@@ -27,7 +27,7 @@ describe("pet-dat-dog", () => {
       console.log(`Dog's key: ${dogName}`, dog.toString());
 
       console.log(`Dog's pets: ${dogName}`, dogAccount.pets.toString());
-      console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
+      // console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
     });
   }
 });
