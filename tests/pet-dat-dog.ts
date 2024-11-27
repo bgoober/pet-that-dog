@@ -13,6 +13,7 @@ import wallet from "/home/agent/.config/solana/id.json";
 import wallet2 from "../wallet.json";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
 import { publicKey, token } from "@coral-xyz/anchor/dist/cjs/utils";
+import { expect } from "chai";
 
 describe("pet-dat-dog", () => {
   const provider = anchor.AnchorProvider.env();
@@ -156,8 +157,7 @@ describe("pet-dat-dog", () => {
       1_000_000_000
     );
     console.log("User bonkAta account: ", userBonkAta.toBase58());
-    // refactor the accounts that you have init or init_if_needed to use getAssociatedTokenAddressSync, and remove the await.
-    // Move the dogBonkAta calculation here and ensure it's assigned to the higher scope variable.
+
     dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
     console.log("dogBonkAta account: ", dogBonkAta.toBase58());
 
@@ -181,12 +181,9 @@ describe("pet-dat-dog", () => {
       .then(confirm)
       .then(log);
     console.log("Your init global tx signature is: ", txHash);
-    // if (!txHash) throw new Error("Failed to initialize.");
   });
 
   it(`Dog created - ${dogName}`, async () => {
-    // let global = new PublicKey("3H6m4MEfSeZCnwsXiP2XrhEKFs78BEGUrq8Rs5PDZd8H");
-
     console.log("test1");
     const txHash = await program.methods
       .createDog(dogName.toString())
@@ -206,7 +203,10 @@ describe("pet-dat-dog", () => {
       .then(confirm)
       .then(log);
     console.log("Your create dog tx signature is: ", txHash);
-    if (!txHash) throw new Error("Failed to initialize.");
+    const dogAccount = await program.account.dog.fetch(dog);
+
+    // expect that dogAccount.pets is equal to 0
+    expect(dogAccount.pets.toNumber()).to.equal(0);
   });
 
   it(`Petting - ${dogName}`, async () => {
@@ -228,6 +228,11 @@ describe("pet-dat-dog", () => {
       .then(confirm)
       .then(log);
     console.log("Your pet tx signature is: ", tx);
+
+    const dogAccount = await program.account.dog.fetch(dog);
+
+    // expect that dogAccount.pets is equal to 1
+    expect(dogAccount.pets.toNumber()).to.equal(1);
   });
 
   it(`Is bonked! - ${dogName}`, async () => {
@@ -255,5 +260,8 @@ describe("pet-dat-dog", () => {
 
     console.log(`Dog's pets: ${dogName}`, dogAccount.pets.toString());
     // console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
+
+    // expect that dogAccount.pets is equal to 1
+    expect(dogAccount.pets.toNumber()).to.equal(1);
   });
 });

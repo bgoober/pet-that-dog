@@ -195,7 +195,7 @@ pub struct PetC<'info> {
     pub signer: Signer<'info>,
 
     /// CHECK: squads multi sig
-    #[account(mut, constraint = house.key() == global.house.key())]
+    #[account(constraint = house.key() == global.house.key())]
     pub house: AccountInfo<'info>,
 
     /// CHECK: this is the dog's owner
