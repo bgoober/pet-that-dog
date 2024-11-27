@@ -82,16 +82,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <h4>Disclaimer / Terms of Service</h4>
         <ul>
           <li>
-            The code for this program is unaudited; including the use of Session
+            The code for this program is unaudited, including the use of Session
             Keys for signing transactions.
           </li>
           <li>
             The front-end user interface relies on 3rd party applications, such
-            as Vercel for the front end and may not always be available.
-          </li>
-          <li>
-            The use of this program, its instructions, and its front end is
-            entirely of your own volition. Use it at your own risk.
+            as Vercel, and may not always be available.
           </li>
           <li>
             Petting a Dog costs a transaction fee, plus 0.000001 SOL paid to the
@@ -110,6 +106,17 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <li>
             Expect no return nor expectation of profit from the developer's
             continued work, your Dog, or the $PETS token.
+          </li>
+          <li>
+            In no event shall the owners of, or contributors to this application
+            and website be liable for any damages of any kind; including, but
+            not limited to, loss of use, loss of profits, or loss of data
+            arising out of or in any way connected with the use of the website
+            or application and its instructions and functions.
+          </li>
+          <li>
+            The use of this program, its instructions, and its front end is
+            entirely of your own volition. Use it at your own risk.
           </li>
         </ul>
       </Modal>

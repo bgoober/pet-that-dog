@@ -12,3 +12,4 @@ Yes, you can!
 - Mint 1 $PETS token to your wallet by petting a Dog.
 - The $PETS token has an initial supply of 0. There is no pre-mine, no insider allocations, and no VC's. YOU MINT YOUR OWN TOKENS!
 - Expect no return nor expectation of profit from the developer's continued work, your Dog, or the $PETS token.
+- In no event shall the owners of, or contributors to this application and website be liable for any damages of any kind; including, but not limited to, loss of use, loss of profits, or loss of data arising out of or in any way connected with the use of the website or application and its instructions and functions.
