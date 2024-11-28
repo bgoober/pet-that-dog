@@ -67,12 +67,6 @@ describe("pet-dat-dog", () => {
   );
   console.log("Dog account: ", dog.toBase58());
 
-  const [dogAuth] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("auth"), dog.toBuffer()],
-    program.programId
-  );
-  console.log("Dog Auth account: ", dogAuth.toBase58());
-
   let user = PublicKey.findProgramAddressSync(
     [keypair.publicKey.toBuffer()],
     program.programId
@@ -157,9 +151,6 @@ describe("pet-dat-dog", () => {
       1_000_000_000
     );
     console.log("User bonkAta account: ", userBonkAta.toBase58());
-
-    dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
-    console.log("dogBonkAta account: ", dogBonkAta.toBase58());
 
     userPetsAta = getAssociatedTokenAddressSync(petsMint, keypair.publicKey);
     console.log("User petsAta account: ", userPetsAta.toBase58());
