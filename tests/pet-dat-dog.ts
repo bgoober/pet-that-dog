@@ -13,6 +13,7 @@ import wallet from "/home/agent/.config/solana/id.json";
 import wallet2 from "../wallet.json";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
 import { publicKey, token } from "@coral-xyz/anchor/dist/cjs/utils";
+import { expect } from "chai";
 
 describe("pet-dat-dog", () => {
   const provider = anchor.AnchorProvider.env();
@@ -66,16 +67,16 @@ describe("pet-dat-dog", () => {
   );
   console.log("Dog account: ", dog.toBase58());
 
-  const [dogAuth] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("auth"), dog.toBuffer()],
-    program.programId
-  );
-  console.log("Dog Auth account: ", dogAuth.toBase58());
-
   let user = PublicKey.findProgramAddressSync(
     [keypair.publicKey.toBuffer()],
     program.programId
   )[0];
+
+  const [global] = web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("global")],
+    program.programId
+  );
+  console.log("Global account: ", global.toBase58());
 
   const metadata = {
     name: "pet dat dog",
@@ -150,10 +151,6 @@ describe("pet-dat-dog", () => {
       1_000_000_000
     );
     console.log("User bonkAta account: ", userBonkAta.toBase58());
-    // refactor the accounts that you have init or init_if_needed to use getAssociatedTokenAddressSync, and remove the await.
-    // Move the dogBonkAta calculation here and ensure it's assigned to the higher scope variable.
-    dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
-    console.log("dogBonkAta account: ", dogBonkAta.toBase58());
 
     userPetsAta = getAssociatedTokenAddressSync(petsMint, keypair.publicKey);
     console.log("User petsAta account: ", userPetsAta.toBase58());
@@ -163,6 +160,7 @@ describe("pet-dat-dog", () => {
     const txHash = await program.methods
       .initGlobal(metadata.name, metadata.symbol, metadata.uri)
       .accountsPartial({
+        global,
         house: keypair.publicKey,
         petsMint,
         mintAuth,
@@ -174,21 +172,18 @@ describe("pet-dat-dog", () => {
       .then(confirm)
       .then(log);
     console.log("Your init global tx signature is: ", txHash);
-    if (!txHash) throw new Error("Failed to initialize.");
   });
 
   it(`Dog created - ${dogName}`, async () => {
-    let global = new PublicKey("EPEcGyW9uxqbMBkAmFcNZ37iCLFYhmAzzZviJ8jmYeSV");
-
     console.log("test1");
     const txHash = await program.methods
       .createDog(dogName.toString())
       .accountsPartial({
         dog,
         owner: keypair.publicKey,
-        dogAuth,
-        bonkMint,
-        dogBonkAta,
+        // dogAuth,
+        // bonkMint,
+        // dogBonkAta,
         house: keypair.publicKey, // defined by the local wallet now, but will need to be derived later
         global,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -199,12 +194,13 @@ describe("pet-dat-dog", () => {
       .then(confirm)
       .then(log);
     console.log("Your create dog tx signature is: ", txHash);
-    if (!txHash) throw new Error("Failed to initialize.");
+    const dogAccount = await program.account.dog.fetch(dog);
+
+    // expect that dogAccount.pets is equal to 0
+    expect(dogAccount.pets.toNumber()).to.equal(0);
   });
 
-  it(`Is pet! - ${dogName}`, async () => {
-    //
-
+  it(`Petting - ${dogName}`, async () => {
     const tx = await program.methods
       .pet()
       .accountsPartial({
@@ -223,6 +219,11 @@ describe("pet-dat-dog", () => {
       .then(confirm)
       .then(log);
     console.log("Your pet tx signature is: ", tx);
+
+    const dogAccount = await program.account.dog.fetch(dog);
+
+    // expect that dogAccount.pets is equal to 1
+    expect(dogAccount.pets.toNumber()).to.equal(1);
   });
 
   it(`Is bonked! - ${dogName}`, async () => {
@@ -231,9 +232,9 @@ describe("pet-dat-dog", () => {
       .accountsPartial({
         dog,
         user,
-        bonkMint,
-        dogBonkAta,
-        userBonkAta,
+        // bonkMint,
+        // dogBonkAta,
+        // userBonkAta,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
@@ -249,8 +250,9 @@ describe("pet-dat-dog", () => {
     const dogAccount = await program.account.dog.fetch(dog);
 
     console.log(`Dog's pets: ${dogName}`, dogAccount.pets.toString());
-    console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
+    // console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
 
-    // find all the accounts underneath the dog account
+    // expect that dogAccount.pets is equal to 1
+    expect(dogAccount.pets.toNumber()).to.equal(1);
   });
 });

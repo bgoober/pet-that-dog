@@ -91,6 +91,6 @@ describe("pet-dat-dog", () => {
     const dogAccount = await program.account.dog.fetch(dog);
 
     console.log(`${dogName}'s pets: `, dogAccount.pets.toString());
-    console.log(`${dogName}'s bonks:`, dogAccount.bonks.toString());
+    // console.log(`${dogName}'s bonks:`, dogAccount.bonks.toString());
   });
 });

@@ -128,7 +128,7 @@ describe("pet-dat-dog", () => {
     const dogAccount = await program.account.dog.fetch(dog);
 
     console.log(`${dogName}'s pets: `, dogAccount.pets.toString());
-    console.log(`${dogName}'s bonks:`, dogAccount.bonks.toString());
+    // console.log(`${dogName}'s bonks:`, dogAccount.bonks.toString());
   });
 
   it(`Dog created - ${dog2Name}`, async () => {
@@ -157,9 +157,9 @@ describe("pet-dat-dog", () => {
        // signer: player2.publicKey,
         dog: dog2,
         owner: player2.publicKey,
-        dogAuth: dog2Auth,
-        bonkMint,
-        dogBonkAta: dog2BonkAta,
+        // dogAuth: dog2Auth,
+        // bonkMint,
+        // dogBonkAta: dog2BonkAta,
         house: keypair.publicKey, // defined by the local wallet now, but will need to be derived later
         global,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -214,9 +214,9 @@ describe("pet-dat-dog", () => {
         signer: player2.publicKey,
         dog: dog2,
         user,
-        bonkMint,
-        dogBonkAta: dog2BonkAta,
-        userBonkAta,
+        // bonkMint,
+        // dogBonkAta: dog2BonkAta,
+        // userBonkAta,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
@@ -234,6 +234,6 @@ describe("pet-dat-dog", () => {
     console.log(`${dog2Name} account : `, dog2.toBase58());
 
     console.log(`${dog2Name}'s pets: `, dog2Account.pets.toString());
-    console.log(`${dog2Name}'s bonks:`, dog2Account.bonks.toString());
+    // console.log(`${dog2Name}'s bonks:`, dog2Account.bonks.toString());
   });
 });

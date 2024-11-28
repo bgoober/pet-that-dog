@@ -8,31 +8,42 @@ use anchor_spl::{
         create_metadata_accounts_v3, mpl_token_metadata::types::DataV2, CreateMetadataAccountsV3,
         Metadata,
     },
-    token::{mint_to, transfer_checked, Mint, MintTo, Token, TokenAccount, TransferChecked},
-};
+    token::{mint_to, Mint, MintTo, Token, TokenAccount}
+};// TransferChecked, transfer_checked (put these methods back into the token imports above once the need for a TransferChecked CPI is back in-place.)
+
 // use std::str::FromStr;
 
 use crate::state::*;
 
-// admin addressed to be changed to Squads DAO/Multisig in the future
+// HOUSE addressed to be changed to Squads DAO/Multisig in the future
+// const HOUSE: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
+
+// ADMIN address to be used for calling GlobalC
 // const ADMIN: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
 
 // this is the main net $BONK Mint address
 // const BONK_MINT: &str = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
+
+// this is the main net $PNUT Mint address
+// const PNUT_MINT: &str = "2qEHjDLDLbuBgRYvsxhc5D6uDWAivNFZGan56P1tpump";
+
+// this is the main net $WIF Mint address
+// const WIF_MINT: &str = "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm";
 
 /// DOCS: GlobalC now inits a global PETS token mint, to be used during any PetC context for any dog.
 /// There is now 1 token for ALL dogs made within the program, by any user.
 #[derive(Accounts)]
 pub struct GlobalC<'info> {
     /// CHECK: This account will be constrained to the Squads/Programs/Dev Team's multi-sig account
-    // #[account(mut, constraint = house.key() == Pubkey::from_str(ADMIN).unwrap())]
+    // #[account(mut, constraint = house.key() == Pubkey::from_str(HOUSE).unwrap())]
     #[account()]
     pub house: AccountInfo<'info>,
 
+    // #[account(mut, constraint = payer.key() == Pubkey::from_str(ADMIN).unwrap())]
     #[account(mut)]
     pub payer: Signer<'info>,
 
-    #[account(init, payer = payer, seeds = [b"global", house.key().as_ref()], space = Global::LEN, bump)]
+    #[account(init, payer = payer, seeds = [b"global"], space = Global::LEN, bump)]
     pub global: Account<'info, Global>,
 
     #[account(init, payer = payer, seeds = [b"pets"], mint::decimals=5, mint::authority = mint_auth, bump)]
@@ -111,14 +122,13 @@ impl<'info> GlobalC<'info> {
             None, // Collection details
         )?;
 
-        msg!("Token mint created successfully.");
+        // msg!("Token mint created successfully.");
         Ok(())
     }
 }
 
 /// DOCS: The DogC now inits a new dog with a name, and an owner.
 /// Each dog no longer has its own token, but will instead use the global mint during a PetC context.
-/// Each dog retains its own BONK vault, auth, and mini-game.
 #[derive(Accounts)]
 #[instruction(name: String)]
 pub struct DogC<'info> {
@@ -128,28 +138,28 @@ pub struct DogC<'info> {
     #[account(init, payer = owner, seeds = [b"dog", name.as_str().as_bytes(), owner.key().as_ref()], space = Dog::LEN, bump)]
     pub dog: Account<'info, Dog>,
 
-    /// CHECK: this is safe
-    #[account(
-        seeds = [b"auth", dog.key().as_ref()],
-        bump
-    )]
-    pub dog_auth: AccountInfo<'info>,
-
     /// CHECK: this is the squads multi-sig that was defined and stored in the GlobalC context
     #[account(mut, constraint = house.key() == global.house.key())]
     pub house: AccountInfo<'info>,
 
-    #[account(mut, seeds = [b"global", house.key().as_ref()], bump = global.global_bump)]
+    #[account(seeds = [b"global"], bump = global.global_bump)]
     pub global: Account<'info, Global>,
 
     //bonk mint
     // #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
-    #[account()]
-    pub bonk_mint: Account<'info, Mint>,
+    // #[account()]
+    // pub bonk_mint: Account<'info, Mint>,
 
     // dog's bonk ata
-    #[account(init, payer = owner, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
-    pub dog_bonk_ata: Account<'info, TokenAccount>,
+    // #[account(init, payer = owner, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
+    // pub dog_bonk_ata: Account<'info, TokenAccount>,
+
+    /// CHECK: this is safe
+    // #[account(
+    //     seeds = [b"auth", dog.key().as_ref()],
+    //     bump
+    // )]
+    // pub dog_auth: AccountInfo<'info>,
 
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
@@ -162,9 +172,9 @@ impl<'info> DogC<'info> {
             name,
             owner: self.owner.key(),
             pets: 0,
-            bonks: 0,
+            // bonks: 0,
             dog_bump: bumps.dog,
-            auth_bump: bumps.dog_auth,
+            // auth_bump: bumps.dog_auth,
         });
 
         let cpi_accounts = Transfer {
@@ -184,15 +194,15 @@ pub struct PetC<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
 
-    /// CHECK: this is the signer of the GlobalC context
-    #[account(mut, constraint = house.key() == global.house.key())]
+    /// CHECK: squads multi sig
+    #[account(constraint = house.key() == global.house.key())]
     pub house: AccountInfo<'info>,
 
-    /// CHECK: this is the signer of the GlobalC context
+    /// CHECK: this is the dog's owner
     #[account(mut, constraint = owner.key() == dog.owner.key())]
     pub owner: AccountInfo<'info>,
 
-    #[account(mut, seeds = [b"global", house.key().as_ref()], bump = global.global_bump)]
+    #[account(seeds = [b"global"], bump = global.global_bump)]
     pub global: Account<'info, Global>,
 
     #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
@@ -244,9 +254,9 @@ impl<'info> PetC<'info> {
         self.user.last_pet = Clock::get()?.slot;
 
         // tell how many pets the dog has
-        msg!("{} has been pet {} times", self.dog.name, self.dog.pets);
+        // msg!("{} has been pet {} times", self.dog.name, self.dog.pets);
 
-        msg!("User's last pet: {}", self.user.last_pet);
+        // msg!("User's last pet: {}", self.user.last_pet);
 
         let cpi_accounts = Transfer {
             from: self.signer.to_account_info(),
@@ -255,9 +265,10 @@ impl<'info> PetC<'info> {
 
         let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
 
-        transfer(ctx, 1000)?; // this is equal 1x10^-6 SOL (1 micro SOL, or 1/1Millionth SOL). 10k pets would repay the dog creation for for the owner. 1 million pets would be 1 SOL.
-                              // 10^-6 seems to be the lowest we can go to actually see a change in the account balance on the explorer, anything less and it bleeds the recipient account or doesn't move it at all.
-                              // on localnet, the owner is receiving 9.6x10^-7 SOL per pet from a user, or 0.00000096 SOL per pet.
+        transfer(ctx, 1000)?; 
+        // this is equal 1x10^-6 SOL (1 micro SOL, or 1/1Millionth SOL). 10k pets would repay the dog creation for for the owner. 1 million pets would be 1 SOL.
+        // 10^-6 seems to be the lowest we can go to actually see a change in the account balance on the explorer, anything less and it bleeds the recipient account or doesn't move it at all.
+        // on localnet, the owner is receiving 9.6x10^-7 SOL per pet from a user, or 0.00000096 SOL per pet.
         Ok(())
     }
 }
@@ -270,27 +281,27 @@ pub struct BonkC<'info> {
     #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
     pub user: Account<'info, User>,
 
-    #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
+    #[account(seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
 
     //bonk mint
     // #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
-    pub bonk_mint: Account<'info, Mint>,
+    // pub bonk_mint: Account<'info, Mint>,
 
     // user's bonk ata
-    #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = signer)]
-    pub user_bonk_ata: Account<'info, TokenAccount>,
+    // #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = signer)]
+    // pub user_bonk_ata: Account<'info, TokenAccount>,
 
     /// CHECK: this is safe
-    #[account(
-        seeds = [b"auth", dog.key().as_ref()],
-        bump = dog.auth_bump
-    )]
-    pub dog_auth: AccountInfo<'info>,
+    // #[account(
+    //     seeds = [b"auth", dog.key().as_ref()],
+    //     bump = dog.auth_bump
+    // )]
+    // pub dog_auth: AccountInfo<'info>,
 
     // dog's bonk ata
-    #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
-    pub dog_bonk_ata: Account<'info, TokenAccount>,
+    // #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
+    // pub dog_bonk_ata: Account<'info, TokenAccount>,
 
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
@@ -299,30 +310,31 @@ pub struct BonkC<'info> {
 
 impl<'info> BonkC<'info> {
     pub fn bonk(&mut self) -> Result<()> {
-        if self.user.last_bonk == Clock::get()?.slot {
-            return Err(ErrorCode::TooManyBonks.into());
-        }
 
-        // create a cpi transfer from the user's bonk ata to the dog's bonk ata for 1 $BONK token
-        let cpi_accounts = TransferChecked {
-            from: self.user_bonk_ata.to_account_info(),
-            to: self.dog_bonk_ata.to_account_info(),
-            mint: self.bonk_mint.to_account_info(),
-            authority: self.signer.to_account_info(),
-        };
+        // if self.user.last_bonk == Clock::get()?.slot {
+        //     return Err(ErrorCode::TooManyBonks.into());
+        // }
 
-        let ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
+        // // create a cpi transfer from the user's bonk ata to the dog's bonk ata for 1 $BONK token
+        // let cpi_accounts = TransferChecked {
+        //     from: self.user_bonk_ata.to_account_info(),
+        //     to: self.dog_bonk_ata.to_account_info(),
+        //     mint: self.bonk_mint.to_account_info(),
+        //     authority: self.signer.to_account_info(),
+        // };
 
-        transfer_checked(ctx, 100_000, 5)?;
+        // let ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
 
-        self.dog.bonks += 1;
+        // transfer_checked(ctx, 100_000, 5)?;
 
-        self.user.last_bonk = Clock::get()?.slot;
+        // self.dog.bonks += 1;
+
+        // self.user.last_bonk = Clock::get()?.slot;
 
         // tell how many bonks the dog has
-        msg!("{} has been bonked {} times", self.dog.name, self.dog.bonks);
+        // msg!("{} has been bonked {} times", self.dog.name, self.dog.bonks);
 
-        msg!("User's last bonk: {}", self.user.last_bonk);
+        // msg!("User's last bonk: {}", self.user.last_bonk);
 
         Ok(())
     }
@@ -332,7 +344,7 @@ impl<'info> BonkC<'info> {
 pub enum ErrorCode {
     #[msg("Too many pets in one slot!")]
     TooManyPets,
-    #[msg("Too many bonksin one slot!")]
+    #[msg("Too many bonks in one slot!")]
     TooManyBonks,
     #[msg("Session error")]
     SessionError,
