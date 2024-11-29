@@ -31,13 +31,23 @@ pub mod pet_dat_dog {
 
     // pet, taking a User as context
     pub fn pet(ctx: Context<PetC>) -> Result<()> {
-        ctx.accounts.pet()?;
+        ctx.accounts.pet(&ctx.bumps)?;
         Ok(())
     }
 
     // bonk, taking a User as context
     pub fn bonk(ctx: Context<BonkC>) -> Result<()> {
-        ctx.accounts.bonk()?;
+        ctx.accounts.bonk(&ctx.bumps)?;
+        Ok(())
+    }
+
+    pub fn pnut(ctx: Context<PnutC>) -> Result<()> {
+        ctx.accounts.pnut(&ctx.bumps)?;
+        Ok(())
+    }
+
+    pub fn wif(ctx: Context<WifC>) -> Result<()> {
+        ctx.accounts.wif(&ctx.bumps)?;
         Ok(())
     }
 }
