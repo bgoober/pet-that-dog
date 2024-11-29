@@ -18,9 +18,7 @@ pub struct Dog {
     pub name: String,
     pub owner: Pubkey,
     pub pets: u64,
-    // pub bonks: u64,
     pub dog_bump: u8,
-    // pub auth_bump: u8, // the auth_bump for the dog is needed eventually as a signer to disburse the dog's BONK ata account balance to the user if they win
 }
 
 impl Dog {
@@ -30,20 +28,10 @@ impl Dog {
 #[account]
 pub struct User {
     pub last_pet: u64,
-    // pub last_bonk: u64,
+    pub authority: Pubkey,
     pub bump: u8,
 }
 
 impl User {
-    pub const LEN: usize = 8 + 8 + 1;
+    pub const LEN: usize = 8 + 8 + 32 + 1;
 }
-
-// #[account]
-// pub struct Team {
-//     pub team: Vec<(Pubkey, u8)>,
-//     pub bump: u8,
-// }
-
-// impl Team {
-//     pub const LEN: usize = 8+(4+10*(32+1)+1);
-// }
