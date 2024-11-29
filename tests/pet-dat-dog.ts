@@ -75,9 +75,27 @@ describe("pet-dat-dog", () => {
   console.log("Global account: ", global.toBase58());
 
   const metadata = {
-    name: "pet dat dog",
-    symbol: "PETS",
+    name: "pe",
+    symbol: "DOGGOS",
     uri: "https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/Qma41jzcPhZ2UspoBrHzKfEX7Ve7fbMV958sQQD3PgvBXW",
+  };
+
+  let dogAuth: PublicKey;
+  let dogBonkAta: PublicKey;
+  let dogPnutAta: PublicKey;
+  let dogWifAta: PublicKey;
+
+  let pnutMint: anchor.web3.PublicKey;
+  let wifMint: anchor.web3.PublicKey;
+  let userPnutAta: anchor.web3.PublicKey;
+  let userWifAta: anchor.web3.PublicKey;
+
+  let devuserPnutAta: anchor.web3.PublicKey;
+  let devuserWifAta: anchor.web3.PublicKey;
+
+  // Helper function for transaction signatures only
+  const getSolscanLink = (signature: string) => {
+    return `https://solscan.io/tx/${signature}?cluster=custom&customUrl=http://localhost:8899`;
   };
 
   it("Setup token environment", async () => {
@@ -98,9 +116,6 @@ describe("pet-dat-dog", () => {
       keypair.publicKey
     );
     userBonkAta = userBonkAtaResult.address;
-    // Verify userBonkAta creation
-    if (!userBonkAta) throw new Error("Failed to create or get userBonkAta");
-
     await mintTo(
       provider.connection,
       keypair,
@@ -109,9 +124,9 @@ describe("pet-dat-dog", () => {
       keypair,
       1_000_000_000
     );
-    console.log("User bonkAta account: ", userBonkAta.toBase58());
+    console.log("User BONK ATA: ", userBonkAta.toBase58());
 
-    // devnet wallet bonk ata + mint to bonk ata
+    // Create and fund devnet wallet BONK ATA
     const devnetwalletBonkAtaResult = await getOrCreateAssociatedTokenAccount(
       provider.connection,
       keypair,
@@ -119,7 +134,6 @@ describe("pet-dat-dog", () => {
       DEVNETWALLET
     );
     devuserBonkAta = devnetwalletBonkAtaResult.address;
-
     await mintTo(
       provider.connection,
       keypair,
@@ -128,10 +142,100 @@ describe("pet-dat-dog", () => {
       keypair,
       1_000_000_000
     );
-    console.log("User bonkAta account: ", userBonkAta.toBase58());
+    console.log("Devnet wallet BONK ATA:", devuserBonkAta.toBase58());
+
+    pnutMint = await createMint(
+      provider.connection,
+      keypair,
+      provider.publicKey,
+      null,
+      6
+    );
+    if (!pnutMint) throw new Error("Failed to create pnutMint");
+    console.log("PNUT Mint account: ", pnutMint.toBase58());
+
+    const userPnutAtaResult = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      keypair,
+      pnutMint,
+      keypair.publicKey
+    );
+    userPnutAta = userPnutAtaResult.address;
+    await mintTo(
+      provider.connection,
+      keypair,
+      pnutMint,
+      userPnutAta,
+      keypair,
+      1_000_000_000
+    );
+    console.log("User PNUT ATA: ", userPnutAta.toBase58());
+
+    // Create and fund devnet wallet PNUT ATA
+    const devnetwalletPnutAtaResult = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      keypair,
+      pnutMint,
+      DEVNETWALLET
+    );
+    devuserPnutAta = devnetwalletPnutAtaResult.address;
+    await mintTo(
+      provider.connection,
+      keypair,
+      pnutMint,
+      devuserPnutAta,
+      keypair,
+      1_000_000_000
+    );
+    console.log("Devnet wallet PNUT ATA:", devuserPnutAta.toBase58());
+
+    wifMint = await createMint(
+      provider.connection,
+      keypair,
+      provider.publicKey,
+      null,
+      6
+    );
+    if (!wifMint) throw new Error("Failed to create wifMint");
+    console.log("WIF Mint account: ", wifMint.toBase58());
+
+    const userWifAtaResult = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      keypair,
+      wifMint,
+      keypair.publicKey
+    );
+    userWifAta = userWifAtaResult.address;
+    await mintTo(
+      provider.connection,
+      keypair,
+      wifMint,
+      userWifAta,
+      keypair,
+      1_000_000_000
+    );
+    console.log("User WIF ATA: ", userWifAta.toBase58());
+
+    // Create and fund devnet wallet WIF ATA
+    const devnetwalletWifAtaResult = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      keypair,
+      wifMint,
+      DEVNETWALLET
+    );
+    devuserWifAta = devnetwalletWifAtaResult.address;
+    await mintTo(
+      provider.connection,
+      keypair,
+      wifMint,
+      devuserWifAta,
+      keypair,
+      1_000_000_000
+    );
+    console.log("Devnet wallet WIF ATA:", devuserWifAta.toBase58());
 
     userPetsAta = getAssociatedTokenAddressSync(petsMint, keypair.publicKey);
-    console.log("User petsAta account: ", userPetsAta.toBase58());
+    console.log("User PETS ATA: ", userPetsAta.toBase58());
   });
 
   it("Global is Initialized", async () => {
@@ -149,21 +253,60 @@ describe("pet-dat-dog", () => {
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your init global tx signature is: ", txHash);
+    console.log("Your init global tx signature: ", getSolscanLink(txHash));
   });
 
   it(`Dog created - ${dogName}`, async () => {
     console.log("test1");
+
+    dogAuth = PublicKey.findProgramAddressSync(
+      [Buffer.from("auth"), dog.toBuffer()],
+      program.programId
+    )[0];
+    console.log("Dog Auth PDA:", dogAuth.toBase58());
+
+    // Create all dog token accounts
+    const dogBonkAtaResult = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      keypair,
+      bonkMint,
+      dogAuth,
+      true
+    );
+    dogBonkAta = dogBonkAtaResult.address;
+
+    const dogPnutAtaResult = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      keypair,
+      pnutMint,
+      dogAuth,
+      true
+    );
+    dogPnutAta = dogPnutAtaResult.address;
+
+    const dogWifAtaResult = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      keypair,
+      wifMint,
+      dogAuth,
+      true
+    );
+    dogWifAta = dogWifAtaResult.address;
+
     const txHash = await program.methods
       .createDog(dogName.toString())
-      .accountsPartial({
+      .accounts({
         dog,
         owner: keypair.publicKey,
-        // dogAuth,
-        // bonkMint,
-        // dogBonkAta,
-        house: keypair.publicKey, // defined by the local wallet now, but will need to be derived later
+        house: keypair.publicKey,
         global,
+        bonkMint,
+        dogBonkAta,
+        pnutMint,
+        dogPnutAta,
+        wifMint,
+        dogWifAta,
+        dogAuth,
         tokenProgram: TOKEN_PROGRAM_ID,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
@@ -171,10 +314,9 @@ describe("pet-dat-dog", () => {
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your create dog tx signature is: ", txHash);
+    console.log("Your create dog tx signature: ", getSolscanLink(txHash));
+    
     const dogAccount = await program.account.dog.fetch(dog);
-
-    // expect that dogAccount.pets is equal to 0
     expect(dogAccount.pets.toNumber()).to.equal(0);
   });
 
@@ -196,41 +338,85 @@ describe("pet-dat-dog", () => {
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your pet tx signature is: ", tx);
+    console.log("Your pet tx signature: ", getSolscanLink(tx));
 
     const dogAccount = await program.account.dog.fetch(dog);
 
-    // expect that dogAccount.pets is equal to 1
     expect(dogAccount.pets.toNumber()).to.equal(1);
   });
 
-  it(`Is bonked! - ${dogName}`, async () => {
+  it(`Bonk the dog - ${dogName}`, async () => {
     const tx = await program.methods
       .bonk()
       .accountsPartial({
+        signer: keypair.publicKey,
         dog,
-        user,
-        // bonkMint,
-        // dogBonkAta,
-        // userBonkAta,
-        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        bonkMint,
+        userBonkAta,
+        dogAuth,
+        dogBonkAta,
         tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
       })
-      .signers([keypair])
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your bonk tx signature is: ", tx);
+    console.log("Your bonk tx signature: ", getSolscanLink(tx));
+
+    const dogBonkBalance = await provider.connection.getTokenAccountBalance(dogBonkAta);
+    console.log("Dog BONK balance: ", dogBonkBalance.value.uiAmount);
+  });
+
+  it(`PNUT the dog - ${dogName}`, async () => {
+    const tx = await program.methods
+      .pnut()
+      .accountsPartial({
+        signer: keypair.publicKey,
+        dog,
+        pnutMint,
+        userPnutAta,
+        dogAuth,
+        dogPnutAta,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc()
+      .then(confirm)
+      .then(log);
+    console.log("Your pnut tx signature: ", getSolscanLink(tx));
+
+    const dogPnutBalance = await provider.connection.getTokenAccountBalance(dogPnutAta);
+    console.log("Dog PNUT balance: ", dogPnutBalance.value.uiAmount);
+  });
+
+  it(`WIF the dog - ${dogName}`, async () => {
+    const tx = await program.methods
+      .wif()
+      .accountsPartial({
+        signer: keypair.publicKey,
+        dog,
+        wifMint,
+        userWifAta,
+        dogAuth,
+        dogWifAta,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc()
+      .then(confirm)
+      .then(log);
+    console.log("Your wif tx signature: ", getSolscanLink(tx));
+
+    const dogWifBalance = await provider.connection.getTokenAccountBalance(dogWifAta);
+    console.log("Dog WIF balance: ", dogWifBalance.value.uiAmount);
   });
 
   it(`Fetches dog state - ${dogName}`, async () => {
     const dogAccount = await program.account.dog.fetch(dog);
-
-    console.log(`Dog's pets: ${dogName}`, dogAccount.pets.toString());
-    // console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
-
-    // expect that dogAccount.pets is equal to 1
+    console.log(`${dogName}'s pets:`, dogAccount.pets.toString());
     expect(dogAccount.pets.toNumber()).to.equal(1);
   });
 });

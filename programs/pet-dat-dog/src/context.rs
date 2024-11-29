@@ -8,8 +8,8 @@ use anchor_spl::{
         create_metadata_accounts_v3, mpl_token_metadata::types::DataV2, CreateMetadataAccountsV3,
         Metadata,
     },
-    token::{mint_to, Mint, MintTo, Token, TokenAccount}
-};// TransferChecked, transfer_checked (put these methods back into the token imports above once the need for a TransferChecked CPI is back in-place.)
+    token::{mint_to, Mint, MintTo, Token, TokenAccount, TransferChecked, transfer_checked}
+};
 
 // use std::str::FromStr;
 
@@ -148,18 +148,36 @@ pub struct DogC<'info> {
     //bonk mint
     // #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
     // #[account()]
-    // pub bonk_mint: Account<'info, Mint>,
+    pub bonk_mint: Account<'info, Mint>,
 
     // dog's bonk ata
     // #[account(init, payer = owner, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
-    // pub dog_bonk_ata: Account<'info, TokenAccount>,
+    pub dog_bonk_ata: Account<'info, TokenAccount>,
+
+    //pnut mint
+    // #[account(constraint = pnut_mint.key() == Pubkey::from_str(PNUT_MINT).unwrap())]
+    // #[account()]
+    pub pnut_mint: Account<'info, Mint>,
+
+    // dog's pnut ata
+    // #[account(init, payer = owner, associated_token::mint = pnut_mint, associated_token::authority = dog_auth)]
+    pub dog_pnut_ata: Account<'info, TokenAccount>,
+        
+    //wif mint
+    // #[account(constraint = wif_mint.key() == Pubkey::from_str(WIF_MINT).unwrap())]
+    // #[account()]
+    pub wif_mint: Account<'info, Mint>,
+
+    // dog's wif ata
+    // #[account(init, payer = owner, associated_token::mint = wif_mint, associated_token::authority = dog_auth)]
+    pub dog_wif_ata: Account<'info, TokenAccount>,
 
     /// CHECK: this is safe
-    // #[account(
-    //     seeds = [b"auth", dog.key().as_ref()],
-    //     bump
-    // )]
-    // pub dog_auth: AccountInfo<'info>,
+    #[account(
+        seeds = [b"auth", dog.key().as_ref()],
+        bump
+    )]
+    pub dog_auth: AccountInfo<'info>,
 
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
@@ -172,9 +190,8 @@ impl<'info> DogC<'info> {
             name,
             owner: self.owner.key(),
             pets: 0,
-            // bonks: 0,
             dog_bump: bumps.dog,
-            // auth_bump: bumps.dog_auth,
+            auth_bump: bumps.dog_auth,
         });
 
         let cpi_accounts = Transfer {
@@ -230,7 +247,15 @@ pub struct PetC<'info> {
 }
 
 impl<'info> PetC<'info> {
-    pub fn pet(&mut self) -> Result<()> {
+    pub fn pet(&mut self, bumps: &PetCBumps) -> Result<()> {
+        if self.user.authority != self.signer.key() {
+            self.user.set_inner(User {
+                authority: self.signer.key(),
+                last_pet: 0,
+                bump: bumps.user,
+            });
+        }
+
         if self.user.last_pet == Clock::get()?.slot {
             return Err(ErrorCode::TooManyPets.into());
         }
@@ -268,7 +293,6 @@ impl<'info> PetC<'info> {
         transfer(ctx, 1000)?; 
         // this is equal 1x10^-6 SOL (1 micro SOL, or 1/1Millionth SOL). 10k pets would repay the dog creation for for the owner. 1 million pets would be 1 SOL.
         // 10^-6 seems to be the lowest we can go to actually see a change in the account balance on the explorer, anything less and it bleeds the recipient account or doesn't move it at all.
-        // on localnet, the owner is receiving 9.6x10^-7 SOL per pet from a user, or 0.00000096 SOL per pet.
         Ok(())
     }
 }
@@ -278,30 +302,23 @@ pub struct BonkC<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
 
-    #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
-    pub user: Account<'info, User>,
-
     #[account(seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
 
-    //bonk mint
-    // #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
-    // pub bonk_mint: Account<'info, Mint>,
+    pub bonk_mint: Account<'info, Mint>,
 
-    // user's bonk ata
-    // #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = signer)]
-    // pub user_bonk_ata: Account<'info, TokenAccount>,
+    #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = signer)]
+    pub user_bonk_ata: Account<'info, TokenAccount>,
 
     /// CHECK: this is safe
-    // #[account(
-    //     seeds = [b"auth", dog.key().as_ref()],
-    //     bump = dog.auth_bump
-    // )]
-    // pub dog_auth: AccountInfo<'info>,
+    #[account(
+        seeds = [b"auth", dog.key().as_ref()],
+        bump = dog.auth_bump
+    )]
+    pub dog_auth: AccountInfo<'info>,
 
-    // dog's bonk ata
-    // #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
-    // pub dog_bonk_ata: Account<'info, TokenAccount>,
+    #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
+    pub dog_bonk_ata: Account<'info, TokenAccount>,
 
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
@@ -311,30 +328,105 @@ pub struct BonkC<'info> {
 impl<'info> BonkC<'info> {
     pub fn bonk(&mut self) -> Result<()> {
 
-        // if self.user.last_bonk == Clock::get()?.slot {
-        //     return Err(ErrorCode::TooManyBonks.into());
-        // }
+        let cpi_accounts = TransferChecked {
+            from: self.user_bonk_ata.to_account_info(),
+            to: self.dog_bonk_ata.to_account_info(),
+            mint: self.bonk_mint.to_account_info(),
+            authority: self.signer.to_account_info(),
+        };
 
-        // // create a cpi transfer from the user's bonk ata to the dog's bonk ata for 1 $BONK token
-        // let cpi_accounts = TransferChecked {
-        //     from: self.user_bonk_ata.to_account_info(),
-        //     to: self.dog_bonk_ata.to_account_info(),
-        //     mint: self.bonk_mint.to_account_info(),
-        //     authority: self.signer.to_account_info(),
-        // };
+        let ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
+        transfer_checked(ctx, 100_000, 5)?; // 1 BONK (5 decimals)
 
-        // let ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
+        Ok(())
+    }
+}
 
-        // transfer_checked(ctx, 100_000, 5)?;
+#[derive(Accounts)]
+pub struct PnutC<'info> {
+    #[account(mut)]
+    pub signer: Signer<'info>,
 
-        // self.dog.bonks += 1;
+    #[account(seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
+    pub dog: Account<'info, Dog>,
 
-        // self.user.last_bonk = Clock::get()?.slot;
+    pub pnut_mint: Account<'info, Mint>,
 
-        // tell how many bonks the dog has
-        // msg!("{} has been bonked {} times", self.dog.name, self.dog.bonks);
+    #[account(mut, associated_token::mint = pnut_mint, associated_token::authority = signer)]
+    pub user_pnut_ata: Account<'info, TokenAccount>,
 
-        // msg!("User's last bonk: {}", self.user.last_bonk);
+    /// CHECK: this is safe
+    #[account(
+        seeds = [b"auth", dog.key().as_ref()],
+        bump = dog.auth_bump
+    )]
+    pub dog_auth: AccountInfo<'info>,
+
+    #[account(mut, associated_token::mint = pnut_mint, associated_token::authority = dog_auth)]
+    pub dog_pnut_ata: Account<'info, TokenAccount>,
+
+    pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub system_program: Program<'info, System>,
+}
+
+impl<'info> PnutC<'info> {
+    pub fn pnut(&mut self) -> Result<()> {
+
+        let cpi_accounts = TransferChecked {
+            from: self.user_pnut_ata.to_account_info(),
+            to: self.dog_pnut_ata.to_account_info(),
+            mint: self.pnut_mint.to_account_info(),
+            authority: self.signer.to_account_info(),
+        };
+
+        let ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
+        transfer_checked(ctx, 1_000, 6)?; // 0.001 PNUT (6 decimals)
+
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct WifC<'info> {
+    #[account(mut)]
+    pub signer: Signer<'info>,
+
+    #[account(seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
+    pub dog: Account<'info, Dog>,
+
+    pub wif_mint: Account<'info, Mint>,
+
+    #[account(mut, associated_token::mint = wif_mint, associated_token::authority = signer)]
+    pub user_wif_ata: Account<'info, TokenAccount>,
+
+    /// CHECK: this is safe
+    #[account(
+        seeds = [b"auth", dog.key().as_ref()],
+        bump = dog.auth_bump
+    )]
+    pub dog_auth: AccountInfo<'info>,
+
+    #[account(mut, associated_token::mint = wif_mint, associated_token::authority = dog_auth)]
+    pub dog_wif_ata: Account<'info, TokenAccount>,
+
+    pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub system_program: Program<'info, System>,
+}
+
+impl<'info> WifC<'info> {
+    pub fn wif(&mut self) -> Result<()> {
+
+        let cpi_accounts = TransferChecked {
+            from: self.user_wif_ata.to_account_info(),
+            to: self.dog_wif_ata.to_account_info(),
+            mint: self.wif_mint.to_account_info(),
+            authority: self.signer.to_account_info(),
+        };
+
+        let ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
+        transfer_checked(ctx, 1_000, 6)?; // 0.001 WIF (6 decimals)
 
         Ok(())
     }

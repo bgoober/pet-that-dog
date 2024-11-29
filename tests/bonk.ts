@@ -3,14 +3,16 @@ import { Program, web3 } from "@coral-xyz/anchor";
 import { PetDatDog } from "../target/types/pet_dat_dog";
 import {
   TOKEN_PROGRAM_ID,
-  createMint,
   getAssociatedTokenAddressSync,
-  getOrCreateAssociatedTokenAccount,
-  mintTo,
 } from "@solana/spl-token";
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import wallet from "/home/agent/.config/solana/id.json";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
+
+// Add helper function
+const getSolscanLink = (signature: string) => {
+  return `https://solscan.io/tx/${signature}?cluster=custom&customUrl=http://localhost:8899`;
+};
 
 describe("pet-dat-dog", () => {
   const provider = anchor.AnchorProvider.env();
@@ -30,34 +32,49 @@ describe("pet-dat-dog", () => {
     return signature;
   };
 
+  // Token variables
   let bonkMint: anchor.web3.PublicKey;
-  let dogBonkAta: anchor.web3.PublicKey;
+  let pnutMint: anchor.web3.PublicKey;
+  let wifMint: anchor.web3.PublicKey;
+  
+  // User ATAs
   let userBonkAta: anchor.web3.PublicKey;
+  let userPnutAta: anchor.web3.PublicKey;
+  let userWifAta: anchor.web3.PublicKey;
+  
+  // Dog ATAs
+  let dogBonkAta: anchor.web3.PublicKey;
+  let dogPnutAta: anchor.web3.PublicKey;
+  let dogWifAta: anchor.web3.PublicKey;
 
   let petsMint = PublicKey.findProgramAddressSync(
-    [Buffer.from("pets"), keypair.publicKey.toBuffer()],
+    [Buffer.from("pets")],
     program.programId
   )[0];
-  console.log("PETS Mint: ", petsMint.toBase58());
+  console.log("PETS Mint: ", getSolscanLink(petsMint.toBase58()));
 
   let mintAuth = PublicKey.findProgramAddressSync(
-    [Buffer.from("auth"), keypair.publicKey.toBuffer()],
+    [Buffer.from("auth")],
     program.programId
   )[0];
-  console.log("PETS Mint Auth: ", mintAuth.toBase58());
+  console.log("PETS Mint Auth: ", getSolscanLink(mintAuth.toBase58()));
 
   const dogName = ["Max"];
   const [dog] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("dog"), Buffer.from(dogName.toString()), keypair.publicKey.toBuffer()],
+    [
+      Buffer.from("dog"),
+      Buffer.from(dogName.toString()),
+      keypair.publicKey.toBuffer(),
+    ],
     program.programId
   );
-  console.log("Dog account: ", dog.toBase58());
+  console.log("Dog account: ", getSolscanLink(dog.toBase58()));
 
   const [dogAuth] = web3.PublicKey.findProgramAddressSync(
     [Buffer.from("auth"), dog.toBuffer()],
     program.programId
   );
-  console.log("Dog Auth account: ", dogAuth.toBase58());
+  console.log("Dog Auth account: ", getSolscanLink(dogAuth.toBase58()));
 
   let user = PublicKey.findProgramAddressSync(
     [keypair.publicKey.toBuffer()],
@@ -65,51 +82,99 @@ describe("pet-dat-dog", () => {
   )[0];
 
   it("Setup token environment", async () => {
-    /// DOCS: hardcode bonk mint from main test token environment init
-    bonkMint = new PublicKey('AhLdHbPkrWfWhdT6mG6z7Zzyt5uMmbZSPPi89u87ZHcQ');
-    // if (!bonkMint) throw new Error("Failed to create bonkMint");
-    
-    console.log("Bonk Mint : ", bonkMint.toBase58());
+    // Use hardcoded mints from the previous test run
+    bonkMint = new PublicKey('811z1oa7SyPMP8yUDQmEFD7qaFxg3U3jKmqiDZe2WsqE');  // Get this from pet-dat-dog.ts console output
+    pnutMint = new PublicKey('CedVn8RCnoHJtHxcGsYukRFHfaw68hW5m3fLbRrnHCuY');  // Get this from pet-dat-dog.ts console output
+    wifMint = new PublicKey('CB2Y4jeFN7u5bMRVTgMUL7ovp61QNiz5nKr78JZsJKzK');   // Get this from pet-dat-dog.ts console output
 
-    userBonkAta = getAssociatedTokenAddressSync(
-      bonkMint,
-      keypair.publicKey
-    );
-    // Verify userBonkAta creation
-    if (!userBonkAta) throw new Error("Failed to create or get userBonkAta");
-    console.log("userBonkAta : ", userBonkAta.toBase58())
+    // Get user ATAs for existing mints
+    userBonkAta = getAssociatedTokenAddressSync(bonkMint, keypair.publicKey);
+    userPnutAta = getAssociatedTokenAddressSync(pnutMint, keypair.publicKey);
+    userWifAta = getAssociatedTokenAddressSync(wifMint, keypair.publicKey);
 
-    // refactor the accounts that you have init or init_if_needed to use getAssociatedTokenAddressSync, and remove the await.
-    // Move the dogBonkAta calculation here and ensure it's assigned to the higher scope variable.
+    // Get dog ATAs for existing mints
     dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
-    console.log("dogBonkAta : ", dogBonkAta.toBase58());
+    dogPnutAta = getAssociatedTokenAddressSync(pnutMint, dogAuth, true);
+    dogWifAta = getAssociatedTokenAddressSync(wifMint, dogAuth, true);
 
+    // Verify the dog account exists
+    const dogAccount = await program.account.dog.fetch(dog);
+    console.log("Found existing dog:", dogAccount.name);
   });
 
-  it(`Is bonked! - ${dogName}`, async () => {
+  it(`Bonk the dog - ${dogName}`, async () => {
     const tx = await program.methods
       .bonk()
-      .accountsPartial({
+      .accounts({
+        signer: keypair.publicKey,
         dog,
-        user,
-        // bonkMint,
-        // dogBonkAta,
-        // userBonkAta,
-        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        bonkMint,
+        userBonkAta,
+        dogAuth,
+        dogBonkAta,
         tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
       })
-      .signers([keypair])
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your bonk tx signature is: ", tx);
+    console.log("Your bonk tx signature: ", getSolscanLink(tx));
+
+    const dogBonkBalance = await provider.connection.getTokenAccountBalance(dogBonkAta);
+    console.log("Dog BONK balance: ", getSolscanLink(dogBonkAta.toBase58()));
   });
 
-  it(`Fetches dog state - ${dogName}`, async () => {
-    const dogAccount = await program.account.dog.fetch(dog);
+  it(`PNUT the dog - ${dogName}`, async () => {
+    const tx = await program.methods
+      .pnut()
+      .accounts({
+        signer: keypair.publicKey,
+        dog,
+        pnutMint,
+        userPnutAta,
+        dogAuth,
+        dogPnutAta,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc()
+      .then(confirm)
+      .then(log);
+    console.log("Your pnut tx signature: ", getSolscanLink(tx));
 
-    console.log(`${dogName}'s pets: `, dogAccount.pets.toString());
-    // console.log(`${dogName}'s bonks:`, dogAccount.bonks.toString());
+    const dogPnutBalance = await provider.connection.getTokenAccountBalance(dogPnutAta);
+    console.log("Dog PNUT balance: ", getSolscanLink(dogPnutAta.toBase58()));
+  });
+
+  it(`WIF the dog - ${dogName}`, async () => {
+    const tx = await program.methods
+      .wif()
+      .accounts({
+        signer: keypair.publicKey,
+        dog,
+        wifMint,
+        userWifAta,
+        dogAuth,
+        dogWifAta,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc()
+      .then(confirm)
+      .then(log);
+    console.log("Your wif tx signature: ", getSolscanLink(tx));
+
+    const dogWifBalance = await provider.connection.getTokenAccountBalance(dogWifAta);
+    console.log("Dog WIF balance: ", getSolscanLink(dogWifAta.toBase58()));
+  });
+
+  it("Verify final balances", async () => {
+    console.log("\nFinal token balances:");
+    console.log("Dog BONK balance:", getSolscanLink(dogBonkAta.toBase58()));
+    console.log("Dog PNUT balance:", getSolscanLink(dogPnutAta.toBase58()));
+    console.log("Dog WIF balance:", getSolscanLink(dogWifAta.toBase58()));
   });
 });
