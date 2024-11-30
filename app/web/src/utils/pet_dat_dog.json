@@ -8,76 +8,6 @@
   },
   "instructions": [
     {
-      "name": "bonk",
-      "discriminator": [
-        49,
-        159,
-        45,
-        43,
-        24,
-        86,
-        89,
-        106
-      ],
-      "accounts": [
-        {
-          "name": "signer",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "user",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "account",
-                "path": "signer"
-              }
-            ]
-          }
-        },
-        {
-          "name": "dog",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  100,
-                  111,
-                  103
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "dog.name",
-                "account": "Dog"
-              },
-              {
-                "kind": "account",
-                "path": "dog.owner",
-                "account": "Dog"
-              }
-            ]
-          }
-        },
-        {
-          "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
-        },
-        {
-          "name": "associated_token_program",
-          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
-        },
-        {
-          "name": "system_program",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "create_dog",
       "discriminator": [
         135,
@@ -322,8 +252,7 @@
           "signer": true
         },
         {
-          "name": "house",
-          "writable": true
+          "name": "house"
         },
         {
           "name": "owner",
@@ -488,7 +417,7 @@
     {
       "code": 6001,
       "name": "TooManyBonks",
-      "msg": "Too many bonks in one slot!"
+      "msg": "Too many bonksin one slot!"
     },
     {
       "code": 6002,
@@ -557,6 +486,10 @@
           {
             "name": "last_pet",
             "type": "u64"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
           },
           {
             "name": "bump",

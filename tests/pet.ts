@@ -25,12 +25,17 @@ describe("pet-dat-dog", () => {
     return signature;
   };
 
+  // Helper function for transaction signatures only
+  const getSolscanLink = (signature: string) => {
+    return `https://solscan.io/tx/${signature}?cluster=custom&customUrl=http://localhost:8899`;
+  };
+
   const log = async (signature: string): Promise<string> => {
     console.log(signature);
     return signature;
   };
 
-  let userPetsAta: anchor.web3.PublicKey
+  let userPetsAta: anchor.web3.PublicKey;
 
   let petsMint = PublicKey.findProgramAddressSync(
     [Buffer.from("pets")],
@@ -46,7 +51,11 @@ describe("pet-dat-dog", () => {
 
   const dogName = ["Max"];
   const [dog] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("dog"), Buffer.from(dogName.toString()), keypair.publicKey.toBuffer()],
+    [
+      Buffer.from("dog"),
+      Buffer.from(dogName.toString()),
+      keypair.publicKey.toBuffer(),
+    ],
     program.programId
   );
   console.log("Dog account: ", dog.toBase58());
@@ -84,9 +93,9 @@ describe("pet-dat-dog", () => {
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your pet tx signature is: ", tx);
+    console.log("Your pet tx signature: ", getSolscanLink(tx));
   });
-  
+
   it(`Fetches dog state - ${dogName}`, async () => {
     const dogAccount = await program.account.dog.fetch(dog);
 

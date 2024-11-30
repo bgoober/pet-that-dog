@@ -31,13 +31,7 @@ pub mod pet_dat_dog {
 
     // pet, taking a User as context
     pub fn pet(ctx: Context<PetC>) -> Result<()> {
-        ctx.accounts.pet()?;
-        Ok(())
-    }
-
-    // bonk, taking a User as context
-    pub fn bonk(ctx: Context<BonkC>) -> Result<()> {
-        ctx.accounts.bonk()?;
+        ctx.accounts.pet(&ctx.bumps)?;
         Ok(())
     }
 }

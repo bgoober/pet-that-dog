@@ -117,9 +117,9 @@ impl<'info> GlobalC<'info> {
                 collection: None,
                 uses: None,
             },
-            true, // Is mutable
-            true, // Update authority is signer -- what does this mean? Does this mean the mint authority is the signer, or that the update authority is the signer of this particular instruction?
-            None, // Collection details
+            false, 
+            false, 
+            None, 
         )?;
 
         // msg!("Token mint created successfully.");
@@ -145,22 +145,6 @@ pub struct DogC<'info> {
     #[account(seeds = [b"global"], bump = global.global_bump)]
     pub global: Account<'info, Global>,
 
-    //bonk mint
-    // #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
-    // #[account()]
-    // pub bonk_mint: Account<'info, Mint>,
-
-    // dog's bonk ata
-    // #[account(init, payer = owner, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
-    // pub dog_bonk_ata: Account<'info, TokenAccount>,
-
-    /// CHECK: this is safe
-    // #[account(
-    //     seeds = [b"auth", dog.key().as_ref()],
-    //     bump
-    // )]
-    // pub dog_auth: AccountInfo<'info>,
-
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
@@ -172,9 +156,7 @@ impl<'info> DogC<'info> {
             name,
             owner: self.owner.key(),
             pets: 0,
-            // bonks: 0,
             dog_bump: bumps.dog,
-            // auth_bump: bumps.dog_auth,
         });
 
         let cpi_accounts = Transfer {
@@ -230,7 +212,14 @@ pub struct PetC<'info> {
 }
 
 impl<'info> PetC<'info> {
-    pub fn pet(&mut self) -> Result<()> {
+    pub fn pet(&mut self, bumps: &PetCBumps) -> Result<()> {
+        if self.user.authority != self.signer.key() {
+            self.user.set_inner(User {
+                authority: self.signer.key(),
+                last_pet: 0,
+                bump: bumps.user,
+            });
+        }
         if self.user.last_pet == Clock::get()?.slot {
             return Err(ErrorCode::TooManyPets.into());
         }
@@ -253,11 +242,6 @@ impl<'info> PetC<'info> {
 
         self.user.last_pet = Clock::get()?.slot;
 
-        // tell how many pets the dog has
-        // msg!("{} has been pet {} times", self.dog.name, self.dog.pets);
-
-        // msg!("User's last pet: {}", self.user.last_pet);
-
         let cpi_accounts = Transfer {
             from: self.signer.to_account_info(),
             to: self.owner.to_account_info(),
@@ -268,84 +252,13 @@ impl<'info> PetC<'info> {
         transfer(ctx, 1000)?; 
         // this is equal 1x10^-6 SOL (1 micro SOL, or 1/1Millionth SOL). 10k pets would repay the dog creation for for the owner. 1 million pets would be 1 SOL.
         // 10^-6 seems to be the lowest we can go to actually see a change in the account balance on the explorer, anything less and it bleeds the recipient account or doesn't move it at all.
-        // on localnet, the owner is receiving 9.6x10^-7 SOL per pet from a user, or 0.00000096 SOL per pet.
         Ok(())
     }
 }
 
-#[derive(Accounts)]
-pub struct BonkC<'info> {
-    #[account(mut)]
-    pub signer: Signer<'info>,
-
-    #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
-    pub user: Account<'info, User>,
-
-    #[account(seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
-    pub dog: Account<'info, Dog>,
-
-    //bonk mint
-    // #[account(constraint = bonk_mint.key() == Pubkey::from_str(BONK_MINT).unwrap())]
-    // pub bonk_mint: Account<'info, Mint>,
-
-    // user's bonk ata
-    // #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = signer)]
-    // pub user_bonk_ata: Account<'info, TokenAccount>,
-
-    /// CHECK: this is safe
-    // #[account(
-    //     seeds = [b"auth", dog.key().as_ref()],
-    //     bump = dog.auth_bump
-    // )]
-    // pub dog_auth: AccountInfo<'info>,
-
-    // dog's bonk ata
-    // #[account(mut, associated_token::mint = bonk_mint, associated_token::authority = dog_auth)]
-    // pub dog_bonk_ata: Account<'info, TokenAccount>,
-
-    pub token_program: Program<'info, Token>,
-    pub associated_token_program: Program<'info, AssociatedToken>,
-    pub system_program: Program<'info, System>,
-}
-
-impl<'info> BonkC<'info> {
-    pub fn bonk(&mut self) -> Result<()> {
-
-        // if self.user.last_bonk == Clock::get()?.slot {
-        //     return Err(ErrorCode::TooManyBonks.into());
-        // }
-
-        // // create a cpi transfer from the user's bonk ata to the dog's bonk ata for 1 $BONK token
-        // let cpi_accounts = TransferChecked {
-        //     from: self.user_bonk_ata.to_account_info(),
-        //     to: self.dog_bonk_ata.to_account_info(),
-        //     mint: self.bonk_mint.to_account_info(),
-        //     authority: self.signer.to_account_info(),
-        // };
-
-        // let ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
-
-        // transfer_checked(ctx, 100_000, 5)?;
-
-        // self.dog.bonks += 1;
-
-        // self.user.last_bonk = Clock::get()?.slot;
-
-        // tell how many bonks the dog has
-        // msg!("{} has been bonked {} times", self.dog.name, self.dog.bonks);
-
-        // msg!("User's last bonk: {}", self.user.last_bonk);
-
-        Ok(())
-    }
-}
 
 #[error_code]
 pub enum ErrorCode {
     #[msg("Too many pets in one slot!")]
-    TooManyPets,
-    #[msg("Too many bonks in one slot!")]
-    TooManyBonks,
-    #[msg("Session error")]
-    SessionError,
+    TooManyPets
 }

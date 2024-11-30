@@ -3,16 +3,10 @@ import { Program, web3 } from "@coral-xyz/anchor";
 import { PetDatDog } from "../target/types/pet_dat_dog";
 import {
   TOKEN_PROGRAM_ID,
-  createMint,
-  getAssociatedTokenAddressSync,
-  getOrCreateAssociatedTokenAccount,
-  mintTo,
 } from "@solana/spl-token";
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import wallet from "/home/agent/.config/solana/id.json";
-import wallet2 from "../wallet.json";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
-import { publicKey, token } from "@coral-xyz/anchor/dist/cjs/utils";
 
 describe("pet-dat-dog", () => {
   const provider = anchor.AnchorProvider.env();
@@ -35,12 +29,12 @@ describe("pet-dat-dog", () => {
   const ADMIN = new PublicKey(
     "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp"
   );
-  const BONK_MINT = new PublicKey(
-    "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
-  );
+  // const BONK_MINT = new PublicKey(
+  //   "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+  // );
 
-  let dogBonkAta: anchor.web3.PublicKey;
-  let userBonkAta: anchor.web3.PublicKey;
+  // let dogBonkAta: anchor.web3.PublicKey;
+  // let userBonkAta: anchor.web3.PublicKey;
 
   let petsMint = PublicKey.findProgramAddressSync(
     [Buffer.from("pets")],
@@ -77,25 +71,25 @@ describe("pet-dat-dog", () => {
     uri: "https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/Qma41jzcPhZ2UspoBrHzKfEX7Ve7fbMV958sQQD3PgvBXW",
   };
 
-  it("Setup token environment", async () => {
+  // it("Setup token environment", async () => {
 
-    const DEVNETWALLET = new PublicKey(
-        "J4JHaaMFpo8oPKB5DoHh7YZxXLdzkqvkLnMUQiSD3NrF"
-      );
+  //   const DEVNETWALLET = new PublicKey(
+  //       "J4JHaaMFpo8oPKB5DoHh7YZxXLdzkqvkLnMUQiSD3NrF"
+  //     );
 
-    const userBonkAtaResult = await getOrCreateAssociatedTokenAccount(
-      provider.connection,
-      keypair,
-      BONK_MINT,
-      DEVNETWALLET
-    );
-    userBonkAta = userBonkAtaResult.address;
-    // Verify userBonkAta creation
-    if (!userBonkAta) throw new Error("Failed to create or get userBonkAta");
+  //   const userBonkAtaResult = await getOrCreateAssociatedTokenAccount(
+  //     provider.connection,
+  //     keypair,
+  //     BONK_MINT,
+  //     DEVNETWALLET
+  //   );
+  //   userBonkAta = userBonkAtaResult.address;
+  //   // Verify userBonkAta creation
+  //   if (!userBonkAta) throw new Error("Failed to create or get userBonkAta");
 
-    dogBonkAta = getAssociatedTokenAddressSync(BONK_MINT, dogAuth, true);
-    console.log("dogBonkAta account: ", dogBonkAta.toBase58());
-  });
+  //   dogBonkAta = getAssociatedTokenAddressSync(BONK_MINT, dogAuth, true);
+  //   console.log("dogBonkAta account: ", dogBonkAta.toBase58());
+  // });
 
   it("Global is Initialized", async () => {
     const txHash = await program.methods

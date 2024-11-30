@@ -13,6 +13,10 @@ import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import React, { useEffect, useState, useRef } from 'react';
 
+// Helper function for transaction signatures only
+const getSolscanLink = (signature: string) => {
+  return `https://solscan.io/tx/${signature}?cluster=custom&customUrl=http://localhost:8899`;
+};
 
 // Define the states
 const states = {
@@ -136,7 +140,7 @@ const Dapp: React.FC = () => {
         })
         .rpc()
       //   .then(confirm);
-      console.log('Your pet tx signature is: ', tx);
+      console.log('Your pet tx signature: ', getSolscanLink(tx));
       changeState('pet');
     } catch (error) {
       console.error('Error executing instruction', error);
@@ -160,7 +164,7 @@ const Dapp: React.FC = () => {
         })
         .rpc()
       //   .then(confirm);
-      console.log('Your bonk tx signature is: ', tx);
+      console.log('Your bonk tx signature: ', getSolscanLink(tx));
       changeState('bonk');
     } catch (error) {
       console.error('Error executing instruction', error);
