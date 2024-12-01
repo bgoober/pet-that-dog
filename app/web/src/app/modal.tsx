@@ -57,4 +57,30 @@ const styles = {
   },
 };
 
+interface BlinkModalProps {
+  signature: string;
+  action: string;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const BlinkModal: React.FC<BlinkModalProps> = ({ signature, action, isOpen, onClose }) => {
+  const blinkUrl = getBlink(signature);
+  const twitterText = `I just ${action} a dog on Solana! Check it out:`;
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(blinkUrl)}`;
+
+  return isOpen ? (
+    <div className="modal">
+      <div className="modal-content">
+        <h2>Transaction Complete!</h2>
+        <p>View on BLINK: <a href={blinkUrl} target="_blank" rel="noopener noreferrer">View Transaction</a></p>
+        <a href={twitterUrl} target="_blank" rel="noopener noreferrer">
+          Share on Twitter
+        </a>
+        <button onClick={onClose}>Close</button>
+      </div>
+    </div>
+  ) : null;
+};
+
 export default Modal;

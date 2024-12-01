@@ -13,6 +13,17 @@ import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import React, { useEffect, useState, useRef } from 'react';
 
+// Add Dialect Labs imports
+import {
+  Miniblink,
+  useAction,
+  useActionsRegistryInterval,
+} from '@dialectlabs/blinks';
+import { useActionSolanaWalletAdapter } from '@dialectlabs/blinks/dist/hooks/solana';
+import '@dialectlabs/blinks/index.css';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import '@solana/wallet-adapter-react-ui/styles.css';
+
 // Helper function for transaction signatures only
 const getSolscanLink = (signature: string) => {
   return `https://solscan.io/tx/${signature}?cluster=custom&customUrl=http://localhost:8899`;
@@ -35,6 +46,13 @@ Object.values(states).forEach((state) => {
   img.src = `../assets/${state.file}`;
   images[state.file] = img;
 });
+
+// Add BLINK helper
+const getBlink = (signature: string, network: string = 'devnet') => {
+  const baseUrl = 'https://blink.solana.com';
+  const networkParam = network === 'mainnet' ? '' : `?cluster=${network}`;
+  return `${baseUrl}/${signature}${networkParam}`;
+};
 
 const Dapp: React.FC = () => {
   const [currentState, setCurrentState] =
@@ -120,56 +138,17 @@ const Dapp: React.FC = () => {
   // console.log the rpc and network we are connected to
   // console.log('RPC URL: ', connection);
 
-  const handlePetInstruction = async () => {
-    if (!program || !wallet) return;
-    try {
-      const tx = await program.methods
-        .pet()
-        .accountsPartial({
+  // Add Dialect Blinks setup
+  useActionsRegistryInterval();
+  const { adapter } = useActionSolanaWalletAdapter(
+    // Use your RPC URL here
+    'http://localhost:8899'
+  );
 
-          house,
-          dog,
-          user,
-          owner: house,
-          petsMint,
-          mintAuth,
-          userPetsAta,
-          associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-        })
-        .rpc()
-      //   .then(confirm);
-      console.log('Your pet tx signature: ', getSolscanLink(tx));
-      changeState('pet');
-    } catch (error) {
-      console.error('Error executing instruction', error);
-    }
-  };
-
-  const handleBonkInstruction = async () => {
-    if (!program || !wallet) return;
-    try {
-      const tx = await program.methods
-        .bonk()
-        .accountsPartial({
-          dog,
-          user,
-          bonkMint,
-          dogBonkAta,
-          userBonkAta,
-          associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-        })
-        .rpc()
-      //   .then(confirm);
-      console.log('Your bonk tx signature: ', getSolscanLink(tx));
-      changeState('bonk');
-    } catch (error) {
-      console.error('Error executing instruction', error);
-    }
-  };
+  // Create actions for pet and bonk
+  const { action: petAction, isLoading: isPetLoading } = useAction({
+    url: 'solana:DNHVjKARnjUuTykjqhbrQ1veV8YFkmqiwP65EKd19YPT/pet',  // Your program ID + instruction
+  });
 
   // Clears any existing timeout
   const clearExistingTimeout = () => {
@@ -260,9 +239,7 @@ const Dapp: React.FC = () => {
   };
 
   const handleBonkBoxClick = async () => {
-    if (isAnimating) return; // Lockout during animation
-    // Call bonk instruction and wait for confirmation
-    // await handleBonkInstruction();
+    if (isAnimating) return;
     if (['sitUp', 'pet', 'bonk'].includes(currentState)) {
       console.log(`Bonk box clicked during ${currentState} state`);
       setClicked(true);
@@ -308,26 +285,39 @@ const Dapp: React.FC = () => {
   };
 
   return (
-    <div id="dog-container" onClick={handleBackgroundClick}>
-      <img id="dog-image" ref={dogImageRef} alt="pet dat dog" />
-      <div
-        id="pet-box"
-        ref={petBoxRef}
-        className="bounding-box"
-        onClick={(e) => {
-          e.stopPropagation();
-          handlePetBoxClick();
-        }}
-      ></div>
-      <div
-        id="bonk-box"
-        ref={bonkBoxRef}
-        className="bounding-box"
-        onClick={(e) => {
-          e.stopPropagation();
-          handleBonkBoxClick();
-        }}
-      ></div>
+    <div className="flex flex-col items-center">
+      <div id="dog-container" onClick={handleBackgroundClick}>
+        <img id="dog-image" ref={dogImageRef} alt="pet dat dog" />
+        <div
+          id="pet-box"
+          ref={petBoxRef}
+          className="bounding-box"
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePetBoxClick();
+          }}
+        >
+          {!isPetLoading && petAction && (
+            <Miniblink
+              adapter={adapter}
+              selector={(currentAction) =>
+                currentAction.actions.find((a) => a.label === 'Pet')!
+              }
+              action={petAction}
+            />
+          )}
+        </div>
+        <div
+          id="bonk-box"
+          ref={bonkBoxRef}
+          className="bounding-box"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleBonkBoxClick();
+          }}
+        />
+      </div>
+      <WalletMultiButton />
     </div>
   );
 };

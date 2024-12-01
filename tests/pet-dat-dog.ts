@@ -32,8 +32,10 @@ describe("pet-dat-dog", () => {
   };
 
   // Helper function for transaction signatures only
-  const getSolscanLink = (signature: string) => {
-    return `https://solscan.io/tx/${signature}?cluster=custom&customUrl=http://localhost:8899`;
+  const getBlink = (signature: string, network: string = 'localnet') => {
+    const baseUrl = 'https://blink.solana.com';
+    const networkParam = network === 'mainnet' ? '' : `?cluster=${network}`;
+    return `${baseUrl}/${signature}${networkParam}`;
   };
   let userPetsAta: anchor.web3.PublicKey;
   // let bonkMint: anchor.web3.PublicKey;
@@ -155,7 +157,7 @@ describe("pet-dat-dog", () => {
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your init global tx signature: ", getSolscanLink(txHash));
+    console.log("Your init global tx signature: ", getBlink(txHash));
   });
 
   it(`Dog created - ${dogName}`, async () => {
@@ -177,7 +179,7 @@ describe("pet-dat-dog", () => {
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your create dog tx signature: ", getSolscanLink(txHash));
+    console.log("Your create dog tx signature: ", getBlink(txHash));
     const dogAccount = await program.account.dog.fetch(dog);
 
     // expect that dogAccount.pets is equal to 0
@@ -202,7 +204,7 @@ describe("pet-dat-dog", () => {
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your pet tx signature: ", getSolscanLink(tx));
+    console.log("Your pet tx signature: ", getBlink(tx));
 
     const dogAccount = await program.account.dog.fetch(dog);
 
