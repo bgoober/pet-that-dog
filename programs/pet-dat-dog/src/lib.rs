@@ -13,23 +13,22 @@ pub mod pet_dat_dog {
 
     use super::*;
 
-    pub fn init_global(
-        ctx: Context<GlobalC>,
+    pub fn init_global(ctx: Context<GlobalC>) -> Result<()> {
+        ctx.accounts.init(&ctx.bumps)?;
+        Ok(())
+    }
+
+    pub fn create_dog(
+        ctx: Context<DogC>, 
+        name: String,
         token_name: String,
         token_symbol: String,
         token_uri: String,
     ) -> Result<()> {
-        ctx.accounts
-            .init(&ctx.bumps, token_name, token_symbol, token_uri)?;
+        ctx.accounts.init(name, token_name, token_symbol, token_uri, &ctx.bumps)?;
         Ok(())
     }
 
-    pub fn create_dog(ctx: Context<DogC>, name: String) -> Result<()> {
-        ctx.accounts.init(name, &ctx.bumps)?;
-        Ok(())
-    }
-
-    // pet, taking a User as context
     pub fn pet(ctx: Context<PetC>) -> Result<()> {
         ctx.accounts.pet(&ctx.bumps)?;
         Ok(())
