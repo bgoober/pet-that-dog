@@ -163,7 +163,7 @@ describe("pet-dat-dog", () => {
   it(`Fetches dog state - ${dogName}`, async () => {
     const dogAccount = await program.account.dog.fetch(dog);
 
-    console.log(`Dog's pets: ${dogName}`, dogAccount.pets.toString());
+    console.log(`${dogName}'s pets:`, dogAccount.pets.toString());
     // console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
 
     // expect that dogAccount.pets is equal to 1
