@@ -156,7 +156,7 @@ impl<'info> DogC<'info> {
                 collection: None,
                 uses: None,
             },
-            true,
+            false,
             true,
             None,
         )?;
