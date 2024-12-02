@@ -114,13 +114,16 @@ impl<'info> DogC<'info> {
                 to: self.house.to_account_info(),
             };
             let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
-            transfer(ctx, 100_000_000)?; // 0.1 SOL
+            transfer(ctx, 12_500_000)?; // 0.0125 SOL
         }
 
         self.dog.set_inner(Dog {
             name,
             owner: self.owner.key(),
             pets: 0,
+            bonks: 0,
+            wifs: 0,
+            pnuts: 0,
             mint: self.dog_mint.key(),
             dog_bump: bumps.dog,
             mint_bump: bumps.dog_mint,
@@ -156,7 +159,7 @@ impl<'info> DogC<'info> {
                 collection: None,
                 uses: None,
             },
-            false,
+            true,
             true,
             None,
         )?;
@@ -204,13 +207,13 @@ impl<'info> PetC<'info> {
         if self.user.authority != self.signer.key() {
             self.user.set_inner(User {
                 authority: self.signer.key(),
-                last_pet: 0,
+                last_action: 0,
                 bump: bumps.user,
             });
         }
 
-        if self.user.last_pet == Clock::get()?.slot {
-            return Err(ErrorCode::TooManyPets.into());
+        if self.user.last_action == Clock::get()?.slot {
+            return Err(ErrorCode::TooMuchLove.into());
         }
 
         let cpi_accounts = MintTo {
@@ -231,7 +234,7 @@ impl<'info> PetC<'info> {
         mint_to(ctx, 1_000_000)?;
 
         self.dog.pets += 1;
-        self.user.last_pet = Clock::get()?.slot;
+        self.user.last_action = Clock::get()?.slot;
 
         // Transfer small SOL fee to dog owner
         let cpi_accounts = Transfer {
@@ -245,8 +248,291 @@ impl<'info> PetC<'info> {
     }
 }
 
+#[derive(Accounts)]
+pub struct BonkC<'info> {
+    #[account(mut)]
+    pub signer: Signer<'info>,
+
+    #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
+    pub user: Account<'info, User>,
+
+    #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
+    pub dog: Account<'info, Dog>,
+
+    /// CHECK: this is the dog's owner
+    #[account(mut, constraint = owner.key() == dog.owner)]
+    pub owner: AccountInfo<'info>,
+
+    #[account(mut, constraint = dog_mint.key() == dog.mint)]
+    pub dog_mint: Account<'info, Mint>,
+
+    /// CHECK: this is safe
+    #[account(
+        seeds = [b"auth", dog_mint.key().as_ref()],
+        bump = dog.auth_bump
+    )]
+    pub mint_auth: AccountInfo<'info>,
+
+    #[account(init_if_needed, payer = signer, associated_token::mint = dog_mint, associated_token::authority = signer)]
+    pub user_token_ata: Account<'info, TokenAccount>,
+
+    pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub system_program: Program<'info, System>,
+}
+
+impl<'info> BonkC<'info> {
+    pub fn bonk(&mut self, bumps: &BonkCBumps) -> Result<()> {
+        if self.user.authority != self.signer.key() {
+            self.user.set_inner(User {
+                authority: self.signer.key(),
+                last_action: 0,
+                bump: bumps.user,
+            });
+        }
+
+        if self.user.last_action == Clock::get()?.slot {
+            return Err(ErrorCode::TooMuchLove.into());
+        }
+
+        let cpi_accounts = MintTo {
+            mint: self.dog_mint.to_account_info(),
+            to: self.user_token_ata.to_account_info(),
+            authority: self.mint_auth.to_account_info(),
+        };
+
+        let mint_key = self.dog_mint.key();
+        let seeds = &[&b"auth"[..], mint_key.as_ref(), &[self.dog.auth_bump]];
+        let signer_seeds = &[&seeds[..]];
+
+        let ctx = CpiContext::new_with_signer(
+            self.token_program.to_account_info(),
+            cpi_accounts,
+            signer_seeds,
+        );
+        mint_to(ctx, 1_000_000)?;
+
+        self.dog.bonks += 1;
+        self.user.last_action = Clock::get()?.slot;
+
+        // Transfer small SOL fee to dog owner
+        let cpi_accounts = Transfer {
+            from: self.signer.to_account_info(),
+            to: self.owner.to_account_info(),
+        };
+        let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
+        transfer(ctx, 1000)?;
+
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct WifC<'info> {
+    #[account(mut)]
+    pub signer: Signer<'info>,
+
+    #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
+    pub user: Account<'info, User>,
+
+    #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
+    pub dog: Account<'info, Dog>,
+
+    /// CHECK: this is the dog's owner
+    #[account(mut, constraint = owner.key() == dog.owner)]
+    pub owner: AccountInfo<'info>,
+
+    #[account(mut, constraint = dog_mint.key() == dog.mint)]
+    pub dog_mint: Account<'info, Mint>,
+
+    /// CHECK: this is safe
+    #[account(
+        seeds = [b"auth", dog_mint.key().as_ref()],
+        bump = dog.auth_bump
+    )]
+    pub mint_auth: AccountInfo<'info>,
+
+    #[account(init_if_needed, payer = signer, associated_token::mint = dog_mint, associated_token::authority = signer)]
+    pub user_token_ata: Account<'info, TokenAccount>,
+
+    pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub system_program: Program<'info, System>,
+}
+
+impl<'info> WifC<'info> {
+    pub fn wif(&mut self, bumps: &WifCBumps) -> Result<()> {
+        if self.user.authority != self.signer.key() {
+            self.user.set_inner(User {
+                authority: self.signer.key(),
+                last_action: 0,
+                bump: bumps.user,
+            });
+        }
+
+        if self.user.last_action == Clock::get()?.slot {
+            return Err(ErrorCode::TooMuchLove.into());
+        }
+
+        let cpi_accounts = MintTo {
+            mint: self.dog_mint.to_account_info(),
+            to: self.user_token_ata.to_account_info(),
+            authority: self.mint_auth.to_account_info(),
+        };
+
+        let mint_key = self.dog_mint.key();
+        let seeds = &[&b"auth"[..], mint_key.as_ref(), &[self.dog.auth_bump]];
+        let signer_seeds = &[&seeds[..]];
+
+        let ctx = CpiContext::new_with_signer(
+            self.token_program.to_account_info(),
+            cpi_accounts,
+            signer_seeds,
+        );
+        mint_to(ctx, 1_000_000)?;
+
+        self.dog.wifs += 1;
+        self.user.last_action = Clock::get()?.slot;
+
+        // Transfer small SOL fee to dog owner
+        let cpi_accounts = Transfer {
+            from: self.signer.to_account_info(),
+            to: self.owner.to_account_info(),
+        };
+        let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
+        transfer(ctx, 1000)?;
+
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct PnutC<'info> {
+    #[account(mut)]
+    pub signer: Signer<'info>,
+
+    #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
+    pub user: Account<'info, User>,
+
+    #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
+    pub dog: Account<'info, Dog>,
+
+    /// CHECK: this is the dog's owner
+    #[account(mut, constraint = owner.key() == dog.owner)]
+    pub owner: AccountInfo<'info>,
+
+    #[account(mut, constraint = dog_mint.key() == dog.mint)]
+    pub dog_mint: Account<'info, Mint>,
+
+    /// CHECK: this is safe
+    #[account(
+        seeds = [b"auth", dog_mint.key().as_ref()],
+        bump = dog.auth_bump
+    )]
+    pub mint_auth: AccountInfo<'info>,
+
+    #[account(init_if_needed, payer = signer, associated_token::mint = dog_mint, associated_token::authority = signer)]
+    pub user_token_ata: Account<'info, TokenAccount>,
+
+    pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub system_program: Program<'info, System>,
+}
+
+impl<'info> PnutC<'info> {
+    pub fn pnut(&mut self, bumps: &PnutCBumps) -> Result<()> {
+        if self.user.authority != self.signer.key() {
+            self.user.set_inner(User {
+                authority: self.signer.key(),
+                last_action: 0,
+                bump: bumps.user,
+            });
+        }
+
+        if self.user.last_action == Clock::get()?.slot {
+            return Err(ErrorCode::TooMuchLove.into());
+        }
+
+        let cpi_accounts = MintTo {
+            mint: self.dog_mint.to_account_info(),
+            to: self.user_token_ata.to_account_info(),
+            authority: self.mint_auth.to_account_info(),
+        };
+
+        let mint_key = self.dog_mint.key();
+        let seeds = &[&b"auth"[..], mint_key.as_ref(), &[self.dog.auth_bump]];
+        let signer_seeds = &[&seeds[..]];
+
+        let ctx = CpiContext::new_with_signer(
+            self.token_program.to_account_info(),
+            cpi_accounts,
+            signer_seeds,
+        );
+        mint_to(ctx, 1_000_000)?;
+
+        self.dog.pnuts += 1;
+        self.user.last_action = Clock::get()?.slot;
+
+        // Transfer small SOL fee to dog owner
+        let cpi_accounts = Transfer {
+            from: self.signer.to_account_info(),
+            to: self.owner.to_account_info(),
+        };
+        let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
+        transfer(ctx, 1000)?;
+
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct KillDogC<'info> {
+    #[account(mut)]
+    pub owner: Signer<'info>,
+
+    #[account(
+        mut,
+        seeds = [b"dog", dog.name.as_ref(), owner.key().as_ref()],
+        bump = dog.dog_bump,
+        has_one = owner,
+        close = owner
+    )]
+    pub dog: Account<'info, Dog>,
+
+    #[account(
+        seeds = [b"mint", dog.key().as_ref()],
+        bump = dog.mint_bump,
+        mint::authority = mint_auth,
+    )]
+    pub dog_mint: Account<'info, Mint>,
+
+    /// CHECK: this is safe
+    #[account(
+        seeds = [b"auth", dog_mint.key().as_ref()],
+        bump = dog.auth_bump
+    )]
+    pub mint_auth: AccountInfo<'info>,
+
+    pub token_program: Program<'info, Token>,
+    pub system_program: Program<'info, System>,
+}
+
+impl<'info> KillDogC<'info> {
+    pub fn kill(&mut self) -> Result<()> {
+        // Only owner can close the dog account
+        require!(
+            self.owner.key() == self.dog.owner,
+            ErrorCode::UnauthorizedClose
+        );
+        msg!("Dog account closed and rent returned to owner");
+        Ok(())
+    }
+}
+
 #[error_code]
 pub enum ErrorCode {
-    #[msg("Too many pets in one slot!")]
-    TooManyPets,
+    #[msg("Too much love at one time! Don't hog all the love!")]
+    TooMuchLove,
+    #[msg("Unauthorized close attempt")]
+    UnauthorizedClose,
 }

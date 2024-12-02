@@ -103,9 +103,9 @@ describe("pet-dat-dog", () => {
     console.log("Mint Auth:", mintAuth.toBase58());
     
     const metadata = {
-      name: "Maximus Rex",
-      symbol: "MAX",
-      uri: "https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/QmZbpbwW5oHpPM7FYE2eo8JkyuudLxTDa2emq9EM5QXMYT",
+      name: "Maximilian von Trillion",
+      symbol: "MILI",
+      uri: "",
     };
     const txHash = await program.methods
       .createDog(
@@ -133,9 +133,12 @@ describe("pet-dat-dog", () => {
 
     // expect that dogAccount.pets is equal to 0
     expect(dogAccount.pets.toNumber()).to.equal(0);
+
+    // add a delay between actions
+    await new Promise(resolve => setTimeout(resolve, 1000));
   });
 
-  it(`Petting - ${dogName}`, async () => {
+  it(`Petting ${dogName}`, async () => {
     const tx = await program.methods
       .pet()
       .accountsPartial({
@@ -158,15 +161,99 @@ describe("pet-dat-dog", () => {
 
     // expect that dogAccount.pets is equal to 1
     expect(dogAccount.pets.toNumber()).to.equal(1);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+  });
+
+  it(`Bonking ${dogName}`, async () => {
+      const tx = await program.methods.bonk().accountsPartial({
+      dog,
+      user,
+      owner: keypair.publicKey,
+      dogMint,
+      mintAuth,
+      userTokenAta,
+      associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      systemProgram: SystemProgram.programId,
+    }).rpc().then(confirm).then(log);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+  });
+
+  it(`putting a hat on ${dogName}`, async () => {
+    const tx = await program.methods.wif().accountsPartial({
+      dog,
+      user,
+      owner: keypair.publicKey,
+      dogMint,
+      mintAuth,
+      userTokenAta,
+      associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      systemProgram: SystemProgram.programId,
+    }).rpc().then(confirm).then(log);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+  });
+
+  it(`giving a pnut to ${dogName}`, async () => {
+    const tx = await program.methods.pnut().accountsPartial({
+      dog,
+      user,
+      owner: keypair.publicKey,
+      dogMint,
+      mintAuth,
+      userTokenAta,
+      associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      systemProgram: SystemProgram.programId,
+    }).rpc().then(confirm).then(log);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
   });
 
   it(`Fetches dog state - ${dogName}`, async () => {
     const dogAccount = await program.account.dog.fetch(dog);
 
     console.log(`${dogName}'s pets:`, dogAccount.pets.toString());
-    // console.log(`Dog's bonks: ${dogName}`, dogAccount.bonks.toString());
+    console.log(`${dogName}'s bonks:`, dogAccount.bonks.toString());
+    console.log(`${dogName}'s wifs:`, dogAccount.wifs.toString());
+    console.log(`${dogName}'s pnuts:`, dogAccount.pnuts.toString());
 
     // expect that dogAccount.pets is equal to 1
     expect(dogAccount.pets.toNumber()).to.equal(1);
+
+    expect(dogAccount.bonks.toNumber()).to.equal(1);
+
+    expect(dogAccount.wifs.toNumber()).to.equal(1);
+
+    expect(dogAccount.pnuts.toNumber()).to.equal(1);
+
+  });
+
+  it(`Close dog - ${dogName}`, async () => {
+    const tx = await program.methods
+        .killDog()
+        .accountsPartial({
+            owner: keypair.publicKey,
+            dog,
+            dogMint,
+            mintAuth,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+        })
+        .rpc()
+        .then(confirm)
+        .then(log);
+    console.log("Your close dog tx signature: ", getSolscanLink(tx));
+
+    // Verify the account is closed
+    try {
+        await program.account.dog.fetch(dog);
+        expect.fail("Dog account should be closed");
+    } catch (e) {
+        console.log("Dog account successfully closed");
+    }
   });
 });

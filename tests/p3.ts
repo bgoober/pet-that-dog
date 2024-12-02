@@ -9,6 +9,7 @@ import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import wallet from "/home/agent/.config/solana/id.json"; // Local wallet (stranger)
 import wallet2 from "../wallet.json"; // Player 2 (Petey's owner)
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
+import { expect } from "chai";
 
 describe("pet-dat-dog", () => {
   const provider = anchor.AnchorProvider.env();
@@ -159,8 +160,50 @@ describe("pet-dat-dog", () => {
       .signers([stranger])
       .rpc()
       .then(confirm)
-      .then(log);
+      .then(log); 
     console.log("Stranger petting tx:", tx);
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  });
+
+  // stranger bonks, wifs, and pnuts Petey
+  it("Stranger bonks Petey", async () => {
+    const tx = await program.methods.bonk().accountsPartial({
+      dog,
+      user: strangerUser,
+      owner: player2.publicKey,
+      dogMint,
+      mintAuth,
+      userTokenAta: strangerTokenAta,
+    }).signers([stranger]).rpc().then(confirm).then(log);
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  });
+
+  it("Stranger wifs Petey", async () => {
+    const tx = await program.methods.wif().accountsPartial({
+      dog,
+      user: strangerUser,
+      owner: player2.publicKey,
+      dogMint,
+      mintAuth,
+      userTokenAta: strangerTokenAta,
+    }).signers([stranger]).rpc().then(confirm).then(log);
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  });
+
+  it("Stranger pnuts Petey", async () => {
+    const tx = await program.methods.pnut().accountsPartial({
+      dog,
+      user: strangerUser,
+      owner: player2.publicKey,
+      dogMint,
+      mintAuth,
+      userTokenAta: strangerTokenAta,
+    }).signers([stranger]).rpc().then(confirm).then(log); 
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
   });
 
   it("Verify Petey's state", async () => {
@@ -176,5 +219,6 @@ describe("pet-dat-dog", () => {
     );
     console.log("Owner's PETEY balance:", player2Balance.value.uiAmount);
     console.log("Stranger's PETEY balance:", strangerBalance.value.uiAmount);
+
   });
 });

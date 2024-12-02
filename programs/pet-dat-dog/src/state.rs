@@ -15,6 +15,9 @@ pub struct Dog {
     pub name: String,
     pub owner: Pubkey,
     pub pets: u64,
+    pub bonks: u64,
+    pub wifs: u64,
+    pub pnuts: u64,
     pub mint: Pubkey,
     pub dog_bump: u8,
     pub mint_bump: u8,
@@ -22,12 +25,12 @@ pub struct Dog {
 }
 
 impl Dog {
-    pub const LEN: usize = 8 + 24 + 32 + 8 + 32 + 1 + 1 + 1;
+    pub const LEN: usize = 8 + 24 + 32 + 8 + 8 + 8 + 8 + 32 + 1 + 1 + 1;
 }
 
 #[account]
 pub struct User {
-    pub last_pet: u64,
+    pub last_action: u64,
     pub authority: Pubkey,
     pub bump: u8,
 }
