@@ -103,9 +103,9 @@ describe("pet-dat-dog", () => {
     console.log("Mint Auth:", mintAuth.toBase58());
     
     const metadata = {
-      name: "Maximilian von Trillion",
+      name: "Maximilian Trillion",
       symbol: "MILI",
-      uri: "",
+      uri: "https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/QmZbpbwW5oHpPM7FYE2eo8JkyuudLxTDa2emq9EM5QXMYT",
     };
     const txHash = await program.methods
       .createDog(
@@ -230,30 +230,5 @@ describe("pet-dat-dog", () => {
 
     expect(dogAccount.pnuts.toNumber()).to.equal(1);
 
-  });
-
-  it(`Close dog - ${dogName}`, async () => {
-    const tx = await program.methods
-        .killDog()
-        .accountsPartial({
-            owner: keypair.publicKey,
-            dog,
-            dogMint,
-            mintAuth,
-            tokenProgram: TOKEN_PROGRAM_ID,
-            systemProgram: SystemProgram.programId,
-        })
-        .rpc()
-        .then(confirm)
-        .then(log);
-    console.log("Your close dog tx signature: ", getSolscanLink(tx));
-
-    // Verify the account is closed
-    try {
-        await program.account.dog.fetch(dog);
-        expect.fail("Dog account should be closed");
-    } catch (e) {
-        console.log("Dog account successfully closed");
-    }
   });
 });

@@ -234,7 +234,6 @@ impl<'info> PetC<'info> {
         mint_to(ctx, 1_000_000)?;
 
         self.dog.pets += 1;
-        self.user.last_action = Clock::get()?.slot;
 
         // Transfer small SOL fee to dog owner
         let cpi_accounts = Transfer {
@@ -243,6 +242,8 @@ impl<'info> PetC<'info> {
         };
         let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
         transfer(ctx, 1000)?;
+
+        self.user.last_action = Clock::get()?.slot;
 
         Ok(())
     }
@@ -313,7 +314,6 @@ impl<'info> BonkC<'info> {
         mint_to(ctx, 1_000_000)?;
 
         self.dog.bonks += 1;
-        self.user.last_action = Clock::get()?.slot;
 
         // Transfer small SOL fee to dog owner
         let cpi_accounts = Transfer {
@@ -322,6 +322,8 @@ impl<'info> BonkC<'info> {
         };
         let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
         transfer(ctx, 1000)?;
+
+        self.user.last_action = Clock::get()?.slot;
 
         Ok(())
     }
@@ -392,7 +394,6 @@ impl<'info> WifC<'info> {
         mint_to(ctx, 1_000_000)?;
 
         self.dog.wifs += 1;
-        self.user.last_action = Clock::get()?.slot;
 
         // Transfer small SOL fee to dog owner
         let cpi_accounts = Transfer {
@@ -401,6 +402,8 @@ impl<'info> WifC<'info> {
         };
         let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
         transfer(ctx, 1000)?;
+
+        self.user.last_action = Clock::get()?.slot;
 
         Ok(())
     }
@@ -471,7 +474,6 @@ impl<'info> PnutC<'info> {
         mint_to(ctx, 1_000_000)?;
 
         self.dog.pnuts += 1;
-        self.user.last_action = Clock::get()?.slot;
 
         // Transfer small SOL fee to dog owner
         let cpi_accounts = Transfer {
@@ -480,6 +482,8 @@ impl<'info> PnutC<'info> {
         };
         let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
         transfer(ctx, 1000)?;
+
+        self.user.last_action = Clock::get()?.slot;
 
         Ok(())
     }
@@ -524,7 +528,7 @@ impl<'info> KillDogC<'info> {
             self.owner.key() == self.dog.owner,
             ErrorCode::UnauthorizedClose
         );
-        msg!("Dog account closed and rent returned to owner");
+        msg!("Dog account closed and rent returned to owner.");
         Ok(())
     }
 }
