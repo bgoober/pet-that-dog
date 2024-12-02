@@ -105,7 +105,7 @@ describe("pet-dat-dog", () => {
     const metadata = {
       name: "Maximus Rex",
       symbol: "MAX",
-      uri: "https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/Qma41jzcPhZ2UspoBrHzKfEX7Ve7fbMV958sQQD3PgvBXW",
+      uri: "https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/QmZbpbwW5oHpPM7FYE2eo8JkyuudLxTDa2emq9EM5QXMYT",
     };
     const txHash = await program.methods
       .createDog(
