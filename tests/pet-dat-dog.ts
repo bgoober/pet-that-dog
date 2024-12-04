@@ -44,7 +44,7 @@ describe("pet-dat-dog", () => {
   //   "J4JHaaMFpo8oPKB5DoHh7YZxXLdzkqvkLnMUQiSD3NrF"
   // );
 
-  const dogName = ["Maximus Rex"];
+  const dogName = ["Maximilian I"];
   const [dog] = web3.PublicKey.findProgramAddressSync(
     [
       Buffer.from("dog"),
@@ -103,7 +103,7 @@ describe("pet-dat-dog", () => {
     console.log("Mint Auth:", mintAuth.toBase58());
     
     const metadata = {
-      name: "Maximilian Trillion",
+      name: "Maximilian I",
       symbol: "MILI",
       uri: "https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/QmZbpbwW5oHpPM7FYE2eo8JkyuudLxTDa2emq9EM5QXMYT",
     };

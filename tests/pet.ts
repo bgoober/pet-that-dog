@@ -35,7 +35,7 @@ describe("pet-dat-dog", () => {
     return signature;
   };
 
-  const dogName = ["Max"];
+  const dogName = ["Maximilian I"];
   const [dog] = web3.PublicKey.findProgramAddressSync(
     [
       Buffer.from("dog"),

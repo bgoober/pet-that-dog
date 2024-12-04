@@ -8,6 +8,109 @@
   },
   "instructions": [
     {
+      "name": "bonk",
+      "discriminator": [
+        49,
+        159,
+        45,
+        43,
+        24,
+        86,
+        89,
+        106
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "dog",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  111,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "dog.name",
+                "account": "Dog"
+              },
+              {
+                "kind": "account",
+                "path": "dog.owner",
+                "account": "Dog"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "writable": true
+        },
+        {
+          "name": "dog_mint",
+          "writable": true
+        },
+        {
+          "name": "mint_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "dog_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_token_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "create_dog",
       "discriminator": [
         135,
@@ -72,6 +175,47 @@
           }
         },
         {
+          "name": "dog_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "dog"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "dog_mint"
+              }
+            ]
+          }
+        },
+        {
           "name": "token_program",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
@@ -82,11 +226,64 @@
         {
           "name": "system_program",
           "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_metadata_program",
+          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "metadata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_metadata_program"
+              },
+              {
+                "kind": "account",
+                "path": "dog_mint"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "token_metadata_program"
+            }
+          }
         }
       ],
       "args": [
         {
           "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "token_name",
+          "type": "string"
+        },
+        {
+          "name": "token_symbol",
+          "type": "string"
+        },
+        {
+          "name": "token_uri",
           "type": "string"
         }
       ]
@@ -132,18 +329,78 @@
           }
         },
         {
-          "name": "pets_mint",
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "kill_dog",
+      "discriminator": [
+        77,
+        34,
+        138,
+        118,
+        68,
+        34,
+        129,
+        39
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "dog"
+          ]
+        },
+        {
+          "name": "dog",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  112,
-                  101,
-                  116,
-                  115
+                  100,
+                  111,
+                  103
                 ]
+              },
+              {
+                "kind": "account",
+                "path": "dog.name",
+                "account": "Dog"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "dog_mint",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "dog"
               }
             ]
           }
@@ -160,6 +417,10 @@
                   116,
                   104
                 ]
+              },
+              {
+                "kind": "account",
+                "path": "dog_mint"
               }
             ]
           }
@@ -169,69 +430,11 @@
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "associated_token_program",
-          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
-        },
-        {
           "name": "system_program",
           "address": "11111111111111111111111111111111"
-        },
-        {
-          "name": "metadata",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  116,
-                  97,
-                  100,
-                  97,
-                  116,
-                  97
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "token_metadata_program"
-              },
-              {
-                "kind": "account",
-                "path": "pets_mint"
-              }
-            ],
-            "program": {
-              "kind": "account",
-              "path": "token_metadata_program"
-            }
-          }
-        },
-        {
-          "name": "token_metadata_program",
-          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
-        },
-        {
-          "name": "rent",
-          "address": "SysvarRent111111111111111111111111111111111"
         }
       ],
-      "args": [
-        {
-          "name": "token_name",
-          "type": "string"
-        },
-        {
-          "name": "token_symbol",
-          "type": "string"
-        },
-        {
-          "name": "token_uri",
-          "type": "string"
-        }
-      ]
+      "args": []
     },
     {
       "name": "pet",
@@ -250,31 +453,6 @@
           "name": "signer",
           "writable": true,
           "signer": true
-        },
-        {
-          "name": "house"
-        },
-        {
-          "name": "owner",
-          "writable": true
-        },
-        {
-          "name": "global",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  103,
-                  108,
-                  111,
-                  98,
-                  97,
-                  108
-                ]
-              }
-            ]
-          }
         },
         {
           "name": "user",
@@ -315,21 +493,12 @@
           }
         },
         {
-          "name": "pets_mint",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  112,
-                  101,
-                  116,
-                  115
-                ]
-              }
-            ]
-          }
+          "name": "owner",
+          "writable": true
+        },
+        {
+          "name": "dog_mint",
+          "writable": true
         },
         {
           "name": "mint_auth",
@@ -343,12 +512,222 @@
                   116,
                   104
                 ]
+              },
+              {
+                "kind": "account",
+                "path": "dog_mint"
               }
             ]
           }
         },
         {
-          "name": "user_pets_ata",
+          "name": "user_token_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "pnut",
+      "discriminator": [
+        29,
+        58,
+        148,
+        73,
+        83,
+        40,
+        62,
+        10
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "dog",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  111,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "dog.name",
+                "account": "Dog"
+              },
+              {
+                "kind": "account",
+                "path": "dog.owner",
+                "account": "Dog"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "writable": true
+        },
+        {
+          "name": "dog_mint",
+          "writable": true
+        },
+        {
+          "name": "mint_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "dog_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_token_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "wif",
+      "discriminator": [
+        152,
+        255,
+        114,
+        156,
+        36,
+        215,
+        208,
+        162
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "dog",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  111,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "dog.name",
+                "account": "Dog"
+              },
+              {
+                "kind": "account",
+                "path": "dog.owner",
+                "account": "Dog"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "writable": true
+        },
+        {
+          "name": "dog_mint",
+          "writable": true
+        },
+        {
+          "name": "mint_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "dog_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_token_ata",
           "writable": true
         },
         {
@@ -411,18 +790,13 @@
   "errors": [
     {
       "code": 6000,
-      "name": "TooManyPets",
-      "msg": "Too many pets in one slot!"
+      "name": "TooMuchLove",
+      "msg": "Too much love at one time! Don't hog all the love!"
     },
     {
       "code": 6001,
-      "name": "TooManyBonks",
-      "msg": "Too many bonksin one slot!"
-    },
-    {
-      "code": 6002,
-      "name": "SessionError",
-      "msg": "Session error"
+      "name": "UnauthorizedClose",
+      "msg": "Unauthorized close attempt"
     }
   ],
   "types": [
@@ -444,7 +818,31 @@
             "type": "u64"
           },
           {
+            "name": "bonks",
+            "type": "u64"
+          },
+          {
+            "name": "wifs",
+            "type": "u64"
+          },
+          {
+            "name": "pnuts",
+            "type": "u64"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
             "name": "dog_bump",
+            "type": "u8"
+          },
+          {
+            "name": "mint_bump",
+            "type": "u8"
+          },
+          {
+            "name": "auth_bump",
             "type": "u8"
           }
         ]
@@ -460,18 +858,6 @@
             "type": "pubkey"
           },
           {
-            "name": "mint",
-            "type": "pubkey"
-          },
-          {
-            "name": "auth_bump",
-            "type": "u8"
-          },
-          {
-            "name": "mint_bump",
-            "type": "u8"
-          },
-          {
             "name": "global_bump",
             "type": "u8"
           }
@@ -484,7 +870,7 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "last_pet",
+            "name": "last_action",
             "type": "u64"
           },
           {
