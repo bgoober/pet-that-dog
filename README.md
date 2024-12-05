@@ -5,7 +5,7 @@ Yes, you can!
 ### Disclaimer / Terms of Service
 
 - The code for this program is unaudited. Use it at your own risk.
-- The front-end user interface relies on 3rd party applications, such as Vercel for the front end and may not always be available.
+- The front-end user interface relies on 3rd party applications, such as Vercel, and may not always be available.
 - Interacting with a Dog costs a transaction fee, plus 0.000_001 SOL paid to the Dog's owner.
 - Each Dog mints 1 of its tokens to you every time you interact with it.
 - Creating your own Dog costs a transaction fee plus 0.01 SOL.
