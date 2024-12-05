@@ -89,29 +89,29 @@ export function AppLayout({ children }: { children: ReactNode }) {
             as Vercel, and may not always be available.
           </li>
           <li>
-            Petting a Dog costs a transaction fee, plus 0.000001 SOL paid to the
-            Dog's owner.
+            Interacting with a Dog costs a transaction fee, plus 0.000001 SOL
+            paid to the Dog's owner.
           </li>
-          {/* <li>
-            BONK'ing a Dog costs a transaction fee, plus 1 $BONK token paid to
-            the Dog.
-          </li> */}
-          <li>Creating your own Dog costs 0.01 SOL.</li>
-          <li>Mint 1 $PETS token to your wallet by petting a Dog.</li>
+          <li>Creating your own Dog costs a transaction fee plus 0.01 SOL.</li>
           <li>
-            The $PETS token has an initial supply of 0. There is no pre-mine, no
-            insider allocations, and no VC's. YOU MINT YOUR OWN TOKENS!
+            Each Dog mints 1 of its tokens to you every time you interact with
+            it.
+          </li>
+          <li>
+            Each individual Dog's token has an initial supply of 0. There is no
+            pre-mine, no insider allocations, and no VC's. YOU MINT YOUR OWN
+            TOKENS BY INTERACTING WITH THAT DOG!
           </li>
           <li>
             Expect no return nor expectation of profit from the developer's
-            continued work, your Dog, or the $PETS token.
+            continued work, your Dog, someone ele's Dog, or any Dog's token.
           </li>
           <li>
             In no event shall the owners of, or contributors to this application
             and website be liable for any damages of any kind; including, but
-            not limited to, loss of use, loss of profits, or loss of data
-            arising out of or in any way connected with the use of the website
-            or application and its instructions and functions.
+            not limited to, loss of use, loss of funds, loss of profits, or loss
+            of data arising out of or in any way connected with the use of the
+            website or application and its instructions and functions.
           </li>
           <li>
             The use of this program, its instructions, and its front end is

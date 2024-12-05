@@ -219,6 +219,10 @@ describe("pet-dat-dog", () => {
     );
     console.log("Owner's PETEY balance:", player2Balance.value.uiAmount);
     console.log("Stranger's PETEY balance:", strangerBalance.value.uiAmount);
+    console.log("Petey's pets:", dogAccount.pets.toString());
+    console.log("Petey's bonks:", dogAccount.bonks.toString());
+    console.log("Petey's wifs:", dogAccount.wifs.toString());
+    console.log("Petey's pnuts:", dogAccount.pnuts.toString());
 
   });
 });
