@@ -22,6 +22,6 @@ This software/program has no license and you may use it as you wish. However, if
 
 **DuF6XB4Cf2ysxuQS8zMfdb5RHbF8TGgG9y1dx7SQcfhu**
 
-We will accept any commonly accepted and recognized USD-Stablecoin (USDC, USDT, DAI, etc..), or main-net SOL, WSOL, or SOL-LST/LRT (INF, bSOL, mSOL, ezSOL, marginfi's LST, etc..) or Ethereum and Bitcoin (on Solana main-net). If you abide by this 1% revenue-share (in $100,000.00 minimums/increments) on forks or derivative works, then you will be in compliance with this program's terms. Thank you!
+We will accept any commonly accepted and recognized USD-Stablecoin (USDC, USDT, DAI, etc..), or main-net SOL, WSOL, or SOL-LST/LRT (INF, bSOL, mSOL, ezSOL, marginfi's LST, etc..) or Ethereum and/or Bitcoin (on Solana main-net). If you abide by this 1% revenue-share (in $100,000.00 minimums/increments) on forks or derivative works, then you will be in compliance with this program's terms. All in good faith. Thank you!
 
 This does not apply to the interaction fees generated from a Dog you created through the use of the createDog instruction of this program.
