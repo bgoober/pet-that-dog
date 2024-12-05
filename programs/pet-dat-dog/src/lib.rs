@@ -19,7 +19,7 @@ pub mod pet_dat_dog {
     }
 
     pub fn create_dog(
-        ctx: Context<DogC>, 
+        ctx: Context<CreateDogC>, 
         name: String,
         token_name: String,
         token_symbol: String,

@@ -11,25 +11,25 @@ use anchor_spl::{
     token::{mint_to, Mint, MintTo, Token, TokenAccount},
 }; // TransferChecked, transfer_checked (put these methods back into the token imports above once the need for a TransferChecked CPI is back in-place.)
 
-// use std::str::FromStr;
+use std::str::FromStr;
 
 use crate::state::*;
 
 // HOUSE addressed to be changed to Squads DAO/Multisig in the future
-// const HOUSE: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
+const HOUSE: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
 
 // ADMIN address to be used for calling GlobalC
-// const ADMIN: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
+const ADMIN: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
 
 #[derive(Accounts)]
 pub struct GlobalC<'info> {
     /// CHECK: This account will be constrained to the Squads/Programs/Dev Team's multi-sig account
-    // #[account(mut, constraint = house.key() == Pubkey::from_str(HOUSE).unwrap())]
-    #[account()]
+    #[account(mut, constraint = house.key() == Pubkey::from_str(HOUSE).unwrap())]
+    // #[account()]
     pub house: AccountInfo<'info>,
 
-    // #[account(mut, constraint = payer.key() == Pubkey::from_str(ADMIN).unwrap())]
-    #[account(mut)]
+    // #[account(mut)]
+    #[account(mut, constraint = payer.key() == Pubkey::from_str(HOUSE).unwrap() || payer.key() == Pubkey::from_str(ADMIN).unwrap())]
     pub payer: Signer<'info>,
 
     #[account(init, payer = payer, seeds = [b"global"], space = Global::LEN, bump)]
@@ -51,7 +51,7 @@ impl<'info> GlobalC<'info> {
 
 #[derive(Accounts)]
 #[instruction(name: String)]
-pub struct DogC<'info> {
+pub struct CreateDogC<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
 
@@ -98,14 +98,14 @@ pub struct DogC<'info> {
     pub metadata: AccountInfo<'info>,
 }
 
-impl<'info> DogC<'info> {
+impl<'info> CreateDogC<'info> {
     pub fn init(
         &mut self,
         name: String,
         token_name: String,
         token_symbol: String,
         token_uri: String,
-        bumps: &DogCBumps,
+        bumps: &CreateDogCBumps,
     ) -> Result<()> {
         // Only charge if not the house
         if self.owner.key() != self.house.key() {
