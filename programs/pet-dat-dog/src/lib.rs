@@ -29,23 +29,20 @@ pub mod pet_dat_dog {
         Ok(())
     }
 
-    pub fn pet(ctx: Context<PetC>) -> Result<()> {
-        ctx.accounts.pet(&ctx.bumps)?;
-        Ok(())
+    pub fn pet(ctx: Context<InteractC>) -> Result<()> {
+        ctx.accounts.pet(&ctx.bumps)
     }
 
-    pub fn bonk(ctx: Context<BonkC>) -> Result<()> {
-        ctx.accounts.bonk(&ctx.bumps)?;
-        Ok(())
-    }
-    pub fn wif(ctx: Context<WifC>) -> Result<()> {
-        ctx.accounts.wif(&ctx.bumps)?;
-        Ok(())
+    pub fn bonk(ctx: Context<InteractC>) -> Result<()> {
+        ctx.accounts.bonk(&ctx.bumps)
     }
 
-    pub fn pnut(ctx: Context<PnutC>) -> Result<()> {
-        ctx.accounts.pnut(&ctx.bumps)?;
-        Ok(())
+    pub fn wif(ctx: Context<InteractC>) -> Result<()> {
+        ctx.accounts.wif(&ctx.bumps)
+    }
+
+    pub fn pnut(ctx: Context<InteractC>) -> Result<()> {
+        ctx.accounts.pnut(&ctx.bumps)
     }
 
     pub fn kill_dog(ctx: Context<KillDogC>) -> Result<()> {

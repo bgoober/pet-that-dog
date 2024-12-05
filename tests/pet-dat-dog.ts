@@ -35,9 +35,7 @@ describe("pet-dat-dog", () => {
   const getSolscanLink = (signature: string) => {
     return `https://solscan.io/tx/${signature}?cluster=custom&customUrl=http://localhost:8899`;
   };
-  let userPetsAta: anchor.web3.PublicKey;
-  // let bonkMint: anchor.web3.PublicKey;
-  // let userBonkAta: anchor.web3.PublicKey;
+
   // let devuserBonkAta: anchor.web3.PublicKey;
 
   // const DEVNETWALLET = new PublicKey(

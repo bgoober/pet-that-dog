@@ -170,7 +170,7 @@ impl<'info> DogC<'info> {
 }
 
 #[derive(Accounts)]
-pub struct PetC<'info> {
+pub struct InteractC<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
 
@@ -202,8 +202,8 @@ pub struct PetC<'info> {
     pub system_program: Program<'info, System>,
 }
 
-impl<'info> PetC<'info> {
-    pub fn pet(&mut self, bumps: &PetCBumps) -> Result<()> {
+impl<'info> InteractC<'info> {
+    pub fn pet(&mut self, bumps: &InteractCBumps) -> Result<()> {
         if self.user.authority != self.signer.key() {
             self.user.set_inner(User {
                 authority: self.signer.key(),
@@ -235,55 +235,14 @@ impl<'info> PetC<'info> {
 
         self.dog.pets += 1;
 
-        // Transfer small SOL fee to dog owner
-        let cpi_accounts = Transfer {
-            from: self.signer.to_account_info(),
-            to: self.owner.to_account_info(),
-        };
-        let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
-        transfer(ctx, 1000)?;
+        self.transfer_fee()?;
 
         self.user.last_action = Clock::get()?.slot;
 
         Ok(())
     }
-}
 
-#[derive(Accounts)]
-pub struct BonkC<'info> {
-    #[account(mut)]
-    pub signer: Signer<'info>,
-
-    #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
-    pub user: Account<'info, User>,
-
-    #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
-    pub dog: Account<'info, Dog>,
-
-    /// CHECK: this is the dog's owner
-    #[account(mut, constraint = owner.key() == dog.owner)]
-    pub owner: AccountInfo<'info>,
-
-    #[account(mut, constraint = dog_mint.key() == dog.mint)]
-    pub dog_mint: Account<'info, Mint>,
-
-    /// CHECK: this is safe
-    #[account(
-        seeds = [b"auth", dog_mint.key().as_ref()],
-        bump = dog.auth_bump
-    )]
-    pub mint_auth: AccountInfo<'info>,
-
-    #[account(init_if_needed, payer = signer, associated_token::mint = dog_mint, associated_token::authority = signer)]
-    pub user_token_ata: Account<'info, TokenAccount>,
-
-    pub token_program: Program<'info, Token>,
-    pub associated_token_program: Program<'info, AssociatedToken>,
-    pub system_program: Program<'info, System>,
-}
-
-impl<'info> BonkC<'info> {
-    pub fn bonk(&mut self, bumps: &BonkCBumps) -> Result<()> {
+    pub fn bonk(&mut self, bumps: &InteractCBumps) -> Result<()> {
         if self.user.authority != self.signer.key() {
             self.user.set_inner(User {
                 authority: self.signer.key(),
@@ -315,55 +274,13 @@ impl<'info> BonkC<'info> {
 
         self.dog.bonks += 1;
 
-        // Transfer small SOL fee to dog owner
-        let cpi_accounts = Transfer {
-            from: self.signer.to_account_info(),
-            to: self.owner.to_account_info(),
-        };
-        let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
-        transfer(ctx, 1000)?;
+        self.transfer_fee()?;
 
         self.user.last_action = Clock::get()?.slot;
-
         Ok(())
     }
-}
 
-#[derive(Accounts)]
-pub struct WifC<'info> {
-    #[account(mut)]
-    pub signer: Signer<'info>,
-
-    #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
-    pub user: Account<'info, User>,
-
-    #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
-    pub dog: Account<'info, Dog>,
-
-    /// CHECK: this is the dog's owner
-    #[account(mut, constraint = owner.key() == dog.owner)]
-    pub owner: AccountInfo<'info>,
-
-    #[account(mut, constraint = dog_mint.key() == dog.mint)]
-    pub dog_mint: Account<'info, Mint>,
-
-    /// CHECK: this is safe
-    #[account(
-        seeds = [b"auth", dog_mint.key().as_ref()],
-        bump = dog.auth_bump
-    )]
-    pub mint_auth: AccountInfo<'info>,
-
-    #[account(init_if_needed, payer = signer, associated_token::mint = dog_mint, associated_token::authority = signer)]
-    pub user_token_ata: Account<'info, TokenAccount>,
-
-    pub token_program: Program<'info, Token>,
-    pub associated_token_program: Program<'info, AssociatedToken>,
-    pub system_program: Program<'info, System>,
-}
-
-impl<'info> WifC<'info> {
-    pub fn wif(&mut self, bumps: &WifCBumps) -> Result<()> {
+    pub fn wif(&mut self, bumps: &InteractCBumps) -> Result<()> {
         if self.user.authority != self.signer.key() {
             self.user.set_inner(User {
                 authority: self.signer.key(),
@@ -395,55 +312,13 @@ impl<'info> WifC<'info> {
 
         self.dog.wifs += 1;
 
-        // Transfer small SOL fee to dog owner
-        let cpi_accounts = Transfer {
-            from: self.signer.to_account_info(),
-            to: self.owner.to_account_info(),
-        };
-        let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
-        transfer(ctx, 1000)?;
+        self.transfer_fee()?;
 
         self.user.last_action = Clock::get()?.slot;
-
         Ok(())
     }
-}
 
-#[derive(Accounts)]
-pub struct PnutC<'info> {
-    #[account(mut)]
-    pub signer: Signer<'info>,
-
-    #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
-    pub user: Account<'info, User>,
-
-    #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
-    pub dog: Account<'info, Dog>,
-
-    /// CHECK: this is the dog's owner
-    #[account(mut, constraint = owner.key() == dog.owner)]
-    pub owner: AccountInfo<'info>,
-
-    #[account(mut, constraint = dog_mint.key() == dog.mint)]
-    pub dog_mint: Account<'info, Mint>,
-
-    /// CHECK: this is safe
-    #[account(
-        seeds = [b"auth", dog_mint.key().as_ref()],
-        bump = dog.auth_bump
-    )]
-    pub mint_auth: AccountInfo<'info>,
-
-    #[account(init_if_needed, payer = signer, associated_token::mint = dog_mint, associated_token::authority = signer)]
-    pub user_token_ata: Account<'info, TokenAccount>,
-
-    pub token_program: Program<'info, Token>,
-    pub associated_token_program: Program<'info, AssociatedToken>,
-    pub system_program: Program<'info, System>,
-}
-
-impl<'info> PnutC<'info> {
-    pub fn pnut(&mut self, bumps: &PnutCBumps) -> Result<()> {
+    pub fn pnut(&mut self, bumps: &InteractCBumps) -> Result<()> {
         if self.user.authority != self.signer.key() {
             self.user.set_inner(User {
                 authority: self.signer.key(),
@@ -475,16 +350,20 @@ impl<'info> PnutC<'info> {
 
         self.dog.pnuts += 1;
 
-        // Transfer small SOL fee to dog owner
+        self.transfer_fee()?;
+
+        self.user.last_action = Clock::get()?.slot;
+        Ok(())
+    }
+
+    // Helper function for the SOL fee transfer
+    fn transfer_fee(&self) -> Result<()> {
         let cpi_accounts = Transfer {
             from: self.signer.to_account_info(),
             to: self.owner.to_account_info(),
         };
         let ctx = CpiContext::new(self.system_program.to_account_info(), cpi_accounts);
         transfer(ctx, 1000)?;
-
-        self.user.last_action = Clock::get()?.slot;
-
         Ok(())
     }
 }
