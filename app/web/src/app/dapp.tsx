@@ -64,61 +64,32 @@ const Dapp: React.FC = () => {
 
   let house = new PublicKey('4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp');
 
-  let petsMint = PublicKey.findProgramAddressSync(
-    [Buffer.from('pets')],
-    program?.programId || PublicKey.default
-  )[0];
-  // console.log("PETS Mint: ", petsMint.toBase58());
-
-  let mintAuth = PublicKey.findProgramAddressSync(
-    [Buffer.from('auth')],
-    program?.programId || PublicKey.default
-  )[0];
-  // console.log("PETS Mint Auth: ", mintAuth.toBase58());
-
-  const dogName = ['Max'];
+  const dogName = ['Maximilian I'];
   const [dog] = PublicKey.findProgramAddressSync(
     [Buffer.from('dog'), Buffer.from(dogName.toString()), house.toBuffer()],
     program?.programId || PublicKey.default
   );
-  // console.log("Dog account: ", dog.toBase58());
 
-  const [dogAuth] = PublicKey.findProgramAddressSync(
-    [Buffer.from('auth'), dog.toBuffer()],
+  let dogMint = PublicKey.findProgramAddressSync(
+    [Buffer.from('mint'), dog.toBuffer()],
     program?.programId || PublicKey.default
-  );
-  // console.log("Dog Auth account: ", dogAuth.toBase58());
+  )[0];
 
-  // for testnet
-  // let bonkMint = new PublicKey('Az8AfogXAE3XgiqeBuJg9pjNKTPhgkBtijR7CjToT8pM');
+  let mintAuth = PublicKey.findProgramAddressSync(
+    [Buffer.from('auth'), dogMint.toBuffer()],
+    program?.programId || PublicKey.default
+  )[0];
 
-  // for devnet and mainnet -- actual BONK mint address
-  let bonkMint = new PublicKey('4GtBDByccFJbUM2iS9RHyGLKNm4UktTunZASVMTMNZvN');
-
-  let dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
-  // console.log("dogBonkAta account: ", dogBonkAta.toBase58());
-
-  let userPetsAta = wallet
-    ? getAssociatedTokenAddressSync(petsMint, wallet.publicKey)
+  let userTokenAta = wallet
+    ? getAssociatedTokenAddressSync(dogMint, wallet.publicKey)
     : PublicKey.default;
-  // console.log("User petsAta account: ", userPetsAta.toBase58());
 
-  let userBonkAta = wallet
-    ? getAssociatedTokenAddressSync(bonkMint, wallet.publicKey)
-    : PublicKey.default;
-  // console.log("User bonkAta account: ", userBonkAta.toBase58());
-
-  // console.log('Program ID: ', program?.programId.toBase58());
   let user = wallet
     ? PublicKey.findProgramAddressSync(
         [wallet.publicKey.toBuffer()],
         program?.programId || PublicKey.default
       )[0]
     : PublicKey.default;
-  // console.log('User account: ', user.toBase58());
-
-  // console.log the rpc and network we are connected to
-  // console.log('RPC URL: ', connection);
 
   const handlePetInstruction = async () => {
     if (!program || !wallet) return;
@@ -126,19 +97,17 @@ const Dapp: React.FC = () => {
       const tx = await program.methods
         .pet()
         .accountsPartial({
-
-          house,
           dog,
           user,
           owner: house,
-          petsMint,
+          dogMint,
           mintAuth,
-          userPetsAta,
+          userTokenAta,
           associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .rpc()
+        .rpc();
       //   .then(confirm);
       console.log('Your pet tx signature: ', getSolscanLink(tx));
       changeState('pet');
@@ -155,14 +124,15 @@ const Dapp: React.FC = () => {
         .accountsPartial({
           dog,
           user,
-          bonkMint,
-          dogBonkAta,
-          userBonkAta,
+          owner: house,
+          dogMint,
+          mintAuth,
+          userTokenAta,
           associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .rpc()
+        .rpc();
       //   .then(confirm);
       console.log('Your bonk tx signature: ', getSolscanLink(tx));
       changeState('bonk');
@@ -262,7 +232,7 @@ const Dapp: React.FC = () => {
   const handleBonkBoxClick = async () => {
     if (isAnimating) return; // Lockout during animation
     // Call bonk instruction and wait for confirmation
-    // await handleBonkInstruction();
+    await handleBonkInstruction();
     if (['sitUp', 'pet', 'bonk'].includes(currentState)) {
       console.log(`Bonk box clicked during ${currentState} state`);
       setClicked(true);

@@ -35,21 +35,7 @@ describe("pet-dat-dog", () => {
     return signature;
   };
 
-  let userPetsAta: anchor.web3.PublicKey;
-
-  let petsMint = PublicKey.findProgramAddressSync(
-    [Buffer.from("pets")],
-    program.programId
-  )[0];
-  console.log("PETS Mint: ", petsMint.toBase58());
-
-  let mintAuth = PublicKey.findProgramAddressSync(
-    [Buffer.from("auth")],
-    program.programId
-  )[0];
-  console.log("PETS Mint Auth: ", mintAuth.toBase58());
-
-  const dogName = ["Max"];
+  const dogName = ["Maximilian I"];
   const [dog] = web3.PublicKey.findProgramAddressSync(
     [
       Buffer.from("dog"),
@@ -58,34 +44,38 @@ describe("pet-dat-dog", () => {
     ],
     program.programId
   );
-  console.log("Dog account: ", dog.toBase58());
+  console.log("Dog PDA:", dog.toBase58());
 
-  const [dogAuth] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("auth"), dog.toBuffer()],
+  let dogMint = PublicKey.findProgramAddressSync(
+    [Buffer.from("mint"), dog.toBuffer()],
     program.programId
-  );
-  console.log("Dog Auth account: ", dogAuth.toBase58());
+  )[0];
+  console.log("Dog Mint PDA:", dogMint.toBase58());
+
+  let mintAuth = PublicKey.findProgramAddressSync(
+    [Buffer.from("auth"), dogMint.toBuffer()],
+    program.programId
+  )[0];
+  console.log("Mint Auth PDA:", mintAuth.toBase58());
+
+  let userTokenAta = getAssociatedTokenAddressSync(dogMint, keypair.publicKey);
 
   let user = PublicKey.findProgramAddressSync(
     [keypair.publicKey.toBuffer()],
     program.programId
   )[0];
 
-  userPetsAta = getAssociatedTokenAddressSync(petsMint, keypair.publicKey);
-  console.log("User petsAta account: ", userPetsAta.toBase58());
-
   it(`Is pet! - ${dogName}`, async () => {
     const tx = await program.methods
       .pet()
       .accountsPartial({
         signer: keypair.publicKey,
-        house: keypair.publicKey,
         dog,
         user,
         owner: keypair.publicKey,
-        petsMint,
+        dogMint,
         mintAuth,
-        userPetsAta: userPetsAta,
+        userTokenAta,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
