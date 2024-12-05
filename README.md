@@ -1,4 +1,4 @@
-### Can I pet dat dog?!?!
+### Can I pet that dog?!?!
 
 Yes, you can!
 
