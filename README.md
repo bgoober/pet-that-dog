@@ -18,8 +18,10 @@ Yes, you can!
   website or application and its instructions and functions.
 - The use of this program, its instructions, and its front end is entirely of your own volition. Use it at your own risk.
 
-This software has no license and you may use it as you wish. However, if you fork this software, or produce a derivative work, and subsequently make, produce, or incur revenues in the form of financial gain from said fork or derivative, then for every $100,000.00 in revenue (denoted in US Dollar value), you must send $1,000.00 (of USD equivalent value) to this Solana main-net address: 
+This software/program has no license and you may use it as you wish. However, if you fork this software, or produce a derivative work, and subsequently make, produce, or incur revenues in the form of financial gain from said fork or derivative, then for every $100,000.00 in revenue (denoted in US Dollar value), you must send $1,000.00 (of USD equivalent value) to this Solana main-net address: 
 
 **DuF6XB4Cf2ysxuQS8zMfdb5RHbF8TGgG9y1dx7SQcfhu**
 
-We will accept any commonly accepted and recognized USD-Stablecoin (USDC, USDT, DAI, etc..), or main-net SOL, WSOL, or SOL-LST/LRT (INF, bSOL, mSOL, ezSOL, marginfi's LST, etc..). If you abide by this 1% revenue-share (in $100,000.00 minimums/increments) on forks or derivative works, then you will be in compliance with this program's terms. Thank you!
+We will accept any commonly accepted and recognized USD-Stablecoin (USDC, USDT, DAI, etc..), or main-net SOL, WSOL, or SOL-LST/LRT (INF, bSOL, mSOL, ezSOL, marginfi's LST, etc..) or Ethereum and Bitcoin (on Solana main-net). If you abide by this 1% revenue-share (in $100,000.00 minimums/increments) on forks or derivative works, then you will be in compliance with this program's terms. Thank you!
+
+This does not apply to the interaction fees generated from a Dog you created through the use of the createDog instruction of this program.
