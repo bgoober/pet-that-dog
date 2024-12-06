@@ -18,6 +18,10 @@ Yes, you can!
   website or application and its instructions and functions.
 - The use of this program, its instructions, and its front end is entirely of your own volition. Use it at your own risk.
 
+---
+
+FORKS AND DERIVATIVE WORKS
+
 This software/program has no license and you may use it as you wish. However, if you fork this software, or produce a derivative work, and subsequently make, produce, or incur revenues in the form of financial gain from said fork or derivative, then for every $100,000.00 in revenue (denoted in US Dollar value), you must send $1,000.00 (of USD equivalent value) to this Solana main-net address: 
 
 **DuF6XB4Cf2ysxuQS8zMfdb5RHbF8TGgG9y1dx7SQcfhu**
