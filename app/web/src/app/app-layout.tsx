@@ -79,7 +79,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </button>
       </div>
       <Modal show={showModal} onClose={toggleModal}>
-        <h4>Disclaimer / Terms of Service</h4>
+        <h4>Disclaimer / Terms</h4>
         <ul>
           <li>
             The code for this program is unaudited. Use it at your own risk.
