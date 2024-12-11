@@ -6,7 +6,7 @@ use context::*;
 
 mod state;
 
-declare_id!("DNHVjKARnjUuTykjqhbrQ1veV8YFkmqiwP65EKd19YPT");
+declare_id!("HDxktbmAF1fhPud3mdJ2k2ftZbwc4geX7pf5FfHGnVTe");
 
 #[program]
 pub mod pet_dat_dog {

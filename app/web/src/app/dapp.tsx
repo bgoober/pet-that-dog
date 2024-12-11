@@ -62,7 +62,7 @@ const Dapp: React.FC = () => {
     ? new anchor.Program(idl as anchor.Idl, provider)
     : null;
 
-  let house = new PublicKey('4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp');
+  let house = new PublicKey('CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8');
 
   const dogName = ['Maximilian I'];
   const [dog] = PublicKey.findProgramAddressSync(

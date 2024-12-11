@@ -16,10 +16,7 @@ use std::str::FromStr;
 use crate::state::*;
 
 // HOUSE addressed to be changed to Squads DAO/Multisig in the future
-const HOUSE: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
-
-// ADMIN address to be used for calling GlobalC
-const ADMIN: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
+const HOUSE: &str = "CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8";
 
 #[derive(Accounts)]
 pub struct GlobalC<'info> {
@@ -29,7 +26,7 @@ pub struct GlobalC<'info> {
     pub house: AccountInfo<'info>,
 
     // #[account(mut)]
-    #[account(mut, constraint = payer.key() == Pubkey::from_str(HOUSE).unwrap() || payer.key() == Pubkey::from_str(ADMIN).unwrap())]
+    #[account(mut, constraint = payer.key() == Pubkey::from_str(HOUSE).unwrap())]
     pub payer: Signer<'info>,
 
     #[account(init, payer = payer, seeds = [b"global"], space = Global::LEN, bump)]
