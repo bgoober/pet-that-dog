@@ -15,7 +15,7 @@ import React, { useEffect, useState, useRef } from 'react';
 
 // Helper function for transaction signatures only
 const getSolscanLink = (signature: string) => {
-  return `https://solscan.io/tx/${signature}?cluster=custom&customUrl=http://localhost:8899`;
+  return `https://solscan.io/tx/${signature}?cluster=devnet`;
 };
 
 // Define the states

@@ -44,7 +44,7 @@ describe("multisig init's global", () => {
       .accountsPartial({
         global,
         house: multisig,
-        payer: payer.publicKey,
+        payer: multisig,
         systemProgram: SystemProgram.programId,
       })
       .instruction();

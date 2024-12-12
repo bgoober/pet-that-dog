@@ -75,7 +75,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             textDecoration: 'none',
           }}
         >
-          Disclaimer / Terms of Service
+          Disclaimer / Terms
         </button>
       </div>
       <Modal show={showModal} onClose={toggleModal}>

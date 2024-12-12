@@ -15,18 +15,17 @@ use std::str::FromStr;
 
 use crate::state::*;
 
-// HOUSE addressed to be changed to Squads DAO/Multisig in the future
 const HOUSE: &str = "CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8";
+
+const ADMIN: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
 
 #[derive(Accounts)]
 pub struct GlobalC<'info> {
     /// CHECK: This account will be constrained to the Squads/Programs/Dev Team's multi-sig account
     #[account(mut, constraint = house.key() == Pubkey::from_str(HOUSE).unwrap())]
-    // #[account()]
     pub house: AccountInfo<'info>,
 
-    // #[account(mut)]
-    #[account(mut, constraint = payer.key() == Pubkey::from_str(HOUSE).unwrap())]
+    #[account(mut, constraint = payer.key() == Pubkey::from_str(HOUSE).unwrap() || payer.key() == Pubkey::from_str(ADMIN).unwrap())]
     pub payer: Signer<'info>,
 
     #[account(init, payer = payer, seeds = [b"global"], space = Global::LEN, bump)]

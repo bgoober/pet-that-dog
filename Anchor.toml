@@ -7,6 +7,9 @@ skip-lint = false
 [programs.localnet]
 pet_dat_dog = "HDxktbmAF1fhPud3mdJ2k2ftZbwc4geX7pf5FfHGnVTe"
 
+[programs.devnet]
+pet_dat_dog = "HDxktbmAF1fhPud3mdJ2k2ftZbwc4geX7pf5FfHGnVTe"
+
 [registry]
 # url = "http://localhost:8899"
 url = "https://api.apr.dev"
@@ -27,6 +30,8 @@ p3 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/p3.ts"
 gm = "npx ts-mocha -p tsconfig.json -t 1000000 tests/global_max_mainnet.ts"
 ms1 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/multisig_init_global.ts"
 ms2 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/multisig_init_Maximilian.ts"
+init_mainnet = "npx ts-mocha -p tsconfig.json -t 1000000 tests/init_mainnet.ts"
+max_mainnet = "npx ts-mocha -p tsconfig.json -t 1000000 tests/multisig_init_max_mainnet.ts"
 
 [[test.genesis]]
 address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
