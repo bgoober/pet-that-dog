@@ -199,7 +199,8 @@ pub struct InteractC<'info> {
 }
 
 impl<'info> InteractC<'info> {
-    pub fn pet(&mut self, bumps: &InteractCBumps) -> Result<()> {
+    pub fn process_interaction(&mut self, bumps: &InteractCBumps) -> Result<()> {
+        // Initialize user if needed
         if self.user.authority != self.signer.key() {
             self.user.set_inner(User {
                 authority: self.signer.key(),
@@ -207,6 +208,11 @@ impl<'info> InteractC<'info> {
                 bump: bumps.user,
             });
         }
+        Ok(())
+    }
+
+    pub fn pet(&mut self, bumps: &InteractCBumps) -> Result<()> {
+        self.process_interaction(bumps)?;
 
         if self.user.last_action == Clock::get()?.slot {
             return Err(ErrorCode::TooMuchLove.into());
@@ -239,13 +245,7 @@ impl<'info> InteractC<'info> {
     }
 
     pub fn bonk(&mut self, bumps: &InteractCBumps) -> Result<()> {
-        if self.user.authority != self.signer.key() {
-            self.user.set_inner(User {
-                authority: self.signer.key(),
-                last_action: 0,
-                bump: bumps.user,
-            });
-        }
+        self.process_interaction(bumps)?;
 
         if self.user.last_action == Clock::get()?.slot {
             return Err(ErrorCode::TooMuchLove.into());
@@ -277,13 +277,7 @@ impl<'info> InteractC<'info> {
     }
 
     pub fn wif(&mut self, bumps: &InteractCBumps) -> Result<()> {
-        if self.user.authority != self.signer.key() {
-            self.user.set_inner(User {
-                authority: self.signer.key(),
-                last_action: 0,
-                bump: bumps.user,
-            });
-        }
+        self.process_interaction(bumps)?;
 
         if self.user.last_action == Clock::get()?.slot {
             return Err(ErrorCode::TooMuchLove.into());
@@ -315,13 +309,7 @@ impl<'info> InteractC<'info> {
     }
 
     pub fn pnut(&mut self, bumps: &InteractCBumps) -> Result<()> {
-        if self.user.authority != self.signer.key() {
-            self.user.set_inner(User {
-                authority: self.signer.key(),
-                last_action: 0,
-                bump: bumps.user,
-            });
-        }
+        self.process_interaction(bumps)?;
 
         if self.user.last_action == Clock::get()?.slot {
             return Err(ErrorCode::TooMuchLove.into());
@@ -414,4 +402,6 @@ pub enum ErrorCode {
     TooMuchLove,
     #[msg("Unauthorized close attempt")]
     UnauthorizedClose,
+    #[msg("Invalid session token")]
+    InvalidSessionToken,
 }

@@ -5,7 +5,7 @@ import {
   TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,
 } from '@solana/spl-token';
-import { PublicKey, SystemProgram } from '@solana/web3.js';
+import { PublicKey, SystemProgram, Keypair } from '@solana/web3.js';
 // import wallet from "~/.config/solana/id.json";
 import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
 
@@ -45,6 +45,7 @@ const Dapp: React.FC = () => {
   const petBoxRef = useRef<HTMLDivElement>(null);
   const bonkBoxRef = useRef<HTMLDivElement>(null);
   const nextTimeoutRef = useRef<number | null>(null);
+  const [sessionKey, setSessionKey] = useState<Keypair | null>(null);
 
   const wallet = useAnchorWallet();
   const { connection } = useConnection(); // Extract the connection object
@@ -91,9 +92,47 @@ const Dapp: React.FC = () => {
       )[0]
     : PublicKey.default;
 
+  // Function to check if session key exists and is valid
+  const checkSessionKey = async () => {
+    if (!wallet || !program) return null;
+    
+    try {
+      // Try to find existing session token
+      const sessionAddress = await program.provider.connection.getProgramAccounts(
+        new PublicKey("Session Program ID"), // Replace with actual Session program ID
+        {
+          filters: [
+            {
+              memcmp: {
+                offset: 8, // Adjust based on account structure
+                bytes: wallet.publicKey.toBase58(),
+              },
+            },
+          ],
+        }
+      );
+
+      if (sessionAddress.length > 0) {
+        // Verify session token is still valid
+        const sessionToken = await program.account.sessionToken.fetch(sessionAddress[0].pubkey);
+        if (sessionToken.validUntil.toNumber() > await program.provider.connection.getSlot()) {
+          return sessionAddress[0].pubkey;
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error('Error checking session key:', error);
+      return null;
+    }
+  };
+
+  // Modified interaction handler
   const handlePetInstruction = async () => {
     if (!program || !wallet) return;
+    
     try {
+      const existingSession = await checkSessionKey();
+      
       const tx = await program.methods
         .pet()
         .accountsPartial({
@@ -103,12 +142,14 @@ const Dapp: React.FC = () => {
           dogMint,
           mintAuth,
           userTokenAta,
+          sessionToken: existingSession,
+          sessionProgram: existingSession ? undefined : SESSION_PROGRAM_ID, // Only include if creating new session
           associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
         .rpc();
-      //   .then(confirm);
+
       console.log('Your pet tx signature: ', getSolscanLink(tx));
       changeState('pet');
     } catch (error) {
@@ -276,6 +317,30 @@ const Dapp: React.FC = () => {
       changeState('sitUp');
     }
   };
+
+  useEffect(() => {
+    const cleanup = async () => {
+      if (!wallet || !program) return;
+      
+      try {
+        const existingSession = await checkSessionKey();
+        if (existingSession) {
+          // Close expired session account and return rent
+          await program.methods
+            .closeSession()
+            .accounts({
+              sessionToken: existingSession,
+              authority: wallet.publicKey,
+            })
+            .rpc();
+        }
+      } catch (error) {
+        console.error('Error cleaning up session:', error);
+      }
+    };
+
+    cleanup();
+  }, [wallet, program]);
 
   return (
     <div id="dog-container" onClick={handleBackgroundClick}>

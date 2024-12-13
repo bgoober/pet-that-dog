@@ -17,12 +17,14 @@ describe("pet-dat-dog", () => {
   const connection = provider.connection;
   const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
 
+  // Helper function for transaction confirmation
   const confirm = async (signature: string): Promise<string> => {
     const block = await connection.getLatestBlockhash();
     await connection.confirmTransaction({ signature, ...block });
     return signature;
   };
 
+  // Helper function for logging
   const log = async (signature: string): Promise<string> => {
     console.log(signature);
     return signature;
@@ -31,6 +33,35 @@ describe("pet-dat-dog", () => {
   // Helper function for transaction signatures only
   const getSolscanLink = (signature: string) => {
     return `https://solscan.io/tx/${signature}?cluster=custom&customUrl=http://localhost:8899`;
+  };
+
+  // Helper function for interactions
+  const interactWithDog = async (
+    action: "pet" | "bonk" | "wif" | "pnut",
+    dog: PublicKey,
+    user: PublicKey,
+    dogMint: PublicKey,
+    mintAuth: PublicKey,
+    userTokenAta: PublicKey
+  ) => {
+    const tx = await program.methods[action]()
+      .accountsPartial({
+        dog,
+        user,
+        owner: keypair.publicKey,
+        dogMint,
+        mintAuth,
+        userTokenAta,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc()
+      .then(confirm)
+      .then(log);
+
+    console.log(`Your ${action} tx signature: `, getSolscanLink(tx));
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Add delay between actions
   };
 
   let house = new PublicKey("CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8");
@@ -44,33 +75,30 @@ describe("pet-dat-dog", () => {
     ],
     program.programId
   );
-  console.log("Dog PDA:", dog.toBase58());
 
   let dogMint = PublicKey.findProgramAddressSync(
     [Buffer.from("mint"), dog.toBuffer()],
     program.programId
   )[0];
-  console.log("Dog Mint PDA:", dogMint.toBase58());
 
   let mintAuth = PublicKey.findProgramAddressSync(
     [Buffer.from("auth"), dogMint.toBuffer()],
     program.programId
   )[0];
-  console.log("Mint Auth PDA:", mintAuth.toBase58());
 
   let user = PublicKey.findProgramAddressSync(
     [keypair.publicKey.toBuffer()],
     program.programId
   )[0];
 
+  let userTokenAta = getAssociatedTokenAddressSync(dogMint, keypair.publicKey);
+
   const [global] = web3.PublicKey.findProgramAddressSync(
     [Buffer.from("global")],
     program.programId
   );
-  console.log("Global account: ", global.toBase58());
 
-  let userTokenAta = getAssociatedTokenAddressSync(dogMint, keypair.publicKey);
-
+  // Tests
   it("Global is Initialized", async () => {
     const txHash = await program.methods
       .initGlobal()
@@ -129,107 +157,31 @@ describe("pet-dat-dog", () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   });
 
-  it(`Petting ${dogName}`, async () => {
-    const tx = await program.methods
-      .pet()
-      .accountsPartial({
-        dog,
-        user,
-        owner: keypair.publicKey,
-        dogMint,
-        mintAuth,
-        userTokenAta,
-        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
-        tokenProgram: TOKEN_PROGRAM_ID,
-        systemProgram: SystemProgram.programId,
-      })
-      .rpc()
-      .then(confirm)
-      .then(log);
-    console.log("Your pet tx signature: ", getSolscanLink(tx));
-
-    const dogAccount = await program.account.dog.fetch(dog);
-
-    // expect that dogAccount.pets is equal to 1
+  it("Performs all interactions with the dog", async () => {
+    // Pet the dog
+    await interactWithDog("pet", dog, user, dogMint, mintAuth, userTokenAta);
+    let dogAccount = await program.account.dog.fetch(dog);
     expect(dogAccount.pets.toNumber()).to.equal(1);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  });
 
-  it(`Bonking ${dogName}`, async () => {
-    const tx = await program.methods
-      .bonk()
-      .accountsPartial({
-        dog,
-        user,
-        owner: keypair.publicKey,
-        dogMint,
-        mintAuth,
-        userTokenAta,
-        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
-        tokenProgram: TOKEN_PROGRAM_ID,
-        systemProgram: SystemProgram.programId,
-      })
-      .rpc()
-      .then(confirm)
-      .then(log);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  });
+    // Bonk the dog
+    await interactWithDog("bonk", dog, user, dogMint, mintAuth, userTokenAta);
+    dogAccount = await program.account.dog.fetch(dog);
+    expect(dogAccount.bonks.toNumber()).to.equal(1);
 
-  it(`putting a hat on ${dogName}`, async () => {
-    const tx = await program.methods
-      .wif()
-      .accountsPartial({
-        dog,
-        user,
-        owner: keypair.publicKey,
-        dogMint,
-        mintAuth,
-        userTokenAta,
-        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
-        tokenProgram: TOKEN_PROGRAM_ID,
-        systemProgram: SystemProgram.programId,
-      })
-      .rpc()
-      .then(confirm)
-      .then(log);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  });
+    // Wif the dog
+    await interactWithDog("wif", dog, user, dogMint, mintAuth, userTokenAta);
+    dogAccount = await program.account.dog.fetch(dog);
+    expect(dogAccount.wifs.toNumber()).to.equal(1);
 
-  it(`giving a pnut to ${dogName}`, async () => {
-    const tx = await program.methods
-      .pnut()
-      .accountsPartial({
-        dog,
-        user,
-        owner: keypair.publicKey,
-        dogMint,
-        mintAuth,
-        userTokenAta,
-        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
-        tokenProgram: TOKEN_PROGRAM_ID,
-        systemProgram: SystemProgram.programId,
-      })
-      .rpc()
-      .then(confirm)
-      .then(log);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  });
+    // Give pnut to dog
+    await interactWithDog("pnut", dog, user, dogMint, mintAuth, userTokenAta);
+    dogAccount = await program.account.dog.fetch(dog);
+    expect(dogAccount.pnuts.toNumber()).to.equal(1);
 
-  it(`Fetches dog state - ${dogName}`, async () => {
-    const dogAccount = await program.account.dog.fetch(dog);
-
+    // Final state check
     console.log(`${dogName}'s pets:`, dogAccount.pets.toString());
     console.log(`${dogName}'s bonks:`, dogAccount.bonks.toString());
     console.log(`${dogName}'s wifs:`, dogAccount.wifs.toString());
     console.log(`${dogName}'s pnuts:`, dogAccount.pnuts.toString());
-
-    // expect that dogAccount.pets is equal to 1
-    expect(dogAccount.pets.toNumber()).to.equal(1);
-
-    expect(dogAccount.bonks.toNumber()).to.equal(1);
-
-    expect(dogAccount.wifs.toNumber()).to.equal(1);
-
-    expect(dogAccount.pnuts.toNumber()).to.equal(1);
   });
 });
