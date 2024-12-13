@@ -232,4 +232,18 @@ describe("pet-dat-dog", () => {
 
     expect(dogAccount.pnuts.toNumber()).to.equal(1);
   });
+
+  it(`Closing user account`, async () => {
+    const tx = await program.methods
+      .closeUser()
+      .accountsPartial({
+        user,
+        signer: keypair.publicKey,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc()
+      .then(confirm)
+      .then(log);
+    console.log("Your close user tx signature: ", getSolscanLink(tx));
+  });
 });

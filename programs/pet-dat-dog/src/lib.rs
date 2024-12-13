@@ -19,13 +19,14 @@ pub mod pet_dat_dog {
     }
 
     pub fn create_dog(
-        ctx: Context<CreateDogC>, 
+        ctx: Context<CreateDogC>,
         name: String,
         token_name: String,
         token_symbol: String,
         token_uri: String,
     ) -> Result<()> {
-        ctx.accounts.init(name, token_name, token_symbol, token_uri, &ctx.bumps)?;
+        ctx.accounts
+            .init(name, token_name, token_symbol, token_uri, &ctx.bumps)?;
         Ok(())
     }
 
@@ -54,6 +55,10 @@ pub mod pet_dat_dog {
         Ok(())
     }
 
+    pub fn close_user(ctx: Context<CloseUserC>) -> Result<()> {
+        ctx.accounts.close()?;
+        Ok(())
+    }
 }
 
 #[error_code]
@@ -62,5 +67,6 @@ pub enum ErrorCode {
     TooMuchLove,
     #[msg("Only the dog owner can close this account.")]
     UnauthorizedClose,
+    #[msg("The signer is not the authority of the user's account.")]
+    UnauthorizedUserClose,
 }
-

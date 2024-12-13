@@ -339,10 +339,41 @@ impl<'info> KillDogC<'info> {
     }
 }
 
+#[derive(Accounts)]
+pub struct CloseUserC<'info> {
+    #[account(mut, constraint = signer.key() == user.authority)]
+    pub signer: Signer<'info>,
+
+    #[account(
+        mut,
+        seeds = [signer.key().as_ref()],
+        bump = user.bump,
+        constraint = user.authority == signer.key(),
+        close = signer
+    )]
+    pub user: Account<'info, User>,
+
+    pub system_program: Program<'info, System>,
+}
+
+impl<'info> CloseUserC<'info> {
+    pub fn close(&mut self) -> Result<()> {
+        // Verify signer is the authority
+        require!(
+            self.signer.key() == self.user.authority,
+            ErrorCode::UnauthorizedUserClose
+        );
+        msg!("User account closed and rent returned to user.");
+        Ok(())
+    }
+}
+
 #[error_code]
 pub enum ErrorCode {
     #[msg("Too much love at one time! Don't hog all the love!")]
     TooMuchLove,
-    #[msg("Only the dog owner can close this account.")]
+    #[msg("Only the Dog's owner can close this account.")]
     UnauthorizedClose,
+    #[msg("The signer is not the authority of the user's account.")]
+    UnauthorizedUserClose,
 }
