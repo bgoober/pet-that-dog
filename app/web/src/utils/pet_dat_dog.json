@@ -797,7 +797,7 @@
     {
       "code": 6001,
       "name": "UnauthorizedClose",
-      "msg": "Unauthorized close attempt"
+      "msg": "Only the dog owner can close this account"
     }
   ],
   "types": [

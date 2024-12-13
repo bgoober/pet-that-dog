@@ -30,23 +30,28 @@ pub mod pet_dat_dog {
     }
 
     pub fn pet(ctx: Context<InteractC>) -> Result<()> {
-        ctx.accounts.pet(&ctx.bumps)
+        ctx.accounts.pet(&ctx.bumps)?;
+        Ok(())
     }
 
     pub fn bonk(ctx: Context<InteractC>) -> Result<()> {
-        ctx.accounts.bonk(&ctx.bumps)
+        ctx.accounts.bonk(&ctx.bumps)?;
+        Ok(())
     }
 
     pub fn wif(ctx: Context<InteractC>) -> Result<()> {
-        ctx.accounts.wif(&ctx.bumps)
+        ctx.accounts.wif(&ctx.bumps)?;
+        Ok(())
     }
 
     pub fn pnut(ctx: Context<InteractC>) -> Result<()> {
-        ctx.accounts.pnut(&ctx.bumps)
+        ctx.accounts.pnut(&ctx.bumps)?;
+        Ok(())
     }
 
     pub fn kill_dog(ctx: Context<KillDogC>) -> Result<()> {
-        ctx.accounts.kill()
+        ctx.accounts.kill()?;
+        Ok(())
     }
 
 }
@@ -55,7 +60,7 @@ pub mod pet_dat_dog {
 pub enum ErrorCode {
     #[msg("Too much love at one time! Don't hog all the love!")]
     TooMuchLove,
-    #[msg("Only the dog owner can close this account")]
+    #[msg("Only the dog owner can close this account.")]
     UnauthorizedClose,
 }
 

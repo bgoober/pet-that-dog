@@ -26,8 +26,8 @@ const Context = createContext<ClusterProviderContext>(
 
 export function ClusterProvider({ children }: { children: ReactNode }) {
   const value: ClusterProviderContext = {
-    cluster: { endpoint: clusterApiUrl('devnet') },
-    // cluster: { endpoint: 'http://localhost:8899', network: ClusterNetwork.Custom },
+    // cluster: { endpoint: clusterApiUrl('devnet') },
+    cluster: { endpoint: 'http://localhost:8899', network: ClusterNetwork.Custom },
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }

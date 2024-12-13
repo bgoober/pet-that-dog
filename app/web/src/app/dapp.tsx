@@ -63,10 +63,11 @@ const Dapp: React.FC = () => {
     : null;
 
   let house = new PublicKey('CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8');
+  let house2 = new PublicKey('4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp');
 
   const dogName = ['Maximilian I'];
   const [dog] = PublicKey.findProgramAddressSync(
-    [Buffer.from('dog'), Buffer.from(dogName.toString()), house.toBuffer()],
+    [Buffer.from('dog'), Buffer.from(dogName.toString()), house2.toBuffer()],
     program?.programId || PublicKey.default
   );
 
@@ -99,7 +100,7 @@ const Dapp: React.FC = () => {
         .accountsPartial({
           dog,
           user,
-          owner: house,
+          owner: house2,
           dogMint,
           mintAuth,
           userTokenAta,
@@ -124,7 +125,7 @@ const Dapp: React.FC = () => {
         .accountsPartial({
           dog,
           user,
-          owner: house,
+          owner: house2,
           dogMint,
           mintAuth,
           userTokenAta,

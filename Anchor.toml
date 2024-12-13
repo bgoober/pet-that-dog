@@ -5,18 +5,18 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-pet_dat_dog = "HDxktbmAF1fhPud3mdJ2k2ftZbwc4geX7pf5FfHGnVTe"
+pet_dat_dog = "DXe7XXXBiBf4Btb9c5DTH9ikUhzcprwxn7B7SuFif2bW"
 
 [programs.devnet]
-pet_dat_dog = "HDxktbmAF1fhPud3mdJ2k2ftZbwc4geX7pf5FfHGnVTe"
+pet_dat_dog = "DXe7XXXBiBf4Btb9c5DTH9ikUhzcprwxn7B7SuFif2bW"
 
 [registry]
-# url = "http://localhost:8899"
-url = "https://api.apr.dev"
+url = "http://localhost:8899"
+# url = "https://api.apr.dev"
 
 [provider]
-# cluster = "Localnet"
-cluster = "Devnet"
+cluster = "Localnet"
+# cluster = "Devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

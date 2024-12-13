@@ -199,7 +199,8 @@ pub struct InteractC<'info> {
 }
 
 impl<'info> InteractC<'info> {
-    pub fn pet(&mut self, bumps: &InteractCBumps) -> Result<()> {
+    pub fn process_interaction(&mut self, bumps: &InteractCBumps) -> Result<()> {
+        // Initialize user if needed
         if self.user.authority != self.signer.key() {
             self.user.set_inner(User {
                 authority: self.signer.key(),
@@ -207,11 +208,10 @@ impl<'info> InteractC<'info> {
                 bump: bumps.user,
             });
         }
+        Ok(())
+    }
 
-        if self.user.last_action == Clock::get()?.slot {
-            return Err(ErrorCode::TooMuchLove.into());
-        }
-
+    fn process_token_mint_and_fee(&mut self) -> Result<()> {
         let cpi_accounts = MintTo {
             mint: self.dog_mint.to_account_info(),
             to: self.user_token_ata.to_account_info(),
@@ -229,126 +229,57 @@ impl<'info> InteractC<'info> {
         );
         mint_to(ctx, 1_000_000)?;
 
-        self.dog.pets += 1;
-
         self.transfer_fee()?;
-
         self.user.last_action = Clock::get()?.slot;
 
+        Ok(())
+    }
+
+    pub fn pet(&mut self, bumps: &InteractCBumps) -> Result<()> {
+        self.process_interaction(bumps)?;
+
+        if self.user.last_action == Clock::get()?.slot {
+            return Err(ErrorCode::TooMuchLove.into());
+        }
+
+        self.process_token_mint_and_fee()?;
+        self.dog.pets += 1;
         Ok(())
     }
 
     pub fn bonk(&mut self, bumps: &InteractCBumps) -> Result<()> {
-        if self.user.authority != self.signer.key() {
-            self.user.set_inner(User {
-                authority: self.signer.key(),
-                last_action: 0,
-                bump: bumps.user,
-            });
-        }
+        self.process_interaction(bumps)?;
 
         if self.user.last_action == Clock::get()?.slot {
             return Err(ErrorCode::TooMuchLove.into());
         }
 
-        let cpi_accounts = MintTo {
-            mint: self.dog_mint.to_account_info(),
-            to: self.user_token_ata.to_account_info(),
-            authority: self.mint_auth.to_account_info(),
-        };
-
-        let mint_key = self.dog_mint.key();
-        let seeds = &[&b"auth"[..], mint_key.as_ref(), &[self.dog.auth_bump]];
-        let signer_seeds = &[&seeds[..]];
-
-        let ctx = CpiContext::new_with_signer(
-            self.token_program.to_account_info(),
-            cpi_accounts,
-            signer_seeds,
-        );
-        mint_to(ctx, 1_000_000)?;
-
+        self.process_token_mint_and_fee()?;
         self.dog.bonks += 1;
-
-        self.transfer_fee()?;
-
-        self.user.last_action = Clock::get()?.slot;
         Ok(())
     }
 
     pub fn wif(&mut self, bumps: &InteractCBumps) -> Result<()> {
-        if self.user.authority != self.signer.key() {
-            self.user.set_inner(User {
-                authority: self.signer.key(),
-                last_action: 0,
-                bump: bumps.user,
-            });
-        }
+        self.process_interaction(bumps)?;
 
         if self.user.last_action == Clock::get()?.slot {
             return Err(ErrorCode::TooMuchLove.into());
         }
 
-        let cpi_accounts = MintTo {
-            mint: self.dog_mint.to_account_info(),
-            to: self.user_token_ata.to_account_info(),
-            authority: self.mint_auth.to_account_info(),
-        };
-
-        let mint_key = self.dog_mint.key();
-        let seeds = &[&b"auth"[..], mint_key.as_ref(), &[self.dog.auth_bump]];
-        let signer_seeds = &[&seeds[..]];
-
-        let ctx = CpiContext::new_with_signer(
-            self.token_program.to_account_info(),
-            cpi_accounts,
-            signer_seeds,
-        );
-        mint_to(ctx, 1_000_000)?;
-
+        self.process_token_mint_and_fee()?;
         self.dog.wifs += 1;
-
-        self.transfer_fee()?;
-
-        self.user.last_action = Clock::get()?.slot;
         Ok(())
     }
 
     pub fn pnut(&mut self, bumps: &InteractCBumps) -> Result<()> {
-        if self.user.authority != self.signer.key() {
-            self.user.set_inner(User {
-                authority: self.signer.key(),
-                last_action: 0,
-                bump: bumps.user,
-            });
-        }
+        self.process_interaction(bumps)?;
 
         if self.user.last_action == Clock::get()?.slot {
             return Err(ErrorCode::TooMuchLove.into());
         }
 
-        let cpi_accounts = MintTo {
-            mint: self.dog_mint.to_account_info(),
-            to: self.user_token_ata.to_account_info(),
-            authority: self.mint_auth.to_account_info(),
-        };
-
-        let mint_key = self.dog_mint.key();
-        let seeds = &[&b"auth"[..], mint_key.as_ref(), &[self.dog.auth_bump]];
-        let signer_seeds = &[&seeds[..]];
-
-        let ctx = CpiContext::new_with_signer(
-            self.token_program.to_account_info(),
-            cpi_accounts,
-            signer_seeds,
-        );
-        mint_to(ctx, 1_000_000)?;
-
+        self.process_token_mint_and_fee()?;
         self.dog.pnuts += 1;
-
-        self.transfer_fee()?;
-
-        self.user.last_action = Clock::get()?.slot;
         Ok(())
     }
 
@@ -412,6 +343,6 @@ impl<'info> KillDogC<'info> {
 pub enum ErrorCode {
     #[msg("Too much love at one time! Don't hog all the love!")]
     TooMuchLove,
-    #[msg("Unauthorized close attempt")]
+    #[msg("Only the dog owner can close this account.")]
     UnauthorizedClose,
 }
