@@ -19,6 +19,20 @@ const keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
 const signer = createSignerFromKeypair(umi, keypair);
 umi.use(signerIdentity(createSignerFromKeypair(umi, keypair)));
 
+// Modify to create a reusable function for metadata creation
+export async function createTokenMetadata(
+  umi: Umi,
+  mint: PublicKey,
+  metadata: {
+    name: string,
+    symbol: string,
+    uri: string,
+    sellerFeeBasisPoints?: number
+  }
+) {
+  // Implementation
+}
+
 (async () => {
     try {
         // Start here

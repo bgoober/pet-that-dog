@@ -12,6 +12,10 @@ import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import React, { useEffect, useState, useRef } from 'react';
+import { CreateDogPage } from './create-dog-page';
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { createTokenMetadata } from '../utils/token-metadata';
+import { useNavigate } from 'react-router-dom';
 
 // Helper function for transaction signatures only
 const getSolscanLink = (signature: string) => {
@@ -45,6 +49,7 @@ const Dapp: React.FC = () => {
   const petBoxRef = useRef<HTMLDivElement>(null);
   const bonkBoxRef = useRef<HTMLDivElement>(null);
   const nextTimeoutRef = useRef<number | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const wallet = useAnchorWallet();
   const { connection } = useConnection(); // Extract the connection object
@@ -278,28 +283,102 @@ const Dapp: React.FC = () => {
     }
   };
 
+  // Add create dog handler
+  const handleCreateDog = async (dogData: {
+    name: string;
+    tokenName: string;
+    tokenSymbol: string;
+    tokenUri: string;
+  }) => {
+    if (!program || !wallet) return;
+
+    try {
+      // Create UMI instance
+      const umi = createUmi(connection.rpcEndpoint);
+      
+      // Create metadata first
+      await createTokenMetadata(umi, dogMint.toBase58(), {
+        name: dogData.tokenName,
+        symbol: dogData.tokenSymbol,
+        uri: dogData.tokenUri,
+      });
+
+      // Create dog with token
+      const tx = await program.methods
+        .createDog(
+          dogData.name,
+          dogData.tokenName,
+          dogData.tokenSymbol,
+          dogData.tokenUri
+        )
+        .accountsPartial({
+          dog,
+          owner: wallet.publicKey,
+          dogMint,
+          mintAuth,
+          // ... other accounts
+        })
+        .rpc();
+
+      console.log('Dog created:', tx);
+    } catch (error) {
+      console.error('Error creating dog:', error);
+    }
+  };
+
+  const navigate = useNavigate();
+
+  const handleCreateDogClick = () => {
+    console.log('Navigating to create dog page');
+    navigate('/create-dog');
+  };
+
   return (
-    <div id="dog-container" onClick={handleBackgroundClick}>
-      <img id="dog-image" ref={dogImageRef} alt="pet dat dog" />
-      <div
-        id="pet-box"
-        ref={petBoxRef}
-        className="bounding-box"
-        onClick={(e) => {
-          e.stopPropagation();
-          handlePetBoxClick();
+    <>
+      <div id="dog-container" onClick={handleBackgroundClick}>
+        <img id="dog-image" ref={dogImageRef} alt="pet dat dog" />
+        <div
+          id="pet-box"
+          ref={petBoxRef}
+          className="bounding-box"
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePetBoxClick();
+          }}
+        ></div>
+        <div
+          id="bonk-box"
+          ref={bonkBoxRef}
+          className="bounding-box"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleBonkBoxClick();
+          }}
+        ></div>
+      </div>
+      
+      <button 
+        className="create-dog-button"
+        onClick={handleCreateDogClick}
+        style={{
+          position: 'absolute',
+          top: '60px',
+          right: '5px',
+          background: '#512da8',
+          color: '#ffffff',
+          border: 'none',
+          borderRadius: '5px',
+          padding: '10px 20px',
+          cursor: 'hand',
+          fontSize: '16px',
+          fontFamily: 'Arial, sans-serif',
+          whiteSpace: 'nowrap',
+          minWidth: '120px',
         }}
-      ></div>
-      <div
-        id="bonk-box"
-        ref={bonkBoxRef}
-        className="bounding-box"
-        onClick={(e) => {
-          e.stopPropagation();
-          handleBonkBoxClick();
-        }}
-      ></div>
-    </div>
+      >
+        Create Dog
+      </button>
+    </>
   );
 };
 

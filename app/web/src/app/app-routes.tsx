@@ -1,26 +1,20 @@
 import React from 'react';
-import { Link, Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { DogCreation } from './pages/dog-creation';
+import { Home } from './pages/home';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 export function AppRoutes() {
-  return useRoutes([
-    { index: true, element: <Navigate replace to="/home" /> },
-    {
-      path: '/home',
-      element: (
-        <div>
-          <p>Home page content</p>
-          <Link to="/page-1">Page 1</Link>
-        </div>
-      ),
-    },
-    {
-      path: '/page-1',
-      element: (
-        <div>
-          <p>Page 1 content</p>
-          <Link to="/home">Home</Link>
-        </div>
-      ),
-    },
-  ]);
+  const { connected } = useWallet();
+
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route 
+        path="/create-dog" 
+        element={connected ? <DogCreation /> : <Navigate to="/" replace />} 
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
 }

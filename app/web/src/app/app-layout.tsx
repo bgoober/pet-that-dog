@@ -1,14 +1,15 @@
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { ReactNode, useState } from 'react';
-import Dapp from './dapp';
+import { ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import Modal from './modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import React from 'react';
+import React, { useState } from 'react';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const location = useLocation();
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -17,6 +18,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const toggleModal = () => {
     setShowModal(!showModal);
   };
+
+  // Only show Spotify and other UI elements on the main page
+  const isMainPage = location.pathname === '/';
 
   return (
     <div
@@ -31,53 +35,85 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <div style={{ position: 'absolute', top: '5px', right: '5px' }}>
         <WalletMultiButton />
       </div>
-      <div style={{ position: 'absolute', top: '5px', left: '5px' }}>
-        <button
-          onClick={toggleCollapse}
-          style={{
-            marginBottom: '5px',
-            background: '#512da8',
-            color: '#fffcee',
-            border: 'none',
-            borderRadius: '5px',
-            fontSize: '15px',
-            fontFamily: 'Arial, sans-serif',
-          }}
-        >
-          {isCollapsed ? 'Show Spotify' : 'Hide Spotify'}
-        </button>
-        <iframe
-          className={isCollapsed ? 'collapsed' : ''}
-          style={{
-            borderRadius: '15px',
-            transition: 'opacity 0.5s',
-            border: 'none',
-          }}
-          src="https://open.spotify.com/embed/playlist/0vvXsWCC9xrXsKd4FyS8kM?utm_source=generator&theme=1"
-          width="100%"
-          height="352"
-          allowFullScreen
-          allow="autoplay; clipboard-write; encrypted-media"
-          loading="lazy"
-        ></iframe>
+
+      {isMainPage && (
+        <div style={{ position: 'absolute', top: '5px', left: '5px' }}>
+          <button
+            onClick={toggleCollapse}
+            style={{
+              marginBottom: '5px',
+              background: '#512da8',
+              color: '#fffcee',
+              border: 'none',
+              borderRadius: '5px',
+              fontSize: '15px',
+              fontFamily: 'Arial, sans-serif',
+            }}
+          >
+            {isCollapsed ? 'Show Spotify' : 'Hide Spotify'}
+          </button>
+          <iframe
+            className={isCollapsed ? 'collapsed' : ''}
+            style={{
+              borderRadius: '15px',
+              transition: 'opacity 0.5s',
+              border: 'none',
+            }}
+            src="https://open.spotify.com/embed/playlist/0vvXsWCC9xrXsKd4FyS8kM?utm_source=generator&theme=1"
+            width="100%"
+            height="352"
+            allowFullScreen
+            allow="autoplay; clipboard-write; encrypted-media"
+            loading="lazy"
+          ></iframe>
+        </div>
+      )}
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexGrow: 1,
+          overflow: 'hidden',
+        }}
+      >
+        {children}
       </div>
-      <div style={{ position: 'absolute', bottom: '5px', left: '5px' }}>
-        <button
-          onClick={toggleModal}
-          style={{
-            background: '#111827',
-            color: '#fffcee',
-            border: 'none',
-            borderRadius: '5px',
-            padding: '10px',
-            fontSize: '10px',
-            fontFamily: 'Arial, sans-serif',
-            textDecoration: 'none',
-          }}
-        >
-          Disclaimer / Terms
-        </button>
-      </div>
+
+      {isMainPage && (
+        <>
+          <div style={{ position: 'absolute', bottom: '5px', left: '5px' }}>
+            <button
+              onClick={toggleModal}
+              style={{
+                background: '#111827',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '5px',
+                padding: '10px',
+                fontSize: '10px',
+                fontFamily: 'Arial, sans-serif',
+                textDecoration: 'none',
+              }}
+            >
+              Disclaimer / Terms
+            </button>
+          </div>
+
+          <div style={{ position: 'absolute', bottom: '5px', right: '5px' }}>
+            <a
+              href="https://github.com/bgoober/pet-dat-dog"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: '#fffcee' }}
+            >
+              <FontAwesomeIcon icon={faGithub} size="2x" />
+            </a>
+          </div>
+        </>
+      )}
+
       <Modal show={showModal} onClose={toggleModal}>
         <h4>Disclaimer / Terms</h4>
         <ul>
@@ -119,38 +155,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </li>
         </ul>
       </Modal>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexGrow: 1,
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            overflow: 'hidden',
-          }}
-        >
-          <Dapp />
-        </div>
-      </div>
-      <div style={{ position: 'absolute', bottom: '5px', right: '5px' }}>
-        <a
-          href="https://github.com/bgoober/pet-dat-dog"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: '#fffcee' }}
-        >
-          <FontAwesomeIcon icon={faGithub} size="2x" />
-        </a>
-      </div>
+
       <style>{`
         .collapsed {
           opacity: 0;
