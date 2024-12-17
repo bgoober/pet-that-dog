@@ -111,6 +111,43 @@
       "args": []
     },
     {
+      "name": "close_user",
+      "discriminator": [
+        86,
+        219,
+        138,
+        140,
+        236,
+        24,
+        118,
+        200
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "create_dog",
       "discriminator": [
         135,
@@ -356,10 +393,7 @@
         {
           "name": "owner",
           "writable": true,
-          "signer": true,
-          "relations": [
-            "dog"
-          ]
+          "signer": true
         },
         {
           "name": "dog",
@@ -797,7 +831,12 @@
     {
       "code": 6001,
       "name": "UnauthorizedClose",
-      "msg": "Only the dog owner can close this account"
+      "msg": "Only the dog owner can close this account."
+    },
+    {
+      "code": 6002,
+      "name": "UnauthorizedUserClose",
+      "msg": "The signer is not the authority of the user's account."
     }
   ],
   "types": [

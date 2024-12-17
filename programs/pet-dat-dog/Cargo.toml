@@ -9,7 +9,8 @@ crate-type = ["cdylib", "lib"]
 name = "pet_dat_dog"
 
 [features]
-default = ["custom-heap", "custom-panic", "anchor-debug"]
+# default = ["custom-heap", "custom-panic", "anchor-debug"]
+default = []
 cpi = ["no-entrypoint"]
 no-entrypoint = []
 no-idl = []
