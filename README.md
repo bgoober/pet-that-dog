@@ -34,4 +34,4 @@ This does not apply to the interaction fees generated from a Dog you created thr
 
 CONTENT POLICY
 
-This application and its instructions are not intended to facilitate illegal, heinous, racist, or vulgar activity and/or depictions of violence against individuals, groups, or animals in any way. We ask you, the User of this application, to refrain from the creation of SPL tokens, "Dogs", or both, that are based on, convey, depict, or glorify vulgarity, violence, racism, hate speech, criminal activity, or other such actions. We will never support or market SPL tokens, or "Dogs" of this kind on any of our application's front end interfaces that we produce.
+We do not support violence, sexual content, or criminal activity through the use of this program. We ask you, the User, not to produce anything of this nature through your use of it.
