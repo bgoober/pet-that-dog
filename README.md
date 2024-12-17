@@ -29,3 +29,9 @@ This software/program has no license and you may use it as you wish. However, if
 We will accept any commonly accepted and recognized USD-Stablecoin (USDC, USDT, DAI, etc..), or main-net SOL, WSOL, or SOL-LST/LRT (INF, bSOL, mSOL, ezSOL, marginfi's LST, etc..) or Ethereum and/or Bitcoin (on Solana main-net). If you abide by this 1% revenue-share (in $100,000.00 minimums/increments) on forks or derivative works, then you will be in compliance with this program's terms. All in good faith. Thank you!
 
 This does not apply to the interaction fees generated from a Dog you created through the use of the createDog instruction of this program.
+
+---
+
+CONTENT POLICY
+
+This application and its instructions are not intended to facilitate illegal, heinous, racist, or vulgar activity and/or depictions of violence against individuals, groups, or animals in any way. We ask you, the User of this application, to refrain from the creation of SPL tokens, "Dogs", or both, that are based on, convey, depict, or glorify vulgarity, violence, racism, hate speech, criminal activity, or other such actions. We will never support or market SPL tokens, or "Dogs" of this kind on any of our application's front end interfaces that we produce.
