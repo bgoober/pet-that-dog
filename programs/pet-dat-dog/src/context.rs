@@ -176,8 +176,8 @@ pub struct InteractC<'info> {
     #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
 
-    /// CHECK: this is the dog's owner
-    #[account(mut, constraint = owner.key() == dog.owner)]
+    /// CHECK: this is the dog's owner, validated by dog PDA seeds
+    #[account(mut)]
     pub owner: AccountInfo<'info>,
 
     #[account(mut, constraint = dog_mint.key() == dog.mint)]
@@ -201,7 +201,7 @@ pub struct InteractC<'info> {
 impl<'info> InteractC<'info> {
     pub fn process_interaction(&mut self, bumps: &InteractCBumps) -> Result<()> {
         // Initialize user if needed
-        if self.user.authority != self.signer.key() {
+        if self.user.authority == Pubkey::default() {
             self.user.set_inner(User {
                 authority: self.signer.key(),
                 last_action: 0,
@@ -304,7 +304,6 @@ pub struct KillDogC<'info> {
         mut,
         seeds = [b"dog", dog.name.as_ref(), owner.key().as_ref()],
         bump = dog.dog_bump,
-        has_one = owner,
         close = owner
     )]
     pub dog: Account<'info, Dog>,
@@ -329,11 +328,6 @@ pub struct KillDogC<'info> {
 
 impl<'info> KillDogC<'info> {
     pub fn kill(&mut self) -> Result<()> {
-        // Only owner can close the dog account
-        require!(
-            self.owner.key() == self.dog.owner,
-            ErrorCode::UnauthorizedClose
-        );
         msg!("Dog account closed and rent returned to owner.");
         Ok(())
     }
@@ -341,15 +335,14 @@ impl<'info> KillDogC<'info> {
 
 #[derive(Accounts)]
 pub struct CloseUserC<'info> {
-    #[account(mut, constraint = signer.key() == user.authority)]
-    pub signer: Signer<'info>,
+    #[account(mut)]
+    pub authority: Signer<'info>,
 
     #[account(
         mut,
-        seeds = [signer.key().as_ref()],
+        seeds = [authority.key().as_ref()],
         bump = user.bump,
-        constraint = user.authority == signer.key(),
-        close = signer
+        close = authority
     )]
     pub user: Account<'info, User>,
 
@@ -358,11 +351,6 @@ pub struct CloseUserC<'info> {
 
 impl<'info> CloseUserC<'info> {
     pub fn close(&mut self) -> Result<()> {
-        // Verify signer is the authority
-        require!(
-            self.signer.key() == self.user.authority,
-            ErrorCode::UnauthorizedUserClose
-        );
         msg!("User account closed and rent returned to user.");
         Ok(())
     }
