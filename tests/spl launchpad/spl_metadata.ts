@@ -6,9 +6,8 @@ import {
     CreateMetadataAccountV3InstructionAccounts, 
     CreateMetadataAccountV3InstructionArgs,
     DataV2Args,
-    IsMutableCanOnlyBeFlippedToFalseError
 } from "@metaplex-foundation/mpl-token-metadata";
-import { createSignerFromKeypair, signerIdentity, publicKey, keypairPayer } from "@metaplex-foundation/umi";
+import { createSignerFromKeypair, signerIdentity, publicKey } from "@metaplex-foundation/umi";
 
 // Define our Mint address
 const mint = publicKey("6NY93SqtrcWEpNisbNh614vrCLSgoeT9hLbg9tVw9N1m")

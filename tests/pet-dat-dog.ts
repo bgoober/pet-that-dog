@@ -238,7 +238,7 @@ describe("pet-dat-dog", () => {
       .closeUser()
       .accountsPartial({
         user,
-        signer: keypair.publicKey,
+        authority: keypair.publicKey,
         systemProgram: SystemProgram.programId,
       })
       .rpc()
