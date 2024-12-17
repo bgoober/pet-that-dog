@@ -1,0 +1,20 @@
+{
+  "rules": [
+    {
+      "pathPattern": "/pet",
+      "apiPath": "/pet"
+    },
+    {
+      "pathPattern": "/bonk", 
+      "apiPath": "/bonk"
+    },
+    {
+      "pathPattern": "/pnut",
+      "apiPath": "/pnut"
+    },
+    {
+      "pathPattern": "/wif",
+      "apiPath": "/wif"
+    }
+  ]
+} 
