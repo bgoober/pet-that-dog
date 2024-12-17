@@ -30,23 +30,39 @@ pub mod pet_dat_dog {
         Ok(())
     }
 
+    #[session_auth_or(
+        ctx.accounts.user.authority.key() == ctx.accounts.signer.key(),
+        SessionError::InvalidToken
+    )]
     pub fn pet(ctx: Context<InteractC>) -> Result<()> {
-        ctx.accounts.pet(&ctx.bumps)?;
+        ctx.accounts.pet()?;
         Ok(())
     }
 
+    #[session_auth_or(
+        ctx.accounts.user.authority.key() == ctx.accounts.signer.key(),
+        SessionError::InvalidToken
+    )]
     pub fn bonk(ctx: Context<InteractC>) -> Result<()> {
-        ctx.accounts.bonk(&ctx.bumps)?;
+        ctx.accounts.bonk()?;
         Ok(())
     }
 
+    #[session_auth_or(
+        ctx.accounts.user.authority.key() == ctx.accounts.signer.key(),
+        SessionError::InvalidToken
+    )]
     pub fn wif(ctx: Context<InteractC>) -> Result<()> {
-        ctx.accounts.wif(&ctx.bumps)?;
+        ctx.accounts.wif()?;
         Ok(())
     }
 
+    #[session_auth_or(
+        ctx.accounts.user.authority.key() == ctx.accounts.signer.key(),
+        SessionError::InvalidToken
+    )]
     pub fn pnut(ctx: Context<InteractC>) -> Result<()> {
-        ctx.accounts.pnut(&ctx.bumps)?;
+        ctx.accounts.pnut()?;
         Ok(())
     }
 
@@ -57,6 +73,11 @@ pub mod pet_dat_dog {
 
     pub fn close_user(ctx: Context<CloseUserC>) -> Result<()> {
         ctx.accounts.close()?;
+        Ok(())
+    }
+
+    pub fn init_user(ctx: Context<InitUserC>) -> Result<()> {
+        ctx.accounts.init(&ctx.bumps)?;
         Ok(())
     }
 }

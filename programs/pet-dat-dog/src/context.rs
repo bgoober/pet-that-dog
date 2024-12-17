@@ -11,6 +11,8 @@ use anchor_spl::{
     token::{mint_to, Mint, MintTo, Token, TokenAccount},
 }; // TransferChecked, transfer_checked (put these methods back into the token imports above once the need for a TransferChecked CPI is back in-place.)
 
+use session_keys::{session_auth_or, Session, SessionError, SessionToken};
+
 use std::str::FromStr;
 
 use crate::state::*;
@@ -170,14 +172,27 @@ pub struct InteractC<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
 
-    #[account(init_if_needed, payer = signer, seeds = [signer.key().as_ref()], space = User::LEN, bump)]
+    #[account(
+        mut,
+        seeds = [signer.key().as_ref()],
+        bump = user.bump
+    )]
     pub user: Account<'info, User>,
 
-    #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], bump = dog.dog_bump)]
+    /// CHECK: The wallet that created the user account
+    pub authority: AccountInfo<'info>,
+
+    #[session(
+        signer = signer,
+        authority = user.authority.key()
+    )]
+    pub session_token: Option<Account<'info, SessionToken>>,
+
+    #[account(mut, seeds = [b"dog", dog.name.as_ref(), dog.owner.as_ref()], has_one = owner, bump = dog.dog_bump)]
     pub dog: Account<'info, Dog>,
 
-    /// CHECK: this is the dog's owner
-    #[account(mut, constraint = owner.key() == dog.owner)]
+    /// CHECK: this is the dog's owner, which is checked in the dog account constraint
+    #[account(mut)]
     pub owner: AccountInfo<'info>,
 
     #[account(mut, constraint = dog_mint.key() == dog.mint)]
@@ -196,18 +211,48 @@ pub struct InteractC<'info> {
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
+    /// CHECK: Session Keys Program
+    pub session_program: Program<'info, Session>,
 }
 
 impl<'info> InteractC<'info> {
-    pub fn process_interaction(&mut self, bumps: &InteractCBumps) -> Result<()> {
-        // Initialize user if needed
-        if self.user.authority != self.signer.key() {
-            self.user.set_inner(User {
-                authority: self.signer.key(),
-                last_action: 0,
-                bump: bumps.user,
-            });
+    pub fn process_interaction(&mut self) -> Result<()> {
+        // Check if action was performed in current slot
+        if self.user.last_action == Clock::get()?.slot {
+            return Err(ErrorCode::TooMuchLove.into());
         }
+        Ok(())
+    }
+
+    pub fn pet(&mut self) -> Result<()> {
+        self.process_interaction()?;
+        self.process_token_mint_and_fee()?;
+        self.dog.pets += 1;
+        self.user.last_action = Clock::get()?.slot;
+        Ok(())
+    }
+
+    pub fn bonk(&mut self) -> Result<()> {
+        self.process_interaction()?;
+        self.process_token_mint_and_fee()?;
+        self.dog.bonks += 1;
+        self.user.last_action = Clock::get()?.slot;
+        Ok(())
+    }
+
+    pub fn wif(&mut self) -> Result<()> {
+        self.process_interaction()?;
+        self.process_token_mint_and_fee()?;
+        self.dog.wifs += 1;
+        self.user.last_action = Clock::get()?.slot;
+        Ok(())
+    }
+
+    pub fn pnut(&mut self) -> Result<()> {
+        self.process_interaction()?;
+        self.process_token_mint_and_fee()?;
+        self.dog.pnuts += 1;
+        self.user.last_action = Clock::get()?.slot;
         Ok(())
     }
 
@@ -230,56 +275,7 @@ impl<'info> InteractC<'info> {
         mint_to(ctx, 1_000_000)?;
 
         self.transfer_fee()?;
-        self.user.last_action = Clock::get()?.slot;
 
-        Ok(())
-    }
-
-    pub fn pet(&mut self, bumps: &InteractCBumps) -> Result<()> {
-        self.process_interaction(bumps)?;
-
-        if self.user.last_action == Clock::get()?.slot {
-            return Err(ErrorCode::TooMuchLove.into());
-        }
-
-        self.process_token_mint_and_fee()?;
-        self.dog.pets += 1;
-        Ok(())
-    }
-
-    pub fn bonk(&mut self, bumps: &InteractCBumps) -> Result<()> {
-        self.process_interaction(bumps)?;
-
-        if self.user.last_action == Clock::get()?.slot {
-            return Err(ErrorCode::TooMuchLove.into());
-        }
-
-        self.process_token_mint_and_fee()?;
-        self.dog.bonks += 1;
-        Ok(())
-    }
-
-    pub fn wif(&mut self, bumps: &InteractCBumps) -> Result<()> {
-        self.process_interaction(bumps)?;
-
-        if self.user.last_action == Clock::get()?.slot {
-            return Err(ErrorCode::TooMuchLove.into());
-        }
-
-        self.process_token_mint_and_fee()?;
-        self.dog.wifs += 1;
-        Ok(())
-    }
-
-    pub fn pnut(&mut self, bumps: &InteractCBumps) -> Result<()> {
-        self.process_interaction(bumps)?;
-
-        if self.user.last_action == Clock::get()?.slot {
-            return Err(ErrorCode::TooMuchLove.into());
-        }
-
-        self.process_token_mint_and_fee()?;
-        self.dog.pnuts += 1;
         Ok(())
     }
 
@@ -329,27 +325,49 @@ pub struct KillDogC<'info> {
 
 impl<'info> KillDogC<'info> {
     pub fn kill(&mut self) -> Result<()> {
-        // Only owner can close the dog account
-        require!(
-            self.owner.key() == self.dog.owner,
-            ErrorCode::UnauthorizedClose
-        );
         msg!("Dog account closed and rent returned to owner.");
         Ok(())
     }
 }
 
 #[derive(Accounts)]
-pub struct CloseUserC<'info> {
-    #[account(mut, constraint = signer.key() == user.authority)]
+pub struct InitUserC<'info> {
+    #[account(mut)]
     pub signer: Signer<'info>,
 
     #[account(
-        mut,
+        init,
+        payer = signer,
         seeds = [signer.key().as_ref()],
+        space = User::LEN,
+        bump
+    )]
+    pub user: Account<'info, User>,
+
+    pub system_program: Program<'info, System>,
+}
+
+impl<'info> InitUserC<'info> {
+    pub fn init(&mut self, bumps: &InitUserCBumps) -> Result<()> {
+        self.user.set_inner(User {
+            authority: self.signer.key(),
+            last_action: 0,
+            bump: bumps.user,
+        });
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct CloseUserC<'info> {
+    #[account(mut)]
+    pub authority: Signer<'info>,
+
+    #[account(
+        mut,
+        seeds = [authority.key().as_ref()],
         bump = user.bump,
-        constraint = user.authority == signer.key(),
-        close = signer
+        has_one = authority
     )]
     pub user: Account<'info, User>,
 
@@ -358,11 +376,6 @@ pub struct CloseUserC<'info> {
 
 impl<'info> CloseUserC<'info> {
     pub fn close(&mut self) -> Result<()> {
-        // Verify signer is the authority
-        require!(
-            self.signer.key() == self.user.authority,
-            ErrorCode::UnauthorizedUserClose
-        );
         msg!("User account closed and rent returned to user.");
         Ok(())
     }
@@ -376,4 +389,6 @@ pub enum ErrorCode {
     UnauthorizedClose,
     #[msg("The signer is not the authority of the user's account.")]
     UnauthorizedUserClose,
+    #[msg("Invalid session.")]
+    InvalidSession,
 }
