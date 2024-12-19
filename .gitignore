@@ -8,3 +8,4 @@ test-ledger
 *wallet.json
 .nx/*
 *.so
+burner.json

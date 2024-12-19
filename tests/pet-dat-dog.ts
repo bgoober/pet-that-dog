@@ -94,10 +94,10 @@ describe("pet-dat-dog", () => {
     console.log("Mint Auth:", mintAuth.toBase58());
 
     const metadata = {
-      name: "Maximilian I",
-      symbol: "MAXIMILIAN",
-      uri: "https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/bafkreiah2drooi7fmarvpvy46n4ngqcisrltvinppo76v5cbopsy3ggh4i",
-    };
+      name: 'Pie',
+      symbol: 'PIE',
+      uri: 'https://devnet.irys.xyz/C343ZFsCgGWGJn84BoaGQNpeDyVkprgoFHzv6HXMdFiH'
+    }
     const txHash = await program.methods
       .createDog(
         dogName.toString(),

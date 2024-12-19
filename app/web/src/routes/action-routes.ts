@@ -10,7 +10,7 @@ export const ACTIONS: Record<'pet' | 'bonk' | 'pnut' | 'wif', { title: string, d
     animation: "https://pet-dat-3iwenptv0-bg3xyz-projects.vercel.app/assets/3-petDog.gif"
   },
   bonk: {
-    title: "LetBONK!",
+    title: "LetsBONK!",
     description: "hey whatcha got there?",
     animation: "https://pet-dat-3iwenptv0-bg3xyz-projects.vercel.app/assets/BONK.gif"
   },

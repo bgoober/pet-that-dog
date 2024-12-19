@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "build": "nx build web",
-    "dev": "nx serve web"
+    "dev": "nx serve web",
+    "deploy:arweave": "npm run build && ts-node _scripts/deploy-app-to-arweave.ts"
   },
   "private": true,
   "dependencies": {
