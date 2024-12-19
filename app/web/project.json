@@ -65,5 +65,11 @@
     "lint": {
       "executor": "@nx/eslint:lint"
     }
+  },
+  "scripts": {
+    "dev": "react-scripts start",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "deploy:arweave": "npm run build && ts-node _scripts/deploy-app-to-arweave.ts"
   }
 }

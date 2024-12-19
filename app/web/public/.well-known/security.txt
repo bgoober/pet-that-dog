@@ -1,0 +1,5 @@
+Contact: mailto:your-security-email@example.com
+Expires: 2025-12-31T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://your-website.com/.well-known/security.txt
+Policy: https://your-website.com/security-policy 

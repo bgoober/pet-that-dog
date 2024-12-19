@@ -1,0 +1,276 @@
+{
+  "version": "6.0",
+  "nxVersion": "20.2.2",
+  "pathMappings": {},
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "nonProjectFiles": [
+      {
+        "file": "tsconfig.base.json",
+        "hash": "16936441711144470533"
+      },
+      {
+        "file": ".prettierrc",
+        "hash": "16267754514737964994"
+      },
+      {
+        "file": "_scripts/deploy-app-to-arweave.ts",
+        "hash": "17533958634707825190"
+      },
+      {
+        "file": ".eslintignore",
+        "hash": "7663861978715868291"
+      },
+      {
+        "file": "_scripts/test-assets/rug.png",
+        "hash": "18114681494958756459"
+      },
+      {
+        "file": "LICENSE",
+        "hash": "13976139912707527799"
+      },
+      {
+        "file": "_scripts/assets/Maximilian I.png",
+        "hash": "5844413193782744344"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "7694991769205770921"
+      },
+      {
+        "file": "nx.json",
+        "hash": "2439936810889621167"
+      },
+      {
+        "file": "package.json",
+        "hash": "13393268517910787365"
+      },
+      {
+        "file": "_scripts/upload-mainnet-token-metadata.ts",
+        "hash": "12226844348392148412"
+      },
+      {
+        "file": "README.md",
+        "hash": "5064894035817590830"
+      },
+      {
+        "file": "_scripts/upload-devnet-token-metadata.ts",
+        "hash": "4635004160995944448"
+      },
+      {
+        "file": "package-lock.json",
+        "hash": "212566434352005185"
+      },
+      {
+        "file": ".editorconfig",
+        "hash": "5443105041930014821"
+      },
+      {
+        "file": ".eslintrc.json",
+        "hash": "17866138117546000433"
+      },
+      {
+        "file": "vercel.json",
+        "hash": "8794281784919034686"
+      },
+      {
+        "file": ".vscode/extensions.json",
+        "hash": "4134969992917317260"
+      },
+      {
+        "file": ".prettierignore",
+        "hash": "16448050467312557263"
+      }
+    ],
+    "projectFileMap": {
+      "web": [
+        {
+          "file": "web/.babelrc",
+          "hash": "13020124393823981135"
+        },
+        {
+          "file": "web/.eslintrc.json",
+          "hash": "7388911630545237055"
+        },
+        {
+          "file": "web/.gitignore",
+          "hash": "1862265637977512098"
+        },
+        {
+          "file": "web/project.json",
+          "hash": "10196553475786658908"
+        },
+        {
+          "file": "web/public/.well-known/security.txt",
+          "hash": "17765433104407699256"
+        },
+        {
+          "file": "web/public/actions.json",
+          "hash": "1772293643656706251"
+        },
+        {
+          "file": "web/src/app/app-layout.tsx",
+          "hash": "2391241376937618857",
+          "deps": [
+            "npm:@solana/wallet-adapter-react-ui",
+            "npm:react",
+            "npm:@fortawesome/react-fontawesome",
+            "npm:@fortawesome/free-brands-svg-icons"
+          ]
+        },
+        {
+          "file": "web/src/app/app-routes.tsx",
+          "hash": "7973103938248561715",
+          "deps": [
+            "npm:react",
+            "npm:react-router-dom",
+            "npm:@solana/wallet-adapter-react"
+          ]
+        },
+        {
+          "file": "web/src/app/app.tsx",
+          "hash": "9395506928306021527",
+          "deps": [
+            "npm:react"
+          ]
+        },
+        {
+          "file": "web/src/app/cluster/cluster-data-access.tsx",
+          "hash": "691171302334968272",
+          "deps": [
+            "npm:react",
+            "npm:@solana/web3.js"
+          ]
+        },
+        {
+          "file": "web/src/app/dapp.tsx",
+          "hash": "17710441608330722643",
+          "deps": [
+            "npm:@coral-xyz/anchor",
+            "npm:@solana/spl-token",
+            "npm:@solana/web3.js",
+            "npm:@solana/wallet-adapter-react",
+            "npm:react"
+          ]
+        },
+        {
+          "file": "web/src/app/modal.tsx",
+          "hash": "2895467677531895419",
+          "deps": [
+            "npm:react"
+          ]
+        },
+        {
+          "file": "web/src/app/solana/solana-provider.tsx",
+          "hash": "1740911150466186419",
+          "deps": [
+            "npm:@solana/wallet-adapter-base",
+            "npm:@solana/wallet-adapter-react",
+            "npm:@solana/wallet-adapter-react-ui",
+            "npm:react"
+          ]
+        },
+        {
+          "file": "web/src/assets/.gitkeep",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "web/src/assets/1-sunriseIntro.gif",
+          "hash": "638188448676302161"
+        },
+        {
+          "file": "web/src/assets/2-sitUp.gif",
+          "hash": "11132971855824279624"
+        },
+        {
+          "file": "web/src/assets/3-petDog.gif",
+          "hash": "17083644775112810957"
+        },
+        {
+          "file": "web/src/assets/4-layDown.gif",
+          "hash": "4851223999075089977"
+        },
+        {
+          "file": "web/src/assets/5-idleWind.gif",
+          "hash": "2022566971881295153"
+        },
+        {
+          "file": "web/src/assets/BONK.gif",
+          "hash": "1268179264731385648"
+        },
+        {
+          "file": "web/src/assets/logo.png",
+          "hash": "15538378198673510651"
+        },
+        {
+          "file": "web/src/favicon.ico",
+          "hash": "15538378198673510651"
+        },
+        {
+          "file": "web/src/index.html",
+          "hash": "15571211681307967956"
+        },
+        {
+          "file": "web/src/main.tsx",
+          "hash": "5933780815927946303",
+          "deps": [
+            "npm:react",
+            "npm:react-dom",
+            "npm:react-router-dom",
+            "npm:@vercel/speed-insights"
+          ]
+        },
+        {
+          "file": "web/src/polyfills.ts",
+          "hash": "17916568845752645129"
+        },
+        {
+          "file": "web/src/routes/action-routes.ts",
+          "hash": "8726213030437588597",
+          "deps": [
+            "npm:@solana/web3.js",
+            "npm:@solana/spl-token",
+            "npm:@coral-xyz/anchor"
+          ]
+        },
+        {
+          "file": "web/src/styles.css",
+          "hash": "745081915040395228"
+        },
+        {
+          "file": "web/src/utils/pet_dat_dog.json",
+          "hash": "3045791437316020417"
+        },
+        {
+          "file": "web/tsconfig.app.json",
+          "hash": "16536883993834092355"
+        },
+        {
+          "file": "web/tsconfig.json",
+          "hash": "4556388955307785865"
+        },
+        {
+          "file": "web/webpack.config.js",
+          "hash": "9829016114517551248",
+          "deps": [
+            "npm:@nx/webpack",
+            "npm:@nx/react",
+            "npm:webpack",
+            [
+              "npm:crypto-browserify",
+              "dynamic"
+            ],
+            [
+              "npm:stream-browserify",
+              "dynamic"
+            ],
+            [
+              "npm:vm-browserify",
+              "dynamic"
+            ]
+          ]
+        }
+      ]
+    }
+  }
+}
