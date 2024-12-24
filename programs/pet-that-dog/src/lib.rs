@@ -6,10 +6,10 @@ use context::*;
 
 mod state;
 
-declare_id!("DXe7XXXBiBf4Btb9c5DTH9ikUhzcprwxn7B7SuFif2bW");
+declare_id!("Ecjyym2Sbw7c18SxKZ5ktggATvowxqrPbaVBJmhKMmBr");
 
 #[program]
-pub mod pet_dat_dog {
+pub mod pet_that_dog {
 
     use super::*;
 

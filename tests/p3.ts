@@ -1,6 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program, web3 } from "@coral-xyz/anchor";
-import { PetDatDog } from "../target/types/pet_dat_dog";
+import { PetThatDog } from "../target/types/pet_that_dog";
 import {
   TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,
@@ -11,10 +11,10 @@ import wallet2 from "../wallet.json"; // Player 2 (Petey's owner)
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
 import { expect } from "chai";
 
-describe("pet-dat-dog", () => {
+describe("pet-that-dog", () => {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
-  const program = anchor.workspace.PetDatDog as Program<PetDatDog>;
+  const program = anchor.workspace.PetThatDog as Program<PetThatDog>;
   const connection = provider.connection;
   const stranger = Keypair.fromSecretKey(new Uint8Array(wallet));
   const player2 = Keypair.fromSecretKey(new Uint8Array(wallet2));
@@ -37,6 +37,8 @@ describe("pet-dat-dog", () => {
     console.log(signature);
     return signature;
   };
+
+  let house = new PublicKey("CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8");
 
   // Derive Petey's accounts
   const dogName = ["Petey"];
@@ -107,7 +109,7 @@ describe("pet-dat-dog", () => {
         owner: player2.publicKey,
         dogMint,
         mintAuth,
-        house: stranger.publicKey,
+        house,
         global,
         tokenProgram: TOKEN_PROGRAM_ID,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
@@ -160,50 +162,68 @@ describe("pet-dat-dog", () => {
       .signers([stranger])
       .rpc()
       .then(confirm)
-      .then(log); 
+      .then(log);
     console.log("Stranger petting tx:", tx);
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   });
 
   // stranger bonks, wifs, and pnuts Petey
   it("Stranger bonks Petey", async () => {
-    const tx = await program.methods.bonk().accountsPartial({
-      dog,
-      user: strangerUser,
-      owner: player2.publicKey,
-      dogMint,
-      mintAuth,
-      userTokenAta: strangerTokenAta,
-    }).signers([stranger]).rpc().then(confirm).then(log);
+    const tx = await program.methods
+      .bonk()
+      .accountsPartial({
+        dog,
+        user: strangerUser,
+        owner: player2.publicKey,
+        dogMint,
+        mintAuth,
+        userTokenAta: strangerTokenAta,
+      })
+      .signers([stranger])
+      .rpc()
+      .then(confirm)
+      .then(log);
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   });
 
   it("Stranger wifs Petey", async () => {
-    const tx = await program.methods.wif().accountsPartial({
-      dog,
-      user: strangerUser,
-      owner: player2.publicKey,
-      dogMint,
-      mintAuth,
-      userTokenAta: strangerTokenAta,
-    }).signers([stranger]).rpc().then(confirm).then(log);
+    const tx = await program.methods
+      .wif()
+      .accountsPartial({
+        dog,
+        user: strangerUser,
+        owner: player2.publicKey,
+        dogMint,
+        mintAuth,
+        userTokenAta: strangerTokenAta,
+      })
+      .signers([stranger])
+      .rpc()
+      .then(confirm)
+      .then(log);
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   });
 
   it("Stranger pnuts Petey", async () => {
-    const tx = await program.methods.pnut().accountsPartial({
-      dog,
-      user: strangerUser,
-      owner: player2.publicKey,
-      dogMint,
-      mintAuth,
-      userTokenAta: strangerTokenAta,
-    }).signers([stranger]).rpc().then(confirm).then(log); 
+    const tx = await program.methods
+      .pnut()
+      .accountsPartial({
+        dog,
+        user: strangerUser,
+        owner: player2.publicKey,
+        dogMint,
+        mintAuth,
+        userTokenAta: strangerTokenAta,
+      })
+      .signers([stranger])
+      .rpc()
+      .then(confirm)
+      .then(log);
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   });
 
   it("Verify Petey's state", async () => {
@@ -223,6 +243,5 @@ describe("pet-dat-dog", () => {
     console.log("Petey's bonks:", dogAccount.bonks.toString());
     console.log("Petey's wifs:", dogAccount.wifs.toString());
     console.log("Petey's pnuts:", dogAccount.pnuts.toString());
-
   });
 });

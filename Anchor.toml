@@ -4,34 +4,38 @@
 resolution = true
 skip-lint = false
 
-[programs.localnet]
-pet_dat_dog = "DXe7XXXBiBf4Btb9c5DTH9ikUhzcprwxn7B7SuFif2bW"
-
 [programs.devnet]
-pet_dat_dog = "DXe7XXXBiBf4Btb9c5DTH9ikUhzcprwxn7B7SuFif2bW"
+pet_that_dog = "Ecjyym2Sbw7c18SxKZ5ktggATvowxqrPbaVBJmhKMmBr"
+
+[programs.localnet]
+pet-that-dog = "Ecjyym2Sbw7c18SxKZ5ktggATvowxqrPbaVBJmhKMmBr"
+pet_that_dog = "Ecjyym2Sbw7c18SxKZ5ktggATvowxqrPbaVBJmhKMmBr"
 
 [registry]
 url = "http://localhost:8899"
-# url = "https://api.apr.dev"
 
 [provider]
 cluster = "Localnet"
-# cluster = "Devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-prime = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/pet-dat-dog.ts"
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/pet-dat-dog.ts"
-pet = "npx ts-mocha -p tsconfig.json -t 1000000 tests/pet.ts"
-query = "npx ts-mocha -p tsconfig.json -t 1000000 tests/query.ts"
 bonk = "npx ts-mocha -p tsconfig.json -t 1000000 tests/bonk.ts"
-p2 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/player2.ts"
-p3 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/p3.ts"
 gm = "npx ts-mocha -p tsconfig.json -t 1000000 tests/global_max_mainnet.ts"
-ms1 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/multisig_init_global.ts"
-ms2 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/multisig_init_Maximilian.ts"
 init_mainnet = "npx ts-mocha -p tsconfig.json -t 1000000 tests/init_mainnet.ts"
 max_mainnet = "npx ts-mocha -p tsconfig.json -t 1000000 tests/multisig_init_max_mainnet.ts"
+ms1 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/multisig_init_global.ts"
+ms2 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/multisig_init_Maximilian.ts"
+p2 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/player2.ts"
+p3 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/p3.ts"
+pet = "npx ts-mocha -p tsconfig.json -t 1000000 tests/pet.ts"
+prime = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/pet-that-dog.ts"
+query = "npx ts-mocha -p tsconfig.json -t 1000000 tests/query.ts"
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/pet-that-dog.ts"
+
+[test]
+startup_wait = 5000
+shutdown_wait = 2000
+upgradeable = false
 
 [[test.genesis]]
 address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"

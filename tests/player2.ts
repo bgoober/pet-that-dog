@@ -1,6 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program, web3 } from "@coral-xyz/anchor";
-import { PetDatDog } from "../target/types/pet_dat_dog";
+import { PetThatDog } from "../target/types/pet_that_dog";
 import {
   TOKEN_PROGRAM_ID,
   createMint,
@@ -19,10 +19,10 @@ import { publicKey } from "@coral-xyz/anchor/dist/cjs/utils";
 
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
 
-describe("pet-dat-dog", () => {
+describe("pet-that-dog", () => {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
-  const program = anchor.workspace.PetDatDog as Program<PetDatDog>;
+  const program = anchor.workspace.PetThatDog as Program<PetThatDog>;
   const connection = provider.connection;
   const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
   const player2 = Keypair.fromSecretKey(new Uint8Array(wallet2));

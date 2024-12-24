@@ -1,6 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program, web3 } from "@coral-xyz/anchor";
-import { PetDatDog } from "../target/types/pet_dat_dog";
+import { PetThatDog } from "../target/types/pet_that_dog";
 import {
   TOKEN_PROGRAM_ID,
   createMint,
@@ -12,10 +12,10 @@ import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import wallet from "/home/agent/.config/solana/id.json";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
 
-describe("pet-dat-dog", () => {
+describe("pet-that-dog", () => {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
-  const program = anchor.workspace.PetDatDog as Program<PetDatDog>;
+  const program = anchor.workspace.PetThatDog as Program<PetThatDog>;
   const connection = provider.connection;
   const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
 
@@ -25,66 +25,51 @@ describe("pet-dat-dog", () => {
     return signature;
   };
 
+  // Helper function for transaction signatures only
+  const getSolscanLink = (signature: string) => {
+    return `https://solscan.io/tx/${signature}?cluster=custom&customUrl=http://localhost:8899`;
+  };
+
   const log = async (signature: string): Promise<string> => {
     console.log(signature);
     return signature;
   };
 
-  let bonkMint: anchor.web3.PublicKey;
-  let dogBonkAta: anchor.web3.PublicKey;
-  let userBonkAta: anchor.web3.PublicKey;
+  const dogName = ["Maximilian I"];
+  const [dog] = web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("dog"),
+      Buffer.from(dogName.toString()),
+      keypair.publicKey.toBuffer(),
+    ],
+    program.programId
+  );
+  console.log("Dog PDA:", dog.toBase58());
 
-  let petsMint = PublicKey.findProgramAddressSync(
-    [Buffer.from("pets"), keypair.publicKey.toBuffer()],
+  let dogMint = PublicKey.findProgramAddressSync(
+    [Buffer.from("mint"), dog.toBuffer()],
     program.programId
   )[0];
-  console.log("PETS Mint: ", petsMint.toBase58());
+  console.log("Dog Mint PDA:", dogMint.toBase58());
 
   let mintAuth = PublicKey.findProgramAddressSync(
-    [Buffer.from("auth"), keypair.publicKey.toBuffer()],
+    [Buffer.from("auth"), dogMint.toBuffer()],
     program.programId
   )[0];
-  console.log("PETS Mint Auth: ", mintAuth.toBase58());
-
-  const dogName = ["Max"];
-  const [dog] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("dog"), Buffer.from(dogName.toString()), keypair.publicKey.toBuffer()],
-    program.programId
-  );
-  console.log("Dog account: ", dog.toBase58());
-
-  const [dogAuth] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("auth"), dog.toBuffer()],
-    program.programId
-  );
-  console.log("Dog Auth account: ", dogAuth.toBase58());
+  console.log("Mint Auth PDA:", mintAuth.toBase58());
 
   let user = PublicKey.findProgramAddressSync(
     [keypair.publicKey.toBuffer()],
     program.programId
   )[0];
 
-  it("Setup token environment", async () => {
-    /// DOCS: hardcode bonk mint from main test token environment init
-    bonkMint = new PublicKey('AhLdHbPkrWfWhdT6mG6z7Zzyt5uMmbZSPPi89u87ZHcQ');
-    // if (!bonkMint) throw new Error("Failed to create bonkMint");
-    
-    console.log("Bonk Mint : ", bonkMint.toBase58());
+  const [global] = web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("global")],
+    program.programId
+  );
+  console.log("Global account: ", global.toBase58());
 
-    userBonkAta = getAssociatedTokenAddressSync(
-      bonkMint,
-      keypair.publicKey
-    );
-    // Verify userBonkAta creation
-    if (!userBonkAta) throw new Error("Failed to create or get userBonkAta");
-    console.log("userBonkAta : ", userBonkAta.toBase58())
-
-    // refactor the accounts that you have init or init_if_needed to use getAssociatedTokenAddressSync, and remove the await.
-    // Move the dogBonkAta calculation here and ensure it's assigned to the higher scope variable.
-    dogBonkAta = getAssociatedTokenAddressSync(bonkMint, dogAuth, true);
-    console.log("dogBonkAta : ", dogBonkAta.toBase58());
-
-  });
+  let userTokenAta = getAssociatedTokenAddressSync(dogMint, keypair.publicKey);
 
   it(`Is bonked! - ${dogName}`, async () => {
     const tx = await program.methods
@@ -92,9 +77,10 @@ describe("pet-dat-dog", () => {
       .accountsPartial({
         dog,
         user,
-        // bonkMint,
-        // dogBonkAta,
-        // userBonkAta,
+        owner: keypair.publicKey,
+        dogMint,
+        mintAuth,
+        userTokenAta,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
@@ -103,7 +89,8 @@ describe("pet-dat-dog", () => {
       .rpc()
       .then(confirm)
       .then(log);
-    console.log("Your bonk tx signature is: ", tx);
+    // console.log("Your bonk tx signature is: ", tx);
+    console.log("Your bonk tx signature link is: ", getSolscanLink(tx));
   });
 
   it(`Fetches dog state - ${dogName}`, async () => {

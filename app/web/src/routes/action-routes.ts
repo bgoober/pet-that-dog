@@ -1,7 +1,7 @@
 import { Connection, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, getAssociatedTokenAddressSync } from '@solana/spl-token';
 import * as anchor from '@coral-xyz/anchor';
-import idl from '../utils/pet_dat_dog.json';
+import idl from '../utils/pet_that_dog.json';
 
 export const ACTIONS: Record<'pet' | 'bonk' | 'pnut' | 'wif', { title: string, description: string, animation: string }> = {
   pet: {

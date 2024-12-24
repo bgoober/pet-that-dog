@@ -1,7 +1,7 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { PublicKey, SystemProgram, TransactionMessage } from "@solana/web3.js";
-import { PetDatDog } from "../target/types/pet_dat_dog";
+import { PetThatDog } from "../target/types/pet_that_dog";
 import bs58 from "bs58";
 
 describe("multisig init's global", () => {
@@ -11,7 +11,7 @@ describe("multisig init's global", () => {
   const payer = provider.wallet as anchor.Wallet;
   const connection = provider.connection;
 
-  const program = anchor.workspace.PetDatDog as Program<PetDatDog>;
+  const program = anchor.workspace.PetThatDog as Program<PetThatDog>;
 
   const multisig = new PublicKey(
     "CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8"

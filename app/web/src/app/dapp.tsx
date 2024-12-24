@@ -1,6 +1,6 @@
 import * as anchor from '@coral-xyz/anchor';
 
-import idl from '../utils/pet_dat_dog.json';
+import idl from '../utils/pet_that_dog.json';
 import {
   TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,

@@ -1,7 +1,7 @@
 {
-  "address": "DXe7XXXBiBf4Btb9c5DTH9ikUhzcprwxn7B7SuFif2bW",
+  "address": "Ecjyym2Sbw7c18SxKZ5ktggATvowxqrPbaVBJmhKMmBr",
   "metadata": {
-    "name": "pet_dat_dog",
+    "name": "pet_that_dog",
     "version": "0.1.0",
     "spec": "0.1.0",
     "description": "Created with Anchor"
@@ -831,7 +831,7 @@
     {
       "code": 6001,
       "name": "UnauthorizedClose",
-      "msg": "Only the dog owner can close this account."
+      "msg": "Only the Dog's owner can close this account."
     },
     {
       "code": 6002,

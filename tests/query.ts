@@ -1,13 +1,13 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program, web3 } from "@coral-xyz/anchor";
-import { PetDatDog } from "../target/types/pet_dat_dog";
+import { PetThatDog } from "../target/types/pet_that_dog";
 import { PublicKey } from '@solana/web3.js';
 
 
-describe("pet-dat-dog", () => {
+describe("pet-that-dog", () => {
   anchor.setProvider(anchor.AnchorProvider.env());
 
-  const program = anchor.workspace.PetDatDog as Program<PetDatDog>;
+  const program = anchor.workspace.PetThatDog as Program<PetThatDog>;
 
   const owner = new PublicKey('4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp');
 
