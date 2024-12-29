@@ -38,7 +38,7 @@
     "@nx/eslint": "^20.2.2",
     "@nx/eslint-plugin": "^20.2.2",
     "@nx/js": "^20.2.2",
-    "@nx/react": "^20.2.2",
+    "@nx/react": "^20.1.4",
     "@nx/web": "^20.2.2",
     "@nx/webpack": "^20.2.2",
     "@nx/workspace": "^20.2.2",

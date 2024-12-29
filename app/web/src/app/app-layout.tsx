@@ -117,6 +117,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
             The use of this program, its instructions, and its front end is
             entirely of your own volition. Use it at your own risk.
           </li>
+          <li>
+            If the dog/app's artwork is glitching or resetting/looping oddly
+            when you click, then reload the web page with Ctrl+R and make sure
+            your wallet is connected.
+          </li>
         </ul>
       </Modal>
       <div
