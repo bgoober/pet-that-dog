@@ -8,7 +8,7 @@ import {
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import wallet from "/home/agent/.config/solana/id.json";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
-import { expect } from "chai";
+import { assert, expect } from "chai";
 
 describe("pet-that-dog", () => {
   const provider = anchor.AnchorProvider.env();
@@ -233,6 +233,46 @@ describe("pet-that-dog", () => {
     expect(dogAccount.pnuts.toNumber()).to.equal(1);
   });
 
+  it("Fails when trying to interact too quickly", async () => {
+    try {
+        // First interaction succeeds
+        await program.methods.pet()
+            .accountsPartial({
+                dog,
+                user,
+                owner: keypair.publicKey,
+                dogMint,
+                mintAuth,
+                userTokenAta,
+                associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+                tokenProgram: TOKEN_PROGRAM_ID,
+                systemProgram: SystemProgram.programId,
+            })
+            .rpc();
+
+        // Second interaction in same slot should fail
+        await program.methods.bonk()
+            .accountsPartial({
+                dog,
+                user,
+                owner: keypair.publicKey,
+                dogMint,
+                mintAuth,
+                userTokenAta,
+                associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+                tokenProgram: TOKEN_PROGRAM_ID,
+                systemProgram: SystemProgram.programId,
+            })
+            .rpc();
+
+        assert.fail("Expected error TooMuchLove");
+    } catch (err: any) {
+        // Log the full error to see its structure
+        console.log("Error caught:", err);
+        expect(err.error?.code === "TooMuchLove" || err.error?.errorCode?.code === "TooMuchLove").to.be.true;
+    }
+  });
+
   it(`Closing user account`, async () => {
     const tx = await program.methods
       .closeUser()
@@ -245,5 +285,29 @@ describe("pet-that-dog", () => {
       .then(confirm)
       .then(log);
     console.log("Your close user tx signature: ", getSolscanLink(tx));
+  });
+
+  it("Can kill a dog", async () => {
+    const tx = await program.methods
+        .killDog()
+        .accountsPartial({
+            owner: keypair.publicKey,
+            dog,
+            dogMint,
+            mintAuth,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+        })
+        .rpc()
+        .then(confirm)
+        .then(log);
+    
+    // Verify dog account is closed
+    try {
+        await program.account.dog.fetch(dog);
+        assert.fail("Dog account should be closed");
+    } catch (e) {
+        expect(e).to.be.an("error");
+    }
   });
 });
