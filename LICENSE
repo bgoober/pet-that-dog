@@ -1,6 +1,6 @@
 MIT License with Revenue Share Requirement
 
-© 2024-present sumwut srs. llc.
+© 2024-present sumwut srs. llc. (hereinafter referred to as "us", "we", or "our")
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software subject to the following conditions:
 
@@ -20,11 +20,45 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 
 2. Exclusions:
 
-   - This revenue share requirement does not apply to fees generated from using the original deployed program or any program upgrades by us
-   - This does not apply to revenue from Dogs created through the original program
+   - This revenue share requirement does not apply to fees generated from using the original deployed program or any subsequent program upgrades by us
+   - This does not apply to revenue from Dogs created through the original program or any subsequent upgrades deployed by us
 
 3. Attribution Requirements:
-   - Any derivative works must acknowledge this as the original implementation
-   - Must include a link to the original repository
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+   - Any derivative works must acknowledge this as our original implementation
+   - Must include a link to our original repository
+
+4. User Agreement:
+
+   - By using this Software or any deployed programs, you agree to these terms
+   - You acknowledge the risks of using unaudited software
+   - You understand that while the Software involves financial transactions (fees paid to Dog owners and the House), it is not intended as an investment product or financial instrument
+   - You acknowledge that any fees paid or tokens received through use of the Software do not constitute an investment
+
+5. Legal Framework:
+
+   - These terms shall be governed by and construed in accordance with the laws of Wyoming, United States of America
+   - Any disputes shall be subject to the exclusive jurisdiction of the courts of Wyoming, United States of America
+
+6. Prohibited Uses:
+
+   - Users shall not use the Software for any illegal purposes
+   - Users shall not attempt to circumvent any security measures
+   - Users shall not use the Software to harm others
+
+7. Enforcement:
+
+   - We reserve all rights to enforce these terms through any legal means available
+   - We may seek injunctive relief, monetary damages, or other remedies as appropriate
+   - Failure to enforce any right or provision of these terms will not be considered a waiver
+   - If any provision of these terms is held to be invalid or unenforceable, the remaining provisions will remain in full effect
+   - These terms constitute the entire agreement between users and us regarding the Software
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL WE BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Users explicitly acknowledge and agree that:
+
+- We are not responsible for any losses incurred through use of the Software
+- We make no guarantees about the Software's functionality or availability
+- Users are solely responsible for their actions and transactions
+- We reserve the right to modify these terms at any time
