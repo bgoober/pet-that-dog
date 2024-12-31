@@ -7,27 +7,27 @@ export const ACTIONS: Record<'pet' | 'bonk' | 'pnut' | 'wif', { title: string, d
   pet: {
     title: "can i pet that dog?!",
     description: "my name is Maximilian I, but you can call me Max!",
-    animation: "https://pet-dat-3iwenptv0-bg3xyz-projects.vercel.app/assets/3-petDog.gif"
+    animation: "/assets/3-petDog.gif"
   },
   bonk: {
     title: "LetsBONK!",
     description: "hey whatcha got there?",
-    animation: "https://pet-dat-3iwenptv0-bg3xyz-projects.vercel.app/assets/BONK.gif"
+    animation: "/assets/BONK.gif"
   },
   pnut: {
     title: "give me a treat",
     description: "his name was Pnut",
-    animation: "https://pet-dat-3iwenptv0-bg3xyz-projects.vercel.app/assets/3-petDog.gif" // TODO: Add animation URL for this action that is not the pet animation
+    animation: "/assets/3-petDog.gif" // TODO: Add animation URL for this action that is not the pet animation
   },
   wif: {
     title: "The hat stays on",
     description: "literally just a dog wif a hat",
-    animation: "https://pet-dat-3iwenptv0-bg3xyz-projects.vercel.app/assets/3-petDog.gif" // TODO: Add animation URL for this action that is not the pet animation
+    animation: "/assets/3-petDog.gif" // TODO: Add animation URL for this action that is not the pet animation
   }
 };
 
 // Create the blink URLs with your Vercel deployment
-const VERCEL_URL = "https://pet-dat-3iwenptv0-bg3xyz-projects.vercel.app";
+const VERCEL_URL = "https://pet-that-dog.vercel.app";
 export const BLINK_URLS = {
   pet: `https://blink.solana.com/?action=solana-action%3A${encodeURIComponent(VERCEL_URL + '/pet')}`,
   bonk: `https://blink.solana.com/?action=solana-action%3A${encodeURIComponent(VERCEL_URL + '/bonk')}`,
@@ -48,7 +48,8 @@ export function getActionMetadata(action: ActionType) {
 
 // Action handler that returns transaction for POST requests
 export async function handleAction(account: string, action: ActionType) {
-//   const connection = new Connection("https://api.devnet.solana.com");
+// const connection = new Connection("https://api.mainnet-beta.solana.com");
+// const connection = new Connection("https://api.devnet.solana.com");
 const connection = new Connection("http://localhost:8899");
   const userPubkey = new PublicKey(account);
   
@@ -63,10 +64,10 @@ const connection = new Connection("http://localhost:8899");
     provider
   );
 
-  const house2 = new PublicKey("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp");
+  const house = new PublicKey("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp");
   const dogName = ["Maximilian I"];
   const [dog] = PublicKey.findProgramAddressSync(
-    [Buffer.from("dog"), Buffer.from(dogName.toString()), house2.toBuffer()],
+    [Buffer.from("dog"), Buffer.from(dogName.toString()), house.toBuffer()],
     program.programId
   );
 
@@ -86,7 +87,7 @@ const connection = new Connection("http://localhost:8899");
     .accountsPartial({
       dog,
       user: userPubkey,
-      owner: house2,
+      owner: house,
       dogMint,
       mintAuth,
       userTokenAta,
