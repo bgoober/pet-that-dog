@@ -16,19 +16,51 @@ Yes, you can!
   not limited to, loss of use, loss of funds, loss of profits, or loss
   of data arising out of or in any way connected with the use of the
   website or application and its instructions and functions.
-- The use of this program, its instructions, and its front end is entirely of your own volition. Use it at your own risk.
+- The use of this program, its instructions, and its front end is entirely of your own volition.
 
 ---
 
-FORKS AND DERIVATIVE WORKS
+### OPEN SOURCE LICENSE WITH REVENUE SHARE REQUIREMENT
 
-This software/program has no license and you may use it as you wish. However, if you fork this software, or produce a derivative work, and subsequently make, produce, or incur revenues in the form of financial gain from said fork or derivative, then for every $100,000.00 in revenue (denoted in US Dollar value), you must send $1,000.00 (of USD equivalent value) to this Solana main-net address: 
+© 2024-present sumwut srs. llc.
 
-**DuF6XB4Cf2ysxuQS8zMfdb5RHbF8TGgG9y1dx7SQcfhu**
+SOURCE CODE TERMS:
 
-We will accept any commonly accepted and recognized USD-Stablecoin (USDC, USDT, DAI, etc..), or main-net SOL, WSOL, or SOL-LST/LRT (INF, bSOL, mSOL, ezSOL, marginfi's LST, etc..) or Ethereum and/or Bitcoin (on Solana main-net). If you abide by this 1% revenue-share (in $100,000.00 minimums/increments) on forks or derivative works, then you will be in compliance with this program's terms. All in good faith. Thank you!
+1. **Usage Rights**:
 
-This does not apply to the interaction fees generated from a Dog you created through the use of the createDog instruction of this program.
+   - You may view, fork, modify, and use this code
+   - You may create derivative works
+
+2. **Revenue Share Requirement**:
+   If you generate revenue from a fork or derivative work of this software:
+
+   - For every $100,000.00 in revenue (in USD value), you must send $1,000.00 (1%) to this main-net Solana address:
+
+   **DuF6XB4Cf2ysxuQS8zMfdb5RHbF8TGgG9y1dx7SQcfhu**
+
+   Accepted payments include:
+
+   - USD-Stablecoins (USDC, USDT, DAI, etc.)
+   - SOL, WSOL (Solana and/or Wrapped Solana tokens)
+   - SOL-LSTs (INF, bSOL, mSOL, ezSOL, JitoSOL, etc.)
+   - BTC or ETH (on Solana main-net)
+
+3. **Exclusions**:
+
+   - This revenue share requirement does not apply to fees generated from using the original deployed program as intended, only to forks or derivative works
+   - This does not apply to revenue from Dogs created through the original program
+
+4. **Attribution**:
+
+   - Derivative works must acknowledge this as the original implementation
+   - Must include a link to this repository
+
+5. **Enforcement**:
+   - These terms are legally binding
+   - The owner reserves the right to enforce these terms
+   - The owner reserves the right to modify these terms
+
+Contact: pet-that-dog@protonmail.com
 
 ---
 

@@ -115,7 +115,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </li>
           <li>
             The use of this program, its instructions, and its front end is
-            entirely of your own volition. Use it at your own risk.
+            entirely of your own volition.
           </li>
           <li>
             If the dog/app's artwork is glitching or resetting/looping oddly

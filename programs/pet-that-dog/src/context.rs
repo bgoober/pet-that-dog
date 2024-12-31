@@ -17,7 +17,7 @@ use crate::state::*;
 
 const HOUSE: &str = "CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8";
 
-const ADMIN: &str = "4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp";
+const ADMIN: &str = "2cYQYrZfBTxyYEEUxeVP8nYMvbxaNHfK1vFdttqRCVim";
 
 #[derive(Accounts)]
 pub struct GlobalC<'info> {
