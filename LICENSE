@@ -1,0 +1,30 @@
+MIT License with Revenue Share Requirement
+
+© 2024-present sumwut srs. llc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software subject to the following conditions:
+
+1. Revenue Share Requirement:
+   If you generate revenue from a fork or derivative work of this Software:
+
+   - For every $100,000.00 in revenue (in USD value), you must send $1,000.00 (1%) to this Main-net Solana address:
+
+   Solana Address: DuF6XB4Cf2ysxuQS8zMfdb5RHbF8TGgG9y1dx7SQcfhu
+
+   Accepted payments include:
+
+   - USD-Stablecoins (USDC, USDT, DAI, etc.)
+   - SOL, WSOL (Solana and/or Wrapped Solana tokens)
+   - SOL-LSTs (INF, bSOL, mSOL, ezSOL, JitoSOL, etc.)
+   - BTC or ETH (on Solana main-net)
+
+2. Exclusions:
+
+   - This revenue share requirement does not apply to fees generated from using the original deployed program or any program upgrades by us
+   - This does not apply to revenue from Dogs created through the original program
+
+3. Attribution Requirements:
+   - Any derivative works must acknowledge this as the original implementation
+   - Must include a link to the original repository
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
