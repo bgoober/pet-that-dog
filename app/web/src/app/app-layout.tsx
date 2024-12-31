@@ -79,48 +79,45 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </button>
       </div>
       <Modal show={showModal} onClose={toggleModal}>
-        <h4>Disclaimer / Terms</h4>
+        <h4>Disclaimer & Terms</h4>
         <ul>
           <li>
-            The code for this program is unaudited. Use it at your own risk.
+            <strong>Program Usage:</strong>
+            <ul>
+              <li>This is unaudited software - use at your own risk</li>
+              <li>Program usage is entirely voluntary and at your own discretion</li>
+              <li>The front-end interface relies on third-party services (e.g., Vercel) and may experience downtime</li>
+            </ul>
           </li>
+
           <li>
-            The front-end user interface relies on 3rd party applications, such
-            as Vercel, and may not always be available.
+            <strong>Costs & Tokenomics:</strong>
+            <ul>
+              <li>Transaction fees apply to all interactions with any Dog</li>
+              <li>Interacting with a Dog: Standard network fee + 0.000001 SOL paid to Dog's owner</li>
+              <li>Creating a Dog: Standard network fee + 0.01 SOL paid to the House</li>
+              <li>Each interaction mints 1 of the Dog's tokens to your wallet</li>
+              <li>Each Dog's token starts with 0 supply (no pre-mine, no insider allocations, no mint control by the Dog's owner)</li>
+              <li>YOU MINT YOUR OWN TOKENS!</li>
+            </ul>
           </li>
+
           <li>
-            Interacting with a Dog costs a transaction fee, plus 0.000001 SOL
-            paid to the Dog's owner.
+            <strong>Non-Investment Notice:</strong>
+            <ul>
+              <li>This is not an investment product or financial instrument</li>
+              <li>No expectation of profit from developer's work, your Dog, or any Dog's tokens</li>
+              <li>Fees paid and tokens received do not constitute an investment</li>
+            </ul>
           </li>
-          <li>Creating your own Dog costs a transaction fee plus 0.01 SOL.</li>
+
           <li>
-            Each Dog mints 1 of its tokens to you every time you interact with
-            it.
-          </li>
-          <li>
-            Each individual Dog's token has an initial supply of 0. There is no
-            pre-mine, no insider allocations, and no VC's. YOU MINT YOUR OWN
-            TOKENS BY INTERACTING WITH THAT DOG!
-          </li>
-          <li>
-            Expect no return nor expectation of profit from the developer's
-            continued work, your Dog, someone ele's Dog, or any Dog's token.
-          </li>
-          <li>
-            In no event shall the owners of, or contributors to this application
-            and website be liable for any damages of any kind; including, but
-            not limited to, loss of use, loss of funds, loss of profits, or loss
-            of data arising out of or in any way connected with the use of the
-            website or application and its instructions and functions.
-          </li>
-          <li>
-            The use of this program, its instructions, and its front end is
-            entirely of your own volition.
-          </li>
-          <li>
-            If the dog/app's artwork is glitching or resetting/looping oddly
-            when you click, then reload the web page with Ctrl+R and make sure
-            your wallet is connected.
+            <strong>Liability Disclaimer:</strong>
+            <ul>
+              <li>We are not liable for any damages including loss of use, funds, profits, or data</li>
+              <li>Users are solely responsible for their actions and transactions</li>
+              <li>If the dog/app's artwork is glitching or resetting/looping oddly, reload the page (Ctrl+R) and ensure your wallet is connected</li>
+            </ul>
           </li>
         </ul>
       </Modal>

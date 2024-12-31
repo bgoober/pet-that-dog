@@ -475,3 +475,26 @@
 [NX Daemon Server] - 2024-12-29T07:33:46.304Z - [SYNC]: project graph hash is the same, not collecting task sync generators
 [NX Daemon Server] - 2024-12-29T07:33:46.304Z - [SYNC]: nx.json hash is the same, not collecting global sync generators
 [NX Daemon Server] - 2024-12-29T07:33:46.305Z - Time taken for 'total execution time for createProjectGraph()' 21.752103000006173ms
+[NX Daemon Server] - 2024-12-31T20:47:19.815Z - Started listening on: /tmp/92ae5641c5d6cfc0c4c8/d.sock
+[NX Daemon Server] - 2024-12-31T20:47:19.818Z - [WATCHER]: Subscribed to changes within: /home/agent/pet-that-dog/app (native)
+[NX Daemon Server] - 2024-12-31T20:47:19.822Z - Established a connection. Number of open connections: 1
+[NX Daemon Server] - 2024-12-31T20:47:19.824Z - Established a connection. Number of open connections: 2
+[NX Daemon Server] - 2024-12-31T20:47:19.825Z - Closed a connection. Number of open connections: 1
+[NX Daemon Server] - 2024-12-31T20:47:19.827Z - [REQUEST]: Client Request for Project Graph Received
+[NX Daemon Server] - 2024-12-31T20:47:20.014Z - Time taken for 'Load Nx Plugin: /home/agent/pet-that-dog/app/node_modules/nx/src/plugins/js' 186.71968400012702ms
+[NX Daemon Server] - 2024-12-31T20:47:20.044Z - [REQUEST]: Updated workspace context based on watched changes, recomputing project graph...
+[NX Daemon Server] - 2024-12-31T20:47:20.045Z - [REQUEST]: 
+[NX Daemon Server] - 2024-12-31T20:47:20.045Z - [REQUEST]: 
+[NX Daemon Server] - 2024-12-31T20:47:20.050Z - Time taken for 'loadNxPlugins' 217.03299300000072ms
+[NX Daemon Server] - 2024-12-31T20:47:20.086Z - Time taken for 'build-project-configs' 24.76974799996242ms
+[NX Daemon Server] - 2024-12-31T20:47:20.143Z - [SYNC]: collect registered sync generators
+[NX Daemon Server] - 2024-12-31T20:47:20.144Z - [REQUEST]: Responding to the client. project-graph
+[NX Daemon Server] - 2024-12-31T20:47:20.144Z - Time taken for 'total for creating and serializing project graph' 316.92287600040436ms
+[NX Daemon Server] - 2024-12-31T20:47:20.145Z - Done responding to the client project-graph
+[NX Daemon Server] - 2024-12-31T20:47:20.145Z - Handled REQUEST_PROJECT_GRAPH. Handling time: 317. Response time: 2.
+[NX Daemon Server] - 2024-12-31T20:47:20.186Z - [REQUEST]: Responding to the client. handleHashTasks
+[NX Daemon Server] - 2024-12-31T20:47:20.186Z - Done responding to the client handleHashTasks
+[NX Daemon Server] - 2024-12-31T20:47:20.187Z - Handled HASH_TASKS. Handling time: 15. Response time: 1.
+[NX Daemon Server] - 2024-12-31T20:47:20.204Z - [REQUEST]: Responding to the client. handleGetEstimatedTaskTimings
+[NX Daemon Server] - 2024-12-31T20:47:20.204Z - Done responding to the client handleGetEstimatedTaskTimings
+[NX Daemon Server] - 2024-12-31T20:47:20.204Z - Handled GET_ESTIMATED_TASK_TIMINGS. Handling time: 1. Response time: 0.
