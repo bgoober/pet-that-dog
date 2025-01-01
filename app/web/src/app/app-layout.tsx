@@ -136,6 +136,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
                   Each Dog's token starts with 0 supply (no pre-mine, no insider
                   allocations, no mint control by the Dog's owner)
                 </li>
+                <li>
+                  Token metadata is immutable once created and can not be updated or
+                  changed by anyone including the Dog's owner or the program
+                </li>
                 <li>YOU MINT YOUR OWN TOKENS!</li>
               </ul>
             </li>

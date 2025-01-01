@@ -17,7 +17,7 @@ async function uploadTokenMetadata() {
 
     try {
         // Upload image first
-        const imagePath = join(__dirname, 'test-assets', 'pie.png');
+        const imagePath = join(__dirname, 'test-assets', 'rugx.png');
         const imageBuffer = await readFile(imagePath);
         const imageFile = createGenericFile(
             imageBuffer,
@@ -26,7 +26,7 @@ async function uploadTokenMetadata() {
                 contentType: 'image/png',
                 tags: [
                     { name: 'Content-Type', value: 'image/png' },
-                    { name: 'Title', value: 'Pie' }
+                    { name: 'Title', value: 'RugX' }
                 ]
             }
         );
@@ -37,9 +37,9 @@ async function uploadTokenMetadata() {
 
         // Create and upload metadata JSON
         const metadata = {
-            name: "Pie",
-            symbol: "PIE",
-            description: "Some pie.",
+            name: "RugX",
+            symbol: "RUGX",
+            description: "A RugX.",
             image: irysImageUrl
         };
 
@@ -50,7 +50,7 @@ async function uploadTokenMetadata() {
                 contentType: 'application/json',
                 tags: [
                     { name: 'Content-Type', value: 'application/json' },
-                    { name: 'Title', value: 'Pie Metadata' }
+                    { name: 'Title', value: 'RugX Metadata' }
                 ]
             }
         );
@@ -62,8 +62,8 @@ async function uploadTokenMetadata() {
         // Output the format needed for the program
         console.log('\nUse this in your program:');
         console.log({
-            name: "Pie",
-            symbol: "PIE",
+            name: "RugX",
+            symbol: "RUGX",
             uri: irysMetadataUrl  // This is the URL to the JSON file
         });
 

@@ -3,10 +3,7 @@ import { Program, web3 } from "@coral-xyz/anchor";
 import { PetThatDog } from "../target/types/pet_that_dog";
 import {
   TOKEN_PROGRAM_ID,
-  createMint,
   getAssociatedTokenAddressSync,
-  getOrCreateAssociatedTokenAccount,
-  mintTo,
 } from "@solana/spl-token";
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import wallet from "/home/agent/.config/solana/id.json";

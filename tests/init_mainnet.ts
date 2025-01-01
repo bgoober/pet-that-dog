@@ -29,10 +29,10 @@ describe("pet-that-dog", () => {
 
   // Helper function for transaction signatures only
   const getSolscanLink = (signature: string) => {
-    return `https://solscan.io/tx/${signature}?cluster=custom&customUrl=http://localhost:8899`;
+    return `https://solscan.io/tx/${signature}`;
   };
 
-  let house = new PublicKey("CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8");
+  let house = new PublicKey("9tM775Pb7SWT12WZqGvoGKPAttPNwMkYxuq8Yex8AGTX");
 
   const [global] = web3.PublicKey.findProgramAddressSync(
     [Buffer.from("global")],

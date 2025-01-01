@@ -1,46 +1,31 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program, web3 } from "@coral-xyz/anchor";
-import { PetThatDog } from "../target/types/pet_that_dog";
+import { PetThatDog } from "../../target/types/pet_that_dog";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import {
-  TOKEN_PROGRAM_ID,
-} from "@solana/spl-token";
-import { Keypair, PublicKey, SystemProgram, TransactionMessage } from "@solana/web3.js";
-import wallet from "/home/agent/.config/solana/id.json";
+  PublicKey,
+  SystemProgram,
+  TransactionMessage,
+} from "@solana/web3.js";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
-import bs58 from 'bs58';
+import bs58 from "bs58";
 
 describe("pet-that-dog", () => {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
   const program = anchor.workspace.PetThatDog as Program<PetThatDog>;
   const connection = provider.connection;
-  const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
-
-  const confirm = async (signature: string): Promise<string> => {
-    const block = await connection.getLatestBlockhash();
-    await connection.confirmTransaction({ signature, ...block });
-    return signature;
-  };
 
   const log = async (signature: string): Promise<string> => {
     console.log(signature);
     return signature;
   };
 
-  // Helper function for transaction signatures only
-  const getSolscanLink = (signature: string) => {
-    return `https://solscan.io/tx/${signature}?cluster=custom&customUrl=http://localhost:8899`;
-  };
-
-  let house = new PublicKey("CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8");
+  let house = new PublicKey("9tM775Pb7SWT12WZqGvoGKPAttPNwMkYxuq8Yex8AGTX");
 
   const dogName = ["Maximilian I"];
   const [dog] = web3.PublicKey.findProgramAddressSync(
-    [
-      Buffer.from("dog"),
-      Buffer.from(dogName.toString()),
-      house.toBuffer(),
-    ],
+    [Buffer.from("dog"), Buffer.from(dogName.toString()), house.toBuffer()],
     program.programId
   );
   console.log("Dog PDA:", dog.toBase58());
@@ -64,16 +49,10 @@ describe("pet-that-dog", () => {
   console.log("Global account: ", global.toBase58());
 
   it(`Dog created - ${dogName}`, async () => {
-    console.log("\nAccount relationships:");
-    console.log("Dog owner:", house.toBase58());
-    console.log("Dog PDA:", dog.toBase58());
-    console.log("Dog Mint:", dogMint.toBase58());
-    console.log("Mint Auth:", mintAuth.toBase58());
-
     const metadata = {
       name: "Maximilian I",
       symbol: "MAXIMILIAN",
-      uri: "https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/bafkreiah2drooi7fmarvpvy46n4ngqcisrltvinppo76v5cbopsy3ggh4i",
+      uri: "", // the arweave link that stores the token metadata JSON
     };
     const txHash = await program.methods
       .createDog(
@@ -95,9 +74,6 @@ describe("pet-that-dog", () => {
       })
       .instruction();
 
-    // const currentCount = await program.account.counter.fetch(
-    //   counterKeypair.publicKey
-    // );
     const block = await connection.getLatestBlockhash();
 
     const message = new TransactionMessage({

@@ -33,7 +33,7 @@ describe("pet-that-dog", () => {
     return `https://solscan.io/tx/${signature}?cluster=custom&customUrl=http://localhost:8899`;
   };
 
-  let house = new PublicKey("CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8");
+  let house = new PublicKey("9tM775Pb7SWT12WZqGvoGKPAttPNwMkYxuq8Yex8AGTX");
 
   const dogName = ["Maximilian I"];
   const [dog] = web3.PublicKey.findProgramAddressSync(

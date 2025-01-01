@@ -1,7 +1,7 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { PublicKey, SystemProgram, TransactionMessage } from "@solana/web3.js";
-import { PetThatDog } from "../target/types/pet_that_dog";
+import { PetThatDog } from "../../target/types/pet_that_dog";
 import bs58 from "bs58";
 
 describe("multisig init's global", () => {
@@ -13,24 +13,8 @@ describe("multisig init's global", () => {
   const program = anchor.workspace.PetThatDog as Program<PetThatDog>;
 
   const multisig = new PublicKey(
-    "CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8"
+    "9tM775Pb7SWT12WZqGvoGKPAttPNwMkYxuq8Yex8AGTX"
   );
-
-  const confirm = async (signature: string): Promise<string> => {
-    const block = await connection.getLatestBlockhash();
-    await connection.confirmTransaction({
-      signature,
-      ...block,
-    });
-    return signature;
-  };
-
-  const log = async (signature: string, name?: string): Promise<string> => {
-    console.log(
-      `${name}: Your transaction signature: https://explorer.solana.com/transaction/${signature}?cluster=custom&customUrl=${connection.rpcEndpoint}`
-    );
-    return signature;
-  };
 
   const [global] = PublicKey.findProgramAddressSync(
     [Buffer.from("global")],

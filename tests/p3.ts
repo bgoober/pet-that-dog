@@ -7,9 +7,8 @@ import {
 } from "@solana/spl-token";
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import wallet from "/home/agent/.config/solana/id.json"; // Local wallet (stranger)
-import wallet2 from "../wallet.json"; // Player 2 (Petey's owner)
+import wallet2 from "../wallet.json"; // Player 2 (Petey's owner) FOR TESTING PURPOSES ONLY, DOES NOT CONTAIN MAIN NET FUNDS
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
-import { expect } from "chai";
 
 describe("pet-that-dog", () => {
   const provider = anchor.AnchorProvider.env();
@@ -38,7 +37,7 @@ describe("pet-that-dog", () => {
     return signature;
   };
 
-  let house = new PublicKey("CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8");
+  let house = new PublicKey("9tM775Pb7SWT12WZqGvoGKPAttPNwMkYxuq8Yex8AGTX");
 
   // Derive Petey's accounts
   const dogName = ["Petey"];
@@ -94,7 +93,7 @@ describe("pet-that-dog", () => {
     const metadata = {
       name: "Petey",
       symbol: "PETEY",
-      uri: "https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/Qma41jzcPhZ2UspoBrHzKfEX7Ve7fbMV958sQQD3PgvBXW",
+      uri: "https://emerald-electronic-anteater-138.mypinata.cloud/ipfs/Qma41jzcPhZ2UspoBrHzKfEX7Ve7fbMV958sQQD3PgvBXW", // change this later
     };
 
     const tx = await program.methods

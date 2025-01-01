@@ -26,6 +26,8 @@ describe("pet-that-dog", () => {
 
   const ADMIN = new PublicKey("4QPAeQG6CTq2zMJAVCJnzY9hciQteaMkgBmcyGL7Vrwp");
 
+  const HOUSE = new PublicKey("9tM775Pb7SWT12WZqGvoGKPAttPNwMkYxuq8Yex8AGTX");
+
   let mint = PublicKey.findProgramAddressSync(
     [Buffer.from("mint")],
     program.programId
@@ -90,7 +92,7 @@ describe("pet-that-dog", () => {
       .accountsPartial({
         dog,
         owner: keypair.publicKey,
-        house: ADMIN, // defined by the local wallet now, but will need to be derived later
+        house: HOUSE,
         global,
         tokenProgram: TOKEN_PROGRAM_ID,
         associatedTokenProgram: ASSOCIATED_PROGRAM_ID,

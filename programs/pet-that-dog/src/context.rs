@@ -15,7 +15,7 @@ use std::str::FromStr;
 
 use crate::state::*;
 
-const HOUSE: &str = "CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8";
+const HOUSE: &str = "9tM775Pb7SWT12WZqGvoGKPAttPNwMkYxuq8Yex8AGTX";
 
 const ADMIN: &str = "2cYQYrZfBTxyYEEUxeVP8nYMvbxaNHfK1vFdttqRCVim";
 
@@ -155,8 +155,8 @@ impl<'info> CreateDogC<'info> {
                 collection: None,
                 uses: None,
             },
-            true,
-            true,
+            false,
+            false,
             None,
         )?;
 
