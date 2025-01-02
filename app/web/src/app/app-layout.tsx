@@ -57,7 +57,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           width="100%"
           height="352"
           allowFullScreen
-          allow="autoplay; clipboard-write; encrypted-media; web-share; storage-access"
+          allow="autoplay; clipboard-write; encrypted-media; storage-access"
           loading="lazy"
         ></iframe>
       </div>

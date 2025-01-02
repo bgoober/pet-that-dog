@@ -6,80 +6,80 @@
   "fileMap": {
     "nonProjectFiles": [
       {
-        "file": ".eslintignore",
-        "hash": "7663861978715868291"
-      },
-      {
-        "file": ".editorconfig",
-        "hash": "5443105041930014821"
-      },
-      {
-        "file": "vercel.json",
-        "hash": "8794281784919034686"
-      },
-      {
-        "file": "LICENSE",
-        "hash": "13976139912707527799"
-      },
-      {
-        "file": "package-lock.json",
-        "hash": "163147697935258011"
-      },
-      {
-        "file": ".vscode/extensions.json",
-        "hash": "4134969992917317260"
-      },
-      {
-        "file": ".prettierignore",
-        "hash": "16448050467312557263"
-      },
-      {
-        "file": ".prettierrc",
-        "hash": "16267754514737964994"
-      },
-      {
         "file": "README.md",
         "hash": "5064894035817590830"
-      },
-      {
-        "file": ".gitignore",
-        "hash": "7694991769205770921"
-      },
-      {
-        "file": "_scripts/test-assets/rugx.png",
-        "hash": "18114681494958756459"
-      },
-      {
-        "file": "_scripts/assets/Maximilian I.png",
-        "hash": "5844413193782744344"
-      },
-      {
-        "file": "_scripts/deploy-app-to-arweave.ts",
-        "hash": "17533958634707825190"
-      },
-      {
-        "file": "nx.json",
-        "hash": "2439936810889621167"
-      },
-      {
-        "file": "_scripts/upload-mainnet-token-metadata.ts",
-        "hash": "16076564638414903294"
       },
       {
         "file": ".eslintrc.json",
         "hash": "17866138117546000433"
       },
       {
+        "file": "_scripts/upload-devnet-token-metadata.ts",
+        "hash": "4816130655844486014"
+      },
+      {
+        "file": "LICENSE",
+        "hash": "13976139912707527799"
+      },
+      {
+        "file": ".editorconfig",
+        "hash": "5443105041930014821"
+      },
+      {
+        "file": "_scripts/test-assets/rugx.png",
+        "hash": "18114681494958756459"
+      },
+      {
+        "file": "package.json",
+        "hash": "12219313673274363983"
+      },
+      {
+        "file": ".prettierignore",
+        "hash": "16448050467312557263"
+      },
+      {
+        "file": "_scripts/assets/Maximilian I.png",
+        "hash": "5844413193782744344"
+      },
+      {
+        "file": ".eslintignore",
+        "hash": "7663861978715868291"
+      },
+      {
+        "file": "_scripts/upload-mainnet-token-metadata.ts",
+        "hash": "16076564638414903294"
+      },
+      {
         "file": "tsconfig.base.json",
         "hash": "16936441711144470533"
       },
       {
-        "file": "package.json",
-        "hash": "10458562824236653826"
+        "file": "package-lock.json",
+        "hash": "3624386172021422737"
       },
       {
-        "file": "_scripts/upload-devnet-token-metadata.ts",
-        "hash": "4816130655844486014"
+        "file": "vercel.json",
+        "hash": "8794281784919034686"
+      },
+      {
+        "file": "nx.json",
+        "hash": "2439936810889621167"
+      },
+      {
+        "file": ".vscode/extensions.json",
+        "hash": "4134969992917317260"
+      },
+      {
+        "file": ".prettierrc",
+        "hash": "16267754514737964994"
+      },
+      {
+        "file": "_scripts/deploy-app-to-arweave.ts",
+        "hash": "17533958634707825190"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "5584575137317094048"
       }
     ],
     "projectFileMap": {
@@ -94,11 +94,11 @@
         },
         {
           "file": "web/.gitignore",
-          "hash": "1862265637977512098"
+          "hash": "5215315582138415967"
         },
         {
           "file": "web/project.json",
-          "hash": "10196553475786658908"
+          "hash": "5466830509209698099"
         },
         {
           "file": "web/public/.well-known/security.txt",
@@ -142,7 +142,7 @@
         },
         {
           "file": "web/src/app/app-layout.tsx",
-          "hash": "77367570061123222",
+          "hash": "6648090260410247772",
           "deps": [
             "npm:@solana/wallet-adapter-react-ui",
             "npm:react",
@@ -168,7 +168,7 @@
         },
         {
           "file": "web/src/app/cluster/cluster-data-access.tsx",
-          "hash": "12113960810598347099",
+          "hash": "10731131770826996011",
           "deps": [
             "npm:react",
             "npm:@solana/web3.js"
@@ -283,11 +283,12 @@
         },
         {
           "file": "web/webpack.config.js",
-          "hash": "9829016114517551248",
+          "hash": "11263718204673854065",
           "deps": [
             "npm:@nx/webpack",
             "npm:@nx/react",
             "npm:webpack",
+            "npm:dotenv",
             [
               "npm:crypto-browserify",
               "dynamic"

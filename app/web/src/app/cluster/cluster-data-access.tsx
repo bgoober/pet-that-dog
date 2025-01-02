@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 
-import { clusterApiUrl } from '@solana/web3.js';
+import { Connection } from '@solana/web3.js';
 
 import { createContext, ReactNode, useContext } from 'react';
 
@@ -9,6 +9,7 @@ export interface Cluster {
   endpoint: string;
   network?: ClusterNetwork;
 }
+
 export enum ClusterNetwork {
   Mainnet = 'mainnet-beta',
   Testnet = 'testnet',
@@ -25,11 +26,25 @@ const Context = createContext<ClusterProviderContext>(
 );
 
 export function ClusterProvider({ children }: { children: ReactNode }) {
+  const endpoint = process.env.NX_REACT_APP_RPC_URL;
+
+  if (!endpoint) {
+    console.error('No RPC endpoint found - please configure');
+    throw new Error('RPC endpoint not configured');
+  }
+
+  const connection = new Connection(endpoint, {
+    commitment: 'confirmed',
+    confirmTransactionInitialTimeout: 60000,
+  });
+
   const value: ClusterProviderContext = {
-    // cluster: { endpoint: clusterApiUrl('devnet') },
-    // cluster: { endpoint: 'http://localhost:8899', network: ClusterNetwork.Custom },
-    cluster: { endpoint: clusterApiUrl('mainnet-beta') },
+    cluster: {
+      endpoint: connection.rpcEndpoint,
+      network: ClusterNetwork.Mainnet,
+    },
   };
+
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 

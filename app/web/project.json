@@ -50,7 +50,10 @@
       "options": {
         "buildTarget": "web:build",
         "hmr": true,
-        "port": 3000
+        "port": 3000,
+        "env": {
+          "NX_REACT_APP_RPC_URL": "${NX_REACT_APP_RPC_URL}"
+        }
       },
       "configurations": {
         "development": {

@@ -10,3 +10,5 @@ test-ledger
 *.so
 burner.json
 docker-target
+.vercel
+.env.local
