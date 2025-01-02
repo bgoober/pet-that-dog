@@ -1,0 +1,72 @@
+anchor clean
+
+anchor build --verifiable
+
+anchor keys list
+
+make sure program keys match everywhere
+	lib.rs, Anchor.toml, program IDL, front end IDL
+	
+save program .so file and keypair in bitwarden? and in aegis secure key
+
+launch production vercel app
+
+make repo publicly visible
+
+change authority to pet that dog! multi sig
+
+change multi-sig threshold to 2/2
+
+send email to blowfish to whitelist app front end
+
+---
+
+# 1. Clean everything
+rm -rf target/
+rm -rf node_modules/
+rm -rf .anchor/
+
+# 2. Run
+anchor clean
+
+# 3. Fresh install of dependencies
+npm install --legacy-peer-deps typescript ts-node ts-mocha @types/mocha
+npm install -g typescript ts-node
+
+# 4. Build to create IDL and types
+anchor build 
+
+# 5. Build with solana-verify
+solana-verify build
+
+# 5. Run
+sudo chown -R $USER:$USER target/
+anchor keys list
+
+# 6. Update program ID in lib.rs and Anchor.toml
+# Make sure both match the output from step 4
+
+# 7. Set to devnet
+solana config set --url https://api.devnet.solana.com
+
+# 8. Build again after ID updates
+anchor build --verifiable
+use solana-verify build instead of anchor build if you want to verify the program against your repo
+
+# 9. Deploy to devnet
+solana program deploy \
+  target/deploy/pet_that_dog.so \
+  --program-id target/deploy/pet_that_dog-keypair.json
+
+# Then verify against your GitHub repo
+solana-verify verify-from-repo \
+  -u https://api.devnet.solana.com \
+  --program-id 25Yhix41gFXapETKE9EgCnzzKiTJSwXCqqszzazgZsDz \
+  https://github.com/bgoober/pet-that-dog
+
+solana-verify remote submit-job \
+  --program-id 25Yhix41gFXapETKE9EgCnzzKiTJSwXCqqszzazgZsDz \
+  --uploader YOUR_WALLET_PUBKEY
+
+# 10. Run initialization test
+anchor run init_mainnet

@@ -5,17 +5,22 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-pet_that_dog = "Ecjyym2Sbw7c18SxKZ5ktggATvowxqrPbaVBJmhKMmBr"
+pet_that_dog = "25Yhix41gFXapETKE9EgCnzzKiTJSwXCqqszzazgZsDz"
 
 [programs.localnet]
-pet-that-dog = "Ecjyym2Sbw7c18SxKZ5ktggATvowxqrPbaVBJmhKMmBr"
-pet_that_dog = "Ecjyym2Sbw7c18SxKZ5ktggATvowxqrPbaVBJmhKMmBr"
+pet_that_dog = "25Yhix41gFXapETKE9EgCnzzKiTJSwXCqqszzazgZsDz"
+
+[programs.mainnet]
+pet_that_dog = "25Yhix41gFXapETKE9EgCnzzKiTJSwXCqqszzazgZsDz"
 
 [registry]
-url = "http://localhost:8899"
+# url = "http://localhost:8899"
+# url = "https://api.mainnet-beta.solana.com"
+url = "https://api.devnet.solana.com"
 
 [provider]
-cluster = "Localnet"
+# cluster = "mainnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

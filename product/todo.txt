@@ -1,5 +1,0 @@
-1. Refactor necessary accounts for both payer and house/Squads
-2. Research adding session keys; consider the UX from this change in terms of running out of funds, needing to replenish a session key account to pay for fees or $BONK, as well as closing a session key account once it is no longer needed.
-3. Figure out how to turn it into an interactive BLINK
-4. Make more front end UI art and interactive experiences
-5. Add product disclaimer to front end UI -- cookies, 3rd party, program bugs, etc..

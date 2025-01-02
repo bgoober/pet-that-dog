@@ -1442,6 +1442,7 @@ dependencies = [
  "anchor-spl",
  "mpl-token-metadata",
  "solana-program 2.0.3",
+ "solana-security-txt",
 ]
 
 [[package]]

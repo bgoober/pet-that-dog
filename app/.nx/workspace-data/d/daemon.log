@@ -908,3 +908,14 @@
 [NX Daemon Server] - 2025-01-01T00:12:56.010Z - Closed a connection. Number of open connections: 0
 [NX Daemon Server] - 2025-01-01T01:45:32.547Z - [WATCHER]: Stopping the watcher for /home/agent/pet-that-dog/app (sources)
 [NX Daemon Server] - 2025-01-01T01:45:32.547Z - [WATCHER]: Stopping the watcher for /home/agent/pet-that-dog/app (outputs)
+[NX Daemon Server] - 2025-01-01T20:59:39.823Z - Started listening on: /tmp/92ae5641c5d6cfc0c4c8/d.sock
+[NX Daemon Server] - 2025-01-01T20:59:39.830Z - [WATCHER]: Subscribed to changes within: /home/agent/pet-that-dog/app (native)
+[NX Daemon Server] - 2025-01-01T20:59:39.834Z - Established a connection. Number of open connections: 1
+[NX Daemon Server] - 2025-01-01T20:59:39.836Z - Established a connection. Number of open connections: 2
+[NX Daemon Server] - 2025-01-01T20:59:39.839Z - Closed a connection. Number of open connections: 1
+[NX Daemon Server] - 2025-01-01T20:59:39.842Z - [REQUEST]: Responding to the client. Shutdown initiated
+[NX Daemon Server] - 2025-01-01T20:59:39.843Z - Done responding to the client Shutdown initiated
+[NX Daemon Server] - 2025-01-01T20:59:39.843Z - Handled FORCE_SHUTDOWN. Handling time: 0. Response time: 1.
+[NX Daemon Server] - 2025-01-01T20:59:39.844Z - Closed a connection. Number of open connections: 0
+[NX Daemon Server] - 2025-01-01T20:59:39.845Z - [WATCHER]: Stopping the watcher for /home/agent/pet-that-dog/app (sources)
+[NX Daemon Server] - 2025-01-01T20:59:39.846Z - [WATCHER]: Stopping the watcher for /home/agent/pet-that-dog/app (outputs)

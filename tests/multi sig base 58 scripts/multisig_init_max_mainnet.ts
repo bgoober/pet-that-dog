@@ -52,7 +52,7 @@ describe("pet-that-dog", () => {
     const metadata = {
       name: "Maximilian I",
       symbol: "MAXIMILIAN",
-      uri: "", // the arweave link that stores the token metadata JSON
+      uri: "https://tearvq4mogxqsylsqoa4tlkkx2kpx6lor24ntgw4wepu25g6egua.arweave.net/mQEaw4xxrwlhcoOBya1KvpT7-W6OuNma3LEfTXTeIag", // the arweave link that stores the token metadata JSON
     };
     const txHash = await program.methods
       .createDog(

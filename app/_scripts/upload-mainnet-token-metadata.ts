@@ -32,7 +32,9 @@ async function uploadTokenMetadata() {
         );
 
         const [imageUri] = await umi.uploader.upload([imageFile]);
-        console.log('Token image uploaded to:', imageUri); // Will be arweave.net URL
+        console.log('\n=== Image Upload ===');
+        console.log('URL:', imageUri);
+        console.log('TX ID:', imageUri.replace('https://arweave.net/', ''));
 
         // Create and upload metadata JSON
         const metadata = {
@@ -55,19 +57,20 @@ async function uploadTokenMetadata() {
         );
 
         const [metadataUri] = await umi.uploader.upload([metadataFile]);
-        console.log('\nMetadata JSON uploaded to:', metadataUri);
+        console.log('\n=== Metadata Upload ===');
+        console.log('URL:', metadataUri);
+        console.log('TX ID:', metadataUri.replace('https://arweave.net/', ''));
 
-        // Output the format needed for the program
-        console.log('\nUse this in your program:');
+        console.log('\n=== For Program ===');
         console.log({
             name: "Maximilian I",
             symbol: "MAXIMILIAN",
-            uri: metadataUri  // This is the URL to the JSON file
+            uri: metadataUri
         });
 
     } catch (error) {
-        console.log("Oops.. Something went wrong", error);
-        throw error;
+        // Don't throw, just log
+        console.log("Error:", error);
     }
 }
 

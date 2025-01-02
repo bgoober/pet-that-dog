@@ -1,6 +1,7 @@
 #![allow(unexpected_cfgs)]
 
 use anchor_lang::prelude::*;
+use solana_security_txt::security_txt;
 
 mod context;
 
@@ -8,7 +9,21 @@ use context::*;
 
 mod state;
 
-declare_id!("Ecjyym2Sbw7c18SxKZ5ktggATvowxqrPbaVBJmhKMmBr");
+declare_id!("25Yhix41gFXapETKE9EgCnzzKiTJSwXCqqszzazgZsDz");
+
+#[cfg(not(feature = "no-entrypoint"))]
+security_txt! {
+    name: "pet that dog!",
+    project_url: "https://pet-that-dog.vercel.app",
+    contacts: "twitter:@pet_thatdog,github:bgoober",
+    policy: "https://github.com/bgoober/pet-that-dog/security/policy",
+
+    preferred_languages: "en",
+    source_code: "https://github.com/bgoober/pet-that-dog",
+    source_release: env!("CARGO_PKG_VERSION"),
+    auditors: "None",
+    acknowledgements: "None"
+}
 
 #[program]
 pub mod pet_that_dog {
