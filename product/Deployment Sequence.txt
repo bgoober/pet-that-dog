@@ -1,26 +1,3 @@
-anchor clean
-
-anchor build --verifiable
-
-anchor keys list
-
-make sure program keys match everywhere
-	lib.rs, Anchor.toml, program IDL, front end IDL
-	
-save program .so file and keypair in bitwarden? and in aegis secure key
-
-launch production vercel app
-
-make repo publicly visible
-
-change authority to pet that dog! multi sig
-
-change multi-sig threshold to 2/2
-
-send email to blowfish to whitelist app front end
-
----
-
 # 1. Clean everything
 rm -rf target/
 rm -rf node_modules/

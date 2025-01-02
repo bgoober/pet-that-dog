@@ -9,13 +9,13 @@ use context::*;
 
 mod state;
 
-declare_id!("3HTdwKWxXccHzh88pyAADqCpaxYpYpuE7vdPkmMReH7M");
+declare_id!("5MAGgYWgNF8KtNegKMhZxNbugrgzkLDUe9Vy2y4STRwX");
 
 #[cfg(not(feature = "no-entrypoint"))]
 security_txt! {
     name: "pet that dog!",
     project_url: "https://pet-that-dog.vercel.app",
-    contacts: "twitter:@pet_thatdog,github:bgoober",
+    contacts: "twitter:@pet_thatdog,email:pet-that-dog@protonmail.com",
     policy: "https://github.com/bgoober/pet-that-dog/security/policy",
     preferred_languages: "en",
     source_code: "https://github.com/bgoober/pet-that-dog",

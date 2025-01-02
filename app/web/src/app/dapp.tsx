@@ -15,7 +15,7 @@ import React, { useEffect, useState, useRef } from 'react';
 
 // Helper function for transaction signatures only
 const getSolscanLink = (signature: string) => {
-  return `https://solscan.io/tx/${signature}?cluster=devnet`;
+  return `https://solscan.io/tx/${signature}?cluster=mainnet-beta`;
 };
 
 // Define the states
@@ -62,7 +62,7 @@ const Dapp: React.FC = () => {
     ? new anchor.Program(idl as anchor.Idl, provider)
     : null;
 
-  let house = new PublicKey('CHGqapwv8xzwtUMyoQYGjo37mm7iNyoEQy5LEgz9kGa8');
+  let house = new PublicKey('9tM775Pb7SWT12WZqGvoGKPAttPNwMkYxuq8Yex8AGTX');
 
   const dogName = ['Maximilian I'];
   const [dog] = PublicKey.findProgramAddressSync(

@@ -228,7 +228,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       </div>
       <div style={{ position: 'absolute', bottom: '5px', right: '5px' }}>
         <a
-          href="https://github.com/bgoober/pet-dat-dog"
+          href="https://github.com/bgoober/pet-that-dog"
           target="_blank"
           rel="noopener noreferrer"
           style={{ color: '#fffcee' }}

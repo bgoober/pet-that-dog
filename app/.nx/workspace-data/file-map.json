@@ -4,6 +4,84 @@
   "pathMappings": {},
   "nxJsonPlugins": [],
   "fileMap": {
+    "nonProjectFiles": [
+      {
+        "file": ".eslintignore",
+        "hash": "7663861978715868291"
+      },
+      {
+        "file": ".editorconfig",
+        "hash": "5443105041930014821"
+      },
+      {
+        "file": "vercel.json",
+        "hash": "8794281784919034686"
+      },
+      {
+        "file": "LICENSE",
+        "hash": "13976139912707527799"
+      },
+      {
+        "file": "package-lock.json",
+        "hash": "163147697935258011"
+      },
+      {
+        "file": ".vscode/extensions.json",
+        "hash": "4134969992917317260"
+      },
+      {
+        "file": ".prettierignore",
+        "hash": "16448050467312557263"
+      },
+      {
+        "file": ".prettierrc",
+        "hash": "16267754514737964994"
+      },
+      {
+        "file": "README.md",
+        "hash": "5064894035817590830"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "7694991769205770921"
+      },
+      {
+        "file": "_scripts/test-assets/rugx.png",
+        "hash": "18114681494958756459"
+      },
+      {
+        "file": "_scripts/assets/Maximilian I.png",
+        "hash": "5844413193782744344"
+      },
+      {
+        "file": "_scripts/deploy-app-to-arweave.ts",
+        "hash": "17533958634707825190"
+      },
+      {
+        "file": "nx.json",
+        "hash": "2439936810889621167"
+      },
+      {
+        "file": "_scripts/upload-mainnet-token-metadata.ts",
+        "hash": "16076564638414903294"
+      },
+      {
+        "file": ".eslintrc.json",
+        "hash": "17866138117546000433"
+      },
+      {
+        "file": "tsconfig.base.json",
+        "hash": "16936441711144470533"
+      },
+      {
+        "file": "package.json",
+        "hash": "10458562824236653826"
+      },
+      {
+        "file": "_scripts/upload-devnet-token-metadata.ts",
+        "hash": "4816130655844486014"
+      }
+    ],
     "projectFileMap": {
       "web": [
         {
@@ -64,7 +142,7 @@
         },
         {
           "file": "web/src/app/app-layout.tsx",
-          "hash": "3049520867720149134",
+          "hash": "77367570061123222",
           "deps": [
             "npm:@solana/wallet-adapter-react-ui",
             "npm:react",
@@ -90,7 +168,7 @@
         },
         {
           "file": "web/src/app/cluster/cluster-data-access.tsx",
-          "hash": "691171302334968272",
+          "hash": "12113960810598347099",
           "deps": [
             "npm:react",
             "npm:@solana/web3.js"
@@ -98,7 +176,7 @@
         },
         {
           "file": "web/src/app/dapp.tsx",
-          "hash": "2098518915947178541",
+          "hash": "14243843996993391527",
           "deps": [
             "npm:@coral-xyz/anchor",
             "npm:@solana/spl-token",
@@ -180,7 +258,7 @@
         },
         {
           "file": "web/src/routes/action-routes.ts",
-          "hash": "182801378666561710",
+          "hash": "3709618745727306574",
           "deps": [
             "npm:@solana/web3.js",
             "npm:@solana/spl-token",
@@ -193,7 +271,7 @@
         },
         {
           "file": "web/src/utils/pet_that_dog.json",
-          "hash": "3450968569959495383"
+          "hash": "13501003952242816790"
         },
         {
           "file": "web/tsconfig.app.json",
@@ -225,84 +303,6 @@
           ]
         }
       ]
-    },
-    "nonProjectFiles": [
-      {
-        "file": ".editorconfig",
-        "hash": "5443105041930014821"
-      },
-      {
-        "file": ".eslintignore",
-        "hash": "7663861978715868291"
-      },
-      {
-        "file": ".eslintrc.json",
-        "hash": "17866138117546000433"
-      },
-      {
-        "file": ".gitignore",
-        "hash": "7694991769205770921"
-      },
-      {
-        "file": ".prettierignore",
-        "hash": "16448050467312557263"
-      },
-      {
-        "file": ".prettierrc",
-        "hash": "16267754514737964994"
-      },
-      {
-        "file": ".vscode/extensions.json",
-        "hash": "4134969992917317260"
-      },
-      {
-        "file": "LICENSE",
-        "hash": "13976139912707527799"
-      },
-      {
-        "file": "README.md",
-        "hash": "5064894035817590830"
-      },
-      {
-        "file": "_scripts/assets/Maximilian I.png",
-        "hash": "5844413193782744344"
-      },
-      {
-        "file": "_scripts/deploy-app-to-arweave.ts",
-        "hash": "17533958634707825190"
-      },
-      {
-        "file": "_scripts/test-assets/rugx.png",
-        "hash": "18114681494958756459"
-      },
-      {
-        "file": "_scripts/upload-devnet-token-metadata.ts",
-        "hash": "4816130655844486014"
-      },
-      {
-        "file": "_scripts/upload-mainnet-token-metadata.ts",
-        "hash": "16076564638414903294"
-      },
-      {
-        "file": "nx.json",
-        "hash": "2439936810889621167"
-      },
-      {
-        "file": "package-lock.json",
-        "hash": "13162911974666251159"
-      },
-      {
-        "file": "package.json",
-        "hash": "10458562824236653826"
-      },
-      {
-        "file": "tsconfig.base.json",
-        "hash": "16936441711144470533"
-      },
-      {
-        "file": "vercel.json",
-        "hash": "8794281784919034686"
-      }
-    ]
+    }
   }
 }

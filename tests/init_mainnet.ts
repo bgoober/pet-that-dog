@@ -22,7 +22,7 @@ describe("pet-that-dog", () => {
 
   const log = async (signature: string, name?: string): Promise<string> => {
     console.log(
-      `${name}: Your transaction signature: https://explorer.solana.com/transaction/${signature}?cluster=custom&customUrl=${connection.rpcEndpoint}`
+      `${name}: Your transaction signature: https://explorer.solana.com/transaction/${signature}?cluster=mainnet-beta`
     );
     return signature;
   };

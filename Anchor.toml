@@ -5,35 +5,36 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-pet_that_dog = "3HTdwKWxXccHzh88pyAADqCpaxYpYpuE7vdPkmMReH7M"
+pet_that_dog = "5MAGgYWgNF8KtNegKMhZxNbugrgzkLDUe9Vy2y4STRwX"
 
 [programs.localnet]
-pet_that_dog = "3HTdwKWxXccHzh88pyAADqCpaxYpYpuE7vdPkmMReH7M"
+pet_that_dog = "5MAGgYWgNF8KtNegKMhZxNbugrgzkLDUe9Vy2y4STRwX"
 
 [programs.mainnet]
-pet_that_dog = "3HTdwKWxXccHzh88pyAADqCpaxYpYpuE7vdPkmMReH7M"
+pet_that_dog = "5MAGgYWgNF8KtNegKMhZxNbugrgzkLDUe9Vy2y4STRwX"
 
 [registry]
 # url = "http://localhost:8899"
-# url = "https://api.mainnet-beta.solana.com"
-url = "https://api.devnet.solana.com"
+url = "https://api.mainnet-beta.solana.com"
+# url = "https://api.devnet.solana.com" 
 
 [provider]
-# cluster = "mainnet"
-cluster = "devnet"
+cluster = "mainnet"
+# cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
 bonk = "npx ts-mocha -p tsconfig.json -t 1000000 tests/bonk.ts"
 gm = "npx ts-mocha -p tsconfig.json -t 1000000 tests/global_max_mainnet.ts"
 init_mainnet = "npx ts-mocha -p tsconfig.json -t 1000000 tests/init_mainnet.ts"
-max_mainnet = "npx ts-mocha -p tsconfig.json -t 1000000 tests/multisig_init_max_mainnet.ts"
+max_mainnet = "npx ts-mocha -p tsconfig.json -t 1000000 tests/multi_sig_base_58_scripts/multisig_init_max_mainnet.ts"
 p2 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/player2.ts"
 p3 = "npx ts-mocha -p tsconfig.json -t 1000000 tests/p3.ts"
 pet = "npx ts-mocha -p tsconfig.json -t 1000000 tests/pet.ts"
 prime = "npx ts-mocha -p tsconfig.json -t 1000000 tests/pet-that-dog.ts"
 query = "npx ts-mocha -p tsconfig.json -t 1000000 tests/query.ts"
 test = "NODE_OPTIONS='--no-deprecation' npx ts-mocha -p tsconfig.json -t 1000000 tests/pet-that-dog.ts"
+transfer_all = "npx ts-mocha -p tsconfig.json -t 1000000 tests/multi_sig_base_58_scripts/transfer-all.ts"
 
 [test]
 startup_wait = 5000
