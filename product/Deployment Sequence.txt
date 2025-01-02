@@ -66,7 +66,7 @@ solana-verify verify-from-repo \
 
 solana-verify remote submit-job \
   --program-id 25Yhix41gFXapETKE9EgCnzzKiTJSwXCqqszzazgZsDz \
-  --uploader YOUR_WALLET_PUBKEY
+  --uploader 2cYQYrZfBTxyYEEUxeVP8nYMvbxaNHfK1vFdttqRCVim
 
 # 10. Run initialization test
 anchor run init_mainnet

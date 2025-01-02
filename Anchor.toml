@@ -5,13 +5,13 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-pet_that_dog = "25Yhix41gFXapETKE9EgCnzzKiTJSwXCqqszzazgZsDz"
+pet_that_dog = "3HTdwKWxXccHzh88pyAADqCpaxYpYpuE7vdPkmMReH7M"
 
 [programs.localnet]
-pet_that_dog = "25Yhix41gFXapETKE9EgCnzzKiTJSwXCqqszzazgZsDz"
+pet_that_dog = "3HTdwKWxXccHzh88pyAADqCpaxYpYpuE7vdPkmMReH7M"
 
 [programs.mainnet]
-pet_that_dog = "25Yhix41gFXapETKE9EgCnzzKiTJSwXCqqszzazgZsDz"
+pet_that_dog = "3HTdwKWxXccHzh88pyAADqCpaxYpYpuE7vdPkmMReH7M"
 
 [registry]
 # url = "http://localhost:8899"

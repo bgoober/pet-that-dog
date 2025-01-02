@@ -9,7 +9,7 @@ use context::*;
 
 mod state;
 
-declare_id!("25Yhix41gFXapETKE9EgCnzzKiTJSwXCqqszzazgZsDz");
+declare_id!("3HTdwKWxXccHzh88pyAADqCpaxYpYpuE7vdPkmMReH7M");
 
 #[cfg(not(feature = "no-entrypoint"))]
 security_txt! {
@@ -17,12 +17,10 @@ security_txt! {
     project_url: "https://pet-that-dog.vercel.app",
     contacts: "twitter:@pet_thatdog,github:bgoober",
     policy: "https://github.com/bgoober/pet-that-dog/security/policy",
-
     preferred_languages: "en",
     source_code: "https://github.com/bgoober/pet-that-dog",
-    source_release: env!("CARGO_PKG_VERSION"),
     auditors: "None",
-    acknowledgements: "None"
+    acknowledgements: "Turbin3"
 }
 
 #[program]
