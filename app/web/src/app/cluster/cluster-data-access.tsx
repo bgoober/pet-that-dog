@@ -36,6 +36,9 @@ export function ClusterProvider({ children }: { children: ReactNode }) {
   // For localnet
   // const endpoint = 'http://localhost:8899';
 
+  // for devnet
+  // const endpoint = 'https://api.devnet.solana.com';
+
   const connection = new Connection(endpoint, {
     commitment: 'confirmed',
     confirmTransactionInitialTimeout: 60000,
@@ -49,6 +52,9 @@ export function ClusterProvider({ children }: { children: ReactNode }) {
 
       // for localnet
       // network: ClusterNetwork.Custom,
+
+      // for devnet
+      // network: ClusterNetwork.Devnet,  
     },
   };
 
