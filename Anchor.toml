@@ -14,13 +14,14 @@ pet_that_dog = "5MAGgYWgNF8KtNegKMhZxNbugrgzkLDUe9Vy2y4STRwX"
 pet_that_dog = "5MAGgYWgNF8KtNegKMhZxNbugrgzkLDUe9Vy2y4STRwX"
 
 [registry]
-# url = "http://localhost:8899"
-url = "https://api.mainnet-beta.solana.com"
+url = "http://localhost:8899"
+# url = "https://api.mainnet-beta.solana.com"
 # url = "https://api.devnet.solana.com" 
 
 [provider]
-cluster = "mainnet"
+# cluster = "mainnet"
 # cluster = "devnet"
+cluster = "localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

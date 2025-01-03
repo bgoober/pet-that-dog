@@ -26,12 +26,15 @@ const Context = createContext<ClusterProviderContext>(
 );
 
 export function ClusterProvider({ children }: { children: ReactNode }) {
+  // For mainnet
   const endpoint = process.env.NX_REACT_APP_RPC_URL;
-
   if (!endpoint) {
     console.error('No RPC endpoint found - please configure');
     throw new Error('RPC endpoint not configured');
   }
+
+  // For localnet
+  // const endpoint = 'http://localhost:8899';
 
   const connection = new Connection(endpoint, {
     commitment: 'confirmed',
@@ -41,7 +44,11 @@ export function ClusterProvider({ children }: { children: ReactNode }) {
   const value: ClusterProviderContext = {
     cluster: {
       endpoint: connection.rpcEndpoint,
-      network: ClusterNetwork.Mainnet,
+      // For mainnet use
+      // network: ClusterNetwork.Mainnet,
+
+      // for localnet
+      network: ClusterNetwork.Custom,
     },
   };
 
