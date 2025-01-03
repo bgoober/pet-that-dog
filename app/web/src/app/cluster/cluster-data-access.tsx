@@ -45,10 +45,10 @@ export function ClusterProvider({ children }: { children: ReactNode }) {
     cluster: {
       endpoint: connection.rpcEndpoint,
       // For mainnet use
-      // network: ClusterNetwork.Mainnet,
+      network: ClusterNetwork.Mainnet,
 
       // for localnet
-      network: ClusterNetwork.Custom,
+      // network: ClusterNetwork.Custom,
     },
   };
 
