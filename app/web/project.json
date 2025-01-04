@@ -52,7 +52,8 @@
         "hmr": true,
         "port": 3000,
         "env": {
-          "NX_REACT_APP_RPC_URL": "${NX_REACT_APP_RPC_URL}"
+          "NX_REACT_APP_RPC_URL": "${NX_REACT_APP_RPC_URL}",
+          "NX_HELIUS_WEBSOCKET": "${NX_HELIUS_WEBSOCKET}"
         }
       },
       "configurations": {

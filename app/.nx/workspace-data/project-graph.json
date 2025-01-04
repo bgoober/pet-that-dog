@@ -72,7 +72,8 @@
               "hmr": true,
               "port": 3000,
               "env": {
-                "NX_REACT_APP_RPC_URL": "${NX_REACT_APP_RPC_URL}"
+                "NX_REACT_APP_RPC_URL": "${NX_REACT_APP_RPC_URL}",
+                "NX_HELIUS_WEBSOCKET": "${NX_HELIUS_WEBSOCKET}"
               }
             },
             "configurations": {
@@ -15817,6 +15818,11 @@
       },
       {
         "source": "web",
+        "target": "npm:@solana/web3.js",
+        "type": "static"
+      },
+      {
+        "source": "web",
         "target": "npm:react-router-dom",
         "type": "static"
       },
@@ -15827,17 +15833,12 @@
       },
       {
         "source": "web",
-        "target": "npm:@solana/web3.js",
+        "target": "npm:@solana/spl-token",
         "type": "static"
       },
       {
         "source": "web",
         "target": "npm:@coral-xyz/anchor",
-        "type": "static"
-      },
-      {
-        "source": "web",
-        "target": "npm:@solana/spl-token",
         "type": "static"
       },
       {

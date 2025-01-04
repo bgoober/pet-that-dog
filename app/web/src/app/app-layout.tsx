@@ -5,6 +5,8 @@ import Modal from './modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import React from 'react';
+import { TokenCounter } from './components/TokenCounter';
+import { PublicKey } from '@solana/web3.js';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -18,6 +20,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
     setShowModal(!showModal);
   };
 
+  // Constants for Maximilian I's mint
+  const dogMint = PublicKey.findProgramAddressSync(
+    [Buffer.from('mint'), Buffer.from('Maximilian I')],
+    new PublicKey('5MAGgYWgNF8KtNegKMhZxNbugrgzkLDUe9Vy2y4STRwX')
+  )[0];
+
   return (
     <div
       style={{
@@ -28,7 +36,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
         position: 'relative',
       }}
     >
-      <div style={{ position: 'absolute', top: '5px', right: '5px' }}>
+      <div style={{ position: 'absolute', top: '5px', right: '5px', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '20px' }}>
+        <TokenCounter />
         <WalletMultiButton />
       </div>
       <div style={{ position: 'absolute', top: '5px', left: '5px' }}>

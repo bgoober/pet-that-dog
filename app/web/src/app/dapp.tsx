@@ -13,6 +13,8 @@ import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import React, { useEffect, useState, useRef } from 'react';
 
+import { TokenCounter } from './components/TokenCounter';
+
 // Helper function for transaction signatures only
 const getSolscanLink = (signature: string) => {
   return `https://solscan.io/tx/${signature}?cluster=mainnet-beta`;
@@ -279,7 +281,7 @@ const Dapp: React.FC = () => {
 
   return (
     <div id="dog-container" onClick={handleBackgroundClick}>
-      <img id="dog-image" ref={dogImageRef} alt="pet dat dog" />
+      <img id="dog-image" ref={dogImageRef} alt="pet that dog!" />
       <div
         id="pet-box"
         ref={petBoxRef}

@@ -6,80 +6,80 @@
   "fileMap": {
     "nonProjectFiles": [
       {
-        "file": "_scripts/deploy-app-to-arweave.ts",
-        "hash": "17533958634707825190"
-      },
-      {
-        "file": ".editorconfig",
-        "hash": "5443105041930014821"
-      },
-      {
         "file": "_scripts/assets/Maximilian I.png",
         "hash": "5844413193782744344"
-      },
-      {
-        "file": "_scripts/upload-mainnet-token-metadata.ts",
-        "hash": "16076564638414903294"
-      },
-      {
-        "file": "LICENSE",
-        "hash": "13976139912707527799"
-      },
-      {
-        "file": ".gitignore",
-        "hash": "5584575137317094048"
       },
       {
         "file": ".eslintrc.json",
         "hash": "17866138117546000433"
       },
       {
-        "file": "README.md",
-        "hash": "5064894035817590830"
-      },
-      {
-        "file": ".vscode/extensions.json",
-        "hash": "4134969992917317260"
-      },
-      {
-        "file": "nx.json",
-        "hash": "2439936810889621167"
-      },
-      {
-        "file": "package.json",
-        "hash": "12219313673274363983"
-      },
-      {
-        "file": "package-lock.json",
-        "hash": "3624386172021422737"
-      },
-      {
         "file": ".eslintignore",
         "hash": "7663861978715868291"
       },
       {
-        "file": "vercel.json",
-        "hash": "8794281784919034686"
+        "file": "README.md",
+        "hash": "5064894035817590830"
       },
       {
-        "file": "_scripts/upload-devnet-token-metadata.ts",
-        "hash": "4816130655844486014"
+        "file": ".prettierrc",
+        "hash": "16267754514737964994"
       },
       {
         "file": "_scripts/test-assets/rugx.png",
         "hash": "18114681494958756459"
       },
       {
-        "file": ".prettierignore",
-        "hash": "16448050467312557263"
+        "file": "_scripts/deploy-app-to-arweave.ts",
+        "hash": "17533958634707825190"
       },
       {
         "file": "tsconfig.base.json",
         "hash": "16936441711144470533"
       },
       {
-        "file": ".prettierrc",
-        "hash": "16267754514737964994"
+        "file": "vercel.json",
+        "hash": "8794281784919034686"
+      },
+      {
+        "file": ".editorconfig",
+        "hash": "5443105041930014821"
+      },
+      {
+        "file": ".prettierignore",
+        "hash": "16448050467312557263"
+      },
+      {
+        "file": "_scripts/upload-devnet-token-metadata.ts",
+        "hash": "4816130655844486014"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "5584575137317094048"
+      },
+      {
+        "file": "nx.json",
+        "hash": "2439936810889621167"
+      },
+      {
+        "file": "package-lock.json",
+        "hash": "3624386172021422737"
+      },
+      {
+        "file": "_scripts/upload-mainnet-token-metadata.ts",
+        "hash": "16076564638414903294"
+      },
+      {
+        "file": ".vscode/extensions.json",
+        "hash": "4134969992917317260"
+      },
+      {
+        "file": "LICENSE",
+        "hash": "13976139912707527799"
+      },
+      {
+        "file": "package.json",
+        "hash": "12219313673274363983"
       }
     ],
     "projectFileMap": {
@@ -87,6 +87,10 @@
         {
           "file": "web/.babelrc",
           "hash": "13020124393823981135"
+        },
+        {
+          "file": "web/.env",
+          "hash": "14868588823724761270"
         },
         {
           "file": "web/.eslintrc.json",
@@ -98,7 +102,7 @@
         },
         {
           "file": "web/project.json",
-          "hash": "5466830509209698099"
+          "hash": "2577865451494188002"
         },
         {
           "file": "web/public/.well-known/security.txt",
@@ -142,12 +146,13 @@
         },
         {
           "file": "web/src/app/app-layout.tsx",
-          "hash": "6648090260410247772",
+          "hash": "8079612197627376717",
           "deps": [
             "npm:@solana/wallet-adapter-react-ui",
             "npm:react",
             "npm:@fortawesome/react-fontawesome",
-            "npm:@fortawesome/free-brands-svg-icons"
+            "npm:@fortawesome/free-brands-svg-icons",
+            "npm:@solana/web3.js"
           ]
         },
         {
@@ -168,15 +173,25 @@
         },
         {
           "file": "web/src/app/cluster/cluster-data-access.tsx",
-          "hash": "10731131770826996011",
+          "hash": "8442778414362354003",
           "deps": [
             "npm:react",
             "npm:@solana/web3.js"
           ]
         },
         {
+          "file": "web/src/app/components/TokenCounter.tsx",
+          "hash": "1691123554683966128",
+          "deps": [
+            "npm:react",
+            "npm:@solana/wallet-adapter-react",
+            "npm:@solana/web3.js",
+            "npm:@solana/spl-token"
+          ]
+        },
+        {
           "file": "web/src/app/dapp.tsx",
-          "hash": "17702441747293110961",
+          "hash": "1257989381593629223",
           "deps": [
             "npm:@coral-xyz/anchor",
             "npm:@solana/spl-token",
@@ -194,7 +209,7 @@
         },
         {
           "file": "web/src/app/solana/solana-provider.tsx",
-          "hash": "1740911150466186419",
+          "hash": "17319494107936270446",
           "deps": [
             "npm:@solana/wallet-adapter-base",
             "npm:@solana/wallet-adapter-react",
@@ -240,7 +255,7 @@
         },
         {
           "file": "web/src/index.html",
-          "hash": "15571211681307967956"
+          "hash": "7958670920960334495"
         },
         {
           "file": "web/src/main.tsx",
@@ -283,7 +298,7 @@
         },
         {
           "file": "web/webpack.config.js",
-          "hash": "11263718204673854065",
+          "hash": "17052683357805839625",
           "deps": [
             "npm:@nx/webpack",
             "npm:@nx/react",
