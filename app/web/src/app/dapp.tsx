@@ -23,11 +23,11 @@ const getSolscanLink = (signature: string) => {
 // Define the states
 const states = {
   intro: { file: '1-sunriseIntro.gif', timeout: 12000, duration: 2700 },
-  sitUp: { file: '2-sitUp.gif', timeout: 60000, duration: 1000 },
-  pet: { file: '3-petDog.gif', timeout: 60000, duration: 2000 },
+  sitUp: { file: '2-sitUp.gif', timeout: 40000, duration: 1000 },
+  pet: { file: '3-petDog.gif', timeout: 40000, duration: 2000 },
   layDown: { file: '4-layDown.gif', timeout: 10000, duration: 1200 },
   idle: { file: '5-idleWind.gif', timeout: 20000, duration: 1750 },
-  bonk: { file: 'BONK.gif', timeout: 60000, duration: 2700 },
+  bonk: { file: 'BONK.gif', timeout: 40000, duration: 2700 },
 };
 
 // Preload GIFs
@@ -94,53 +94,75 @@ const Dapp: React.FC = () => {
     : PublicKey.default;
 
   const handlePetInstruction = async () => {
-    if (!program || !wallet) return;
-    try {
-      const tx = await program.methods
-        .pet()
-        .accountsPartial({
-          dog,
-          user,
-          owner: house,
-          dogMint,
-          mintAuth,
-          userTokenAta,
-          associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-        })
-        .rpc();
-      //   .then(confirm);
+    if (!program || !wallet || !provider) return;
+
+    const ix = await program.methods
+      .pet()
+      .accountsPartial({
+        dog,
+        user,
+        owner: house,
+        dogMint,
+        mintAuth,
+        userTokenAta,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .instruction();
+
+    // Create transaction and add recent blockhash
+    const transaction = new anchor.web3.Transaction().add(ix);
+    const latestBlockhash = await provider.connection.getLatestBlockhash();
+    transaction.recentBlockhash = latestBlockhash.blockhash;
+    transaction.feePayer = wallet.publicKey;
+
+    // Just sign the transaction - this triggers wallet popup
+    const signedTx = await wallet.signTransaction(transaction);
+
+    // Send transaction without waiting for confirmation
+    provider.connection.sendRawTransaction(signedTx.serialize()).then((tx) => {
       console.log('Your pet tx signature: ', getSolscanLink(tx));
-      changeState('pet');
-    } catch (error) {
-      console.error('Error executing instruction', error);
-    }
+    });
+
+    // Return after signing, don't wait for send
+    return signedTx;
   };
 
   const handleBonkInstruction = async () => {
-    if (!program || !wallet) return;
-    try {
-      const tx = await program.methods
-        .bonk()
-        .accountsPartial({
-          dog,
-          user,
-          owner: house,
-          dogMint,
-          mintAuth,
-          userTokenAta,
-          associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-        })
-        .rpc();
-      //   .then(confirm);
+    if (!program || !wallet || !provider) return;
+
+    const ix = await program.methods
+      .bonk()
+      .accountsPartial({
+        dog,
+        user,
+        owner: house,
+        dogMint,
+        mintAuth,
+        userTokenAta,
+        associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .instruction();
+
+    // Create transaction and add recent blockhash
+    const transaction = new anchor.web3.Transaction().add(ix);
+    const latestBlockhash = await provider.connection.getLatestBlockhash();
+    transaction.recentBlockhash = latestBlockhash.blockhash;
+    transaction.feePayer = wallet.publicKey;
+
+    // Just sign the transaction - this triggers wallet popup
+    const signedTx = await wallet.signTransaction(transaction);
+
+    // Send transaction without waiting for confirmation
+    provider.connection.sendRawTransaction(signedTx.serialize()).then((tx) => {
       console.log('Your bonk tx signature: ', getSolscanLink(tx));
-      changeState('bonk');
-    } catch (error) {
-      console.error('Error executing instruction', error);
-    }
+    });
+
+    // Return after signing, don't wait for send
+    return signedTx;
   };
 
   // Clears any existing timeout
@@ -221,24 +243,33 @@ const Dapp: React.FC = () => {
   };
 
   const handlePetBoxClick = async () => {
-    if (isAnimating) return; // Lockout during animation
-    // Call pet instruction and wait for confirmation
-    await handlePetInstruction();
+    if (isAnimating) return;
     if (['sitUp', 'pet', 'bonk'].includes(currentState)) {
       console.log(`Pet box clicked during ${currentState} state`);
       setClicked(true);
-      changeState('pet');
+      try {
+        const signedTx = await handlePetInstruction(); // Only wait for signing
+        if (signedTx) {
+          // If user approved in wallet
+          changeState('pet');
+        }
+      } catch (error) {
+        setClicked(false);
+      }
     }
   };
 
   const handleBonkBoxClick = async () => {
     if (isAnimating) return; // Lockout during animation
-    // Call bonk instruction and wait for confirmation
-    await handleBonkInstruction();
     if (['sitUp', 'pet', 'bonk'].includes(currentState)) {
       console.log(`Bonk box clicked during ${currentState} state`);
       setClicked(true);
-      changeState('bonk');
+      try {
+        await handleBonkInstruction(); // Wait for wallet confirmation
+        changeState('bonk'); // Change state after wallet confirmation
+      } catch (error) {
+        setClicked(false); // Reset clicked state if user rejected
+      }
     }
   };
 
