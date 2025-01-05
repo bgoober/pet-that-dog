@@ -42,3 +42,4 @@ Thumbs.db
 .vercel
 .env*.local
 .env.local
+.nx/*

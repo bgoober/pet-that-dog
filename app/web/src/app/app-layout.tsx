@@ -4,6 +4,7 @@ import Dapp from './dapp';
 import Modal from './modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
 import React from 'react';
 import { TokenCounter } from './components/TokenCounter';
 import { PublicKey } from '@solana/web3.js';
@@ -235,7 +236,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <Dapp />
         </div>
       </div>
-      <div style={{ position: 'absolute', bottom: '5px', right: '5px' }}>
+      <div style={{ position: 'absolute', bottom: '5px', right: '5px', display: 'flex', gap: '20px' }}>
+        <a
+          href="https://x.com/pet_thatdog"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: '#fffcee' }}
+        >
+          <FontAwesomeIcon icon={faXTwitter} size="2x" />
+        </a>
         <a
           href="https://github.com/bgoober/pet-that-dog"
           target="_blank"

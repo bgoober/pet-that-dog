@@ -6,9 +6,10 @@ node_modules
 test-ledger
 .yarn
 *wallet.json
-.nx/*
+app/.nx/**
 *.so
 burner.json
 docker-target
 .vercel
 .env.local
+.nx/**
