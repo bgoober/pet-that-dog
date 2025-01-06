@@ -23,11 +23,11 @@ const getSolscanLink = (signature: string) => {
 // Define the states
 const states = {
   intro: { file: '1-sunriseIntro.gif', timeout: 12000, duration: 2700 },
-  sitUp: { file: '2-sitUp.gif', timeout: 40000, duration: 1000 },
-  pet: { file: '3-petDog.gif', timeout: 40000, duration: 2000 },
+  sitUp: { file: '2-sitUp.gif', timeout: 25000, duration: 1000 },
+  pet: { file: '3-petDog.gif', timeout: 25000, duration: 2000 },
+  bonk: { file: 'BONK.gif', timeout: 25000, duration: 2700 },
   layDown: { file: '4-layDown.gif', timeout: 10000, duration: 1200 },
   idle: { file: '5-idleWind.gif', timeout: 20000, duration: 1750 },
-  bonk: { file: 'BONK.gif', timeout: 40000, duration: 2700 },
 };
 
 // Preload GIFs
@@ -179,21 +179,18 @@ const Dapp: React.FC = () => {
 
     console.log(`Changing state to ${newState}`);
     const img = images[states[newState].file];
-    if (!img.complete) {
-      img.onload = () => {
-        changeState(newState);
-      };
-      return;
-    }
 
     clearExistingTimeout();
-    setCurrentState(newState);
+    setIsAnimating(true); // Set animating first
+    setCurrentState(newState); // We need this to track state properly
+
     if (dogImageRef.current) {
       dogImageRef.current.src = img.src;
     }
+
     console.log(`State changed to ${newState}`);
 
-    // Show or hide bounding boxes based on the current state
+    // Show or hide bounding boxes
     if (['sitUp', 'pet', 'bonk'].includes(newState)) {
       if (petBoxRef.current) petBoxRef.current.style.display = 'block';
       if (bonkBoxRef.current) bonkBoxRef.current.style.display = 'block';
@@ -202,7 +199,6 @@ const Dapp: React.FC = () => {
       if (bonkBoxRef.current) bonkBoxRef.current.style.display = 'none';
     }
 
-    setIsAnimating(true);
     setTimeout(() => {
       setIsAnimating(false);
       setClicked(false);
@@ -229,18 +225,18 @@ const Dapp: React.FC = () => {
   };
 
   // Handles click events
-  const handleDogImageClick = () => {
-    if (isAnimating) return; // Lockout during animation
-    console.log(`Image clicked during ${currentState} state`);
+  // const handleDogImageClick = () => {
+  //   if (isAnimating) return; // Lockout during animation
+  //   console.log(`Image clicked during ${currentState} state`);
 
-    if (currentState === 'intro') {
-      changeState('sitUp');
-    } else if (currentState === 'layDown') {
-      changeState('sitUp');
-    } else if (currentState === 'idle') {
-      changeState('sitUp');
-    }
-  };
+  //   if (currentState === 'intro') {
+  //     changeState('sitUp');
+  //   } else if (currentState === 'layDown') {
+  //     changeState('sitUp');
+  //   } else if (currentState === 'idle') {
+  //     changeState('sitUp');
+  //   }
+  // };
 
   const handlePetBoxClick = async () => {
     if (isAnimating) return;
@@ -274,8 +270,8 @@ const Dapp: React.FC = () => {
   };
 
   useEffect(() => {
-    if (dogImageRef.current)
-      dogImageRef.current.addEventListener('click', handleDogImageClick);
+    // if (dogImageRef.current)
+    //   dogImageRef.current.addEventListener('click', handleDogImageClick);
     if (petBoxRef.current)
       petBoxRef.current.addEventListener('click', handlePetBoxClick);
     if (bonkBoxRef.current)
@@ -287,8 +283,8 @@ const Dapp: React.FC = () => {
     // Cleanup event listeners on component unmount
     return () => {
       clearExistingTimeout();
-      if (dogImageRef.current)
-        dogImageRef.current.removeEventListener('click', handleDogImageClick);
+      // if (dogImageRef.current)
+      // dogImageRef.current.removeEventListener('click', handleDogImageClick);
       if (petBoxRef.current)
         petBoxRef.current.removeEventListener('click', handlePetBoxClick);
       if (bonkBoxRef.current)
@@ -298,14 +294,11 @@ const Dapp: React.FC = () => {
 
   // Global click handler
   const handleBackgroundClick = () => {
-    if (isAnimating) return; // Lockout during animation
+    if (isAnimating) return;
     console.log(`Background clicked during ${currentState} state`);
 
-    if (currentState === 'intro') {
-      changeState('sitUp');
-    } else if (currentState === 'layDown') {
-      changeState('sitUp');
-    } else if (currentState === 'idle') {
+    // Only change to sitUp if we're in a non-interactive state
+    if (['intro', 'layDown', 'idle'].includes(currentState)) {
       changeState('sitUp');
     }
   };
