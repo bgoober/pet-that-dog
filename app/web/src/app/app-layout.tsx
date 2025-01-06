@@ -1,17 +1,34 @@
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import Dapp from './dapp';
 import Modal from './modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faGithub, faXTwitter } from '@fortawesome/free-brands-svg-icons';
 import React from 'react';
 import { TokenCounter } from './components/TokenCounter';
 import { PublicKey } from '@solana/web3.js';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const { publicKey } = useWallet();
+  const { setVisible } = useWalletModal();
+
+  useEffect(() => {
+    if (isFirstLoad) {
+      const timer = setTimeout(() => {
+        if (!publicKey) {
+          setVisible(true);
+        }
+        setIsFirstLoad(false);
+      }, 500); // 500ms delay
+
+      return () => clearTimeout(timer); // Cleanup timeout
+    }
+  }, [publicKey, setVisible, isFirstLoad]);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
