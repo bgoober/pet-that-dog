@@ -45,33 +45,35 @@ export const TokenCounter: React.FC = () => {
 
       if (wsEndpoint) {
         const ws = new WebSocket(wsEndpoint);
-        
+
         ws.onopen = () => {
           // Subscribe only to mint
-          ws.send(JSON.stringify({
-            jsonrpc: "2.0",
-            id: 1,
-            method: "accountSubscribe",
-            params: [
-              dogMint.toBase58(),
-              {
-                encoding: "jsonParsed",
-                commitment: "confirmed"
-              }
-            ]
-          }));
+          ws.send(
+            JSON.stringify({
+              jsonrpc: '2.0',
+              id: 1,
+              method: 'accountSubscribe',
+              params: [
+                dogMint.toBase58(),
+                {
+                  encoding: 'jsonParsed',
+                  commitment: 'confirmed',
+                },
+              ],
+            })
+          );
         };
-        
+
         ws.onmessage = (event) => {
           const response = JSON.parse(event.data);
           // console.log('Mint WebSocket message:', response);
-          
+
           if (response.result !== undefined) {
             // console.log('Mint subscription confirmed, id:', response.id);
             return;
           }
 
-          if (response.method === "accountNotification") {
+          if (response.method === 'accountNotification') {
             try {
               const accountData = response.params.result.value.data.parsed.info;
               if (accountData.supply !== undefined) {
@@ -123,50 +125,55 @@ export const TokenCounter: React.FC = () => {
 
       if (wsEndpoint) {
         const ws = new WebSocket(wsEndpoint);
-        
+
         ws.onopen = () => {
           // Subscribe to both ATA and mint
-          ws.send(JSON.stringify({
-            jsonrpc: "2.0",
-            id: 1,
-            method: "accountSubscribe",
-            params: [
-              ataString,
-              {
-                encoding: "jsonParsed",
-                commitment: "confirmed"
-              }
-            ]
-          }));
+          ws.send(
+            JSON.stringify({
+              jsonrpc: '2.0',
+              id: 1,
+              method: 'accountSubscribe',
+              params: [
+                ataString,
+                {
+                  encoding: 'jsonParsed',
+                  commitment: 'confirmed',
+                },
+              ],
+            })
+          );
 
-          ws.send(JSON.stringify({
-            jsonrpc: "2.0",
-            id: 2,
-            method: "accountSubscribe",
-            params: [
-              dogMint.toBase58(),
-              {
-                encoding: "jsonParsed",
-                commitment: "confirmed"
-              }
-            ]
-          }));
+          ws.send(
+            JSON.stringify({
+              jsonrpc: '2.0',
+              id: 2,
+              method: 'accountSubscribe',
+              params: [
+                dogMint.toBase58(),
+                {
+                  encoding: 'jsonParsed',
+                  commitment: 'confirmed',
+                },
+              ],
+            })
+          );
         };
-        
+
         ws.onmessage = (event) => {
           const response = JSON.parse(event.data);
           // console.log('ATA WebSocket message:', response);
-          
+
           if (response.result !== undefined) {
             // console.log('ATA subscription confirmed, id:', response.id);
             return;
           }
 
-          if (response.method === "accountNotification") {
+          if (response.method === 'accountNotification') {
             try {
               const accountData = response.params.result.value.data.parsed.info;
               if (accountData.tokenAmount) {
-                const newBalance = Number(accountData.tokenAmount.amount) / 1_000_000;
+                const newBalance =
+                  Number(accountData.tokenAmount.amount) / 1_000_000;
                 // console.log('New wallet balance:', newBalance);
                 setTokenCount(newBalance);
               }
@@ -188,7 +195,7 @@ export const TokenCounter: React.FC = () => {
   // Separate effects for total supply and wallet data
   useEffect(() => {
     let cleanupFn: (() => void) | undefined;
-    fetchTotalSupply().then(cleanup => {
+    fetchTotalSupply().then((cleanup) => {
       cleanupFn = cleanup;
     });
     return () => {
@@ -198,7 +205,7 @@ export const TokenCounter: React.FC = () => {
 
   useEffect(() => {
     let cleanupFn: (() => void) | undefined;
-    fetchWalletData().then(cleanup => {
+    fetchWalletData().then((cleanup) => {
       cleanupFn = cleanup;
     });
     return () => {
@@ -215,7 +222,7 @@ export const TokenCounter: React.FC = () => {
         height: 'auto',
         borderRadius: '4px',
         color: '#fffcee',
-        fontSize: '16px',
+        fontSize: '17px',
         fontFamily: 'Arial, sans-serif',
         cursor: 'default',
         textAlign: 'left',
@@ -239,7 +246,16 @@ export const TokenCounter: React.FC = () => {
       <span>
         Total {TOKEN_SYMBOL} supply: {totalSupply}
       </span>
+      <br />
+      <br />
+      {tokenCount !== null && totalSupply !== null && totalSupply > 0 ? (
+        <span>
+          You own {((tokenCount / totalSupply) * 100).toFixed(2)}% of the{' '}
+          {TOKEN_SYMBOL} supply!
+        </span>
+      ) : (
+        <span></span>
+      )}
     </div>
   );
 };
-
