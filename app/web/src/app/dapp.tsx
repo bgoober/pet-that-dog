@@ -23,9 +23,9 @@ const getSolscanLink = (signature: string) => {
 // Define the states
 const states = {
   intro: { file: '1-sunriseIntro.gif', timeout: 12000, duration: 2700 },
-  sitUp: { file: '2-sitUp.gif', timeout: 25000, duration: 1000 },
-  pet: { file: '3-petDog.gif', timeout: 25000, duration: 2000 },
-  bonk: { file: 'BONK.gif', timeout: 25000, duration: 2700 },
+  sitUp: { file: '2-sitUp.gif', timeout: 14000, duration: 1000 },
+  pet: { file: '3-petDog.gif', timeout: 14000, duration: 2000 },
+  bonk: { file: 'BONK.gif', timeout: 14000, duration: 2700 },
   layDown: { file: '4-layDown.gif', timeout: 10000, duration: 1200 },
   idle: { file: '5-idleWind.gif', timeout: 20000, duration: 1750 },
 };
@@ -224,27 +224,22 @@ const Dapp: React.FC = () => {
     }, states[newState].timeout);
   };
 
-  // Handles click events
-  // const handleDogImageClick = () => {
-  //   if (isAnimating) return; // Lockout during animation
-  //   console.log(`Image clicked during ${currentState} state`);
-
-  //   if (currentState === 'intro') {
-  //     changeState('sitUp');
-  //   } else if (currentState === 'layDown') {
-  //     changeState('sitUp');
-  //   } else if (currentState === 'idle') {
-  //     changeState('sitUp');
-  //   }
-  // };
-
   const handlePetBoxClick = async () => {
-    if (isAnimating) return;
+    if (isAnimating) return; // Don't allow clicks during animation
     if (['sitUp', 'pet', 'bonk'].includes(currentState)) {
       console.log(`Pet box clicked during ${currentState} state`);
       setClicked(true);
+
+      // Reset timeout to give user time to approve transaction
+      clearExistingTimeout();
+      nextTimeoutRef.current = window.setTimeout(() => {
+        console.log('Pet timeout reached, transitioning to layDown');
+        changeState('layDown');
+      }, states[currentState].timeout);
+      console.log('timeout set', nextTimeoutRef.current);
+
       try {
-        const signedTx = await handlePetInstruction(); // Only wait for signing
+        const signedTx = await handlePetInstruction();
         if (signedTx) {
           // If user approved in wallet
           changeState('pet');
@@ -256,22 +251,30 @@ const Dapp: React.FC = () => {
   };
 
   const handleBonkBoxClick = async () => {
-    if (isAnimating) return; // Lockout during animation
+    if (isAnimating) return;
     if (['sitUp', 'pet', 'bonk'].includes(currentState)) {
       console.log(`Bonk box clicked during ${currentState} state`);
       setClicked(true);
+      // Reset timeout to give user time to approve transaction
+      clearExistingTimeout();
+      nextTimeoutRef.current = window.setTimeout(() => {
+        console.log('Bonk timeout reached, transitioning to layDown');
+        changeState('layDown');
+      }, states[currentState].timeout);
+
       try {
-        await handleBonkInstruction(); // Wait for wallet confirmation
-        changeState('bonk'); // Change state after wallet confirmation
+        const signedTx = await handleBonkInstruction();
+        if (signedTx) {
+          // If user approved in wallet
+          changeState('bonk');
+        }
       } catch (error) {
-        setClicked(false); // Reset clicked state if user rejected
+        setClicked(false);
       }
     }
   };
 
   useEffect(() => {
-    // if (dogImageRef.current)
-    //   dogImageRef.current.addEventListener('click', handleDogImageClick);
     if (petBoxRef.current)
       petBoxRef.current.addEventListener('click', handlePetBoxClick);
     if (bonkBoxRef.current)
@@ -283,8 +286,6 @@ const Dapp: React.FC = () => {
     // Cleanup event listeners on component unmount
     return () => {
       clearExistingTimeout();
-      // if (dogImageRef.current)
-      // dogImageRef.current.removeEventListener('click', handleDogImageClick);
       if (petBoxRef.current)
         petBoxRef.current.removeEventListener('click', handlePetBoxClick);
       if (bonkBoxRef.current)
