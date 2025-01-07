@@ -13,8 +13,6 @@ import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import React, { useEffect, useState, useRef } from 'react';
 
-import { TokenCounter } from './components/TokenCounter';
-
 // Helper function for transaction signatures only
 const getSolscanLink = (signature: string) => {
   return `https://solscan.io/tx/${signature}?cluster=mainnet-beta`;
@@ -236,7 +234,7 @@ const Dapp: React.FC = () => {
         console.log('Pet timeout reached, transitioning to layDown');
         changeState('layDown');
       }, states[currentState].timeout);
-      console.log('timeout set', nextTimeoutRef.current);
+      // console.log('timeout set', nextTimeoutRef.current);
 
       try {
         const signedTx = await handlePetInstruction();

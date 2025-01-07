@@ -54,11 +54,30 @@ export function AppLayout({ children }: { children: ReactNode }) {
         position: 'relative',
       }}
     >
-      <div style={{ position: 'absolute', top: '5px', right: '5px', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '20px' }}>
-        <TokenCounter />
+      <div
+        style={{
+          position: 'absolute',
+          top: '5px',
+          right: '5px',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: '20px',
+        }}
+      >
         <WalletMultiButton />
       </div>
-      <div style={{ position: 'absolute', top: '5px', left: '5px' }}>
+      <div
+        style={{
+          position: 'absolute',
+          top: '5px',
+          left: '5px',
+          alignItems: 'left',
+        }}
+      >
+        <TokenCounter />
+      </div>
+      {/* <div style={{ position: 'absolute', top: '5px', left: '5px' }}>
         <button
           onClick={toggleCollapse}
           style={{
@@ -87,7 +106,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           allow="autoplay; clipboard-write; encrypted-media; storage-access"
           loading="lazy"
         ></iframe>
-      </div>
+      </div> */}
       <div style={{ position: 'absolute', bottom: '5px', left: '5px' }}>
         <button
           onClick={toggleModal}
@@ -164,8 +183,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
                   allocations, no mint control by the Dog's owner)
                 </li>
                 <li>
-                  Token metadata is immutable once created and can not be updated or
-                  changed by anyone including the Dog's owner or the program
+                  Token metadata is immutable once created and can not be
+                  updated or changed by anyone including the Dog's owner or the
+                  program
                 </li>
                 <li>YOU MINT YOUR OWN TOKENS!</li>
               </ul>
@@ -253,7 +273,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <Dapp />
         </div>
       </div>
-      <div style={{ position: 'absolute', bottom: '5px', right: '5px', display: 'flex', gap: '20px' }}>
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '5px',
+          right: '5px',
+          display: 'flex',
+          gap: '20px',
+        }}
+      >
         <a
           href="https://x.com/pet_thatdog"
           target="_blank"
