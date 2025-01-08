@@ -9,6 +9,7 @@ import { TokenCounter } from './components/TokenCounter';
 import { PublicKey } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
+import { HeroSwap } from './components/HeroSwap';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -57,15 +58,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <div
         style={{
           position: 'absolute',
-          top: '5px',
-          right: '5px',
+          top: '6px',
+          right: '6px',
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'column',
           alignItems: 'center',
           gap: '20px',
         }}
       >
         <WalletMultiButton />
+        <HeroSwap />
       </div>
       <div
         style={{
@@ -77,36 +79,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
       >
         <TokenCounter />
       </div>
-      {/* <div style={{ position: 'absolute', top: '5px', left: '5px' }}>
-        <button
-          onClick={toggleCollapse}
-          style={{
-            marginBottom: '5px',
-            background: '#512da8',
-            color: '#fffcee',
-            border: 'none',
-            borderRadius: '5px',
-            fontSize: '15px',
-            fontFamily: 'Arial, sans-serif',
-          }}
-        >
-          {isCollapsed ? 'Show Spotify' : 'Hide Spotify'}
-        </button>
-        <iframe
-          className={isCollapsed ? 'collapsed' : ''}
-          style={{
-            borderRadius: '15px',
-            transition: 'opacity 0.5s',
-            border: 'none',
-          }}
-          src="https://open.spotify.com/embed/playlist/0vvXsWCC9xrXsKd4FyS8kM?utm_source=generator&theme=1"
-          width="100%"
-          height="352"
-          allowFullScreen
-          allow="autoplay; clipboard-write; encrypted-media; storage-access"
-          loading="lazy"
-        ></iframe>
-      </div> */}
       <div style={{ position: 'absolute', bottom: '5px', left: '5px' }}>
         <button
           onClick={toggleModal}
@@ -246,6 +218,36 @@ export function AppLayout({ children }: { children: ReactNode }) {
                   You can manage cookie and storage settings through your
                   browser preferences
                 </li>
+              </ul>
+            </li>
+            <li>
+              <strong>Affiliate Links:</strong>
+              <ul>
+                <li>
+                  The HeroSwap widget is an affiliate link. We receive 50% of
+                  the fees on any swaps made through the widget.
+                </li>
+                <li>
+                  We have not altered HeroSwap's widget in any way except
+                  cosmetically. Use of the widget is governed by HeroSwap's
+                  terms, found {' '}
+                  <a
+                    href="https://docs.google.com/document/d/1TGeQ9YDHeorG90iu6SJFcbWmR1wpL2wnQk1cekjeSTw/edit?usp=sharing"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: '#14F195' }}
+                  >
+                    here
+                  </a>
+                  .
+                </li>
+                {/* <li>
+                  The Solana Dust Vaccuum link is an affiliate link. We receive
+                  33% commission on any SOL reclaimed through use of the link.
+                  We have no control over the Solana Dust Vaccuum site or its
+                  program.
+                </li>
+                <li>Use both of these services at your own risk.</li> */}
               </ul>
             </li>
           </ul>
