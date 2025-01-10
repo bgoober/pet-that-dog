@@ -93,7 +93,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             textDecoration: 'none',
           }}
         >
-          Disclaimer / Terms
+          Disclaimer / Terms / How it Works
         </button>
       </div>
       <Modal show={showModal} onClose={toggleModal}>
@@ -113,7 +113,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               padding: '10px 0',
             }}
           >
-            Disclaimer & Terms
+            Disclaimer / Terms / How it Works
           </h4>
           <ul style={{ lineHeight: '1.4' }}>
             <li>
@@ -138,6 +138,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <li>
               <strong>Costs & Tokenomics:</strong>
               <ul>
+                <li>Click to interact with a Dog.</li>
                 <li>Transaction fees apply to all interactions with any Dog</li>
                 <li>
                   Interacting with a Dog: Standard network fee + 0.000001 SOL
