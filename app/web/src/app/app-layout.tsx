@@ -10,6 +10,8 @@ import { PublicKey } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { HeroSwap } from './components/HeroSwap';
+import { MarketInfo } from './components/MarketInfo';
+import { Trading } from './components/Trading';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -75,10 +77,30 @@ export function AppLayout({ children }: { children: ReactNode }) {
           top: '5px',
           left: '5px',
           alignItems: 'left',
+          // zIndex: -1,
+          flexDirection: 'column',
+          gap: '20px',
+          // outline: '1px solid #14F195',
         }}
       >
         <TokenCounter />
+        {/* <MarketInfo /> */}
+        <Trading />
       </div>
+      {/* <div
+        style={{
+          position: 'absolute',
+          top: '100px',  // Adjust based on your layout
+          right: '6px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px',
+          zIndex: -1,
+        }}
+      >
+        <MarketInfo />
+        <Trading />
+      </div> */}
       <div style={{ position: 'absolute', bottom: '5px', left: '5px' }}>
         <button
           onClick={toggleModal}
@@ -91,6 +113,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             fontSize: '10px',
             fontFamily: 'Arial, sans-serif',
             textDecoration: 'none',
+            cursor: 'pointer',
           }}
         >
           Disclaimer / Terms / How it Works
@@ -249,6 +272,24 @@ export function AppLayout({ children }: { children: ReactNode }) {
                   program.
                 </li>
                 <li>Use both of these services at your own risk.</li> */}
+                <li>
+                  The "Trade on Jupiter" link is a referral link. We receive
+                  0.10% referral fees on any swaps you make through the link.
+                  This referrer code was created using Jupiter's {' '}
+                  <a
+                    href="https://referral.jup.ag/dashboard"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: '#14F195' }}
+                  >
+                    referral dashboard
+                  </a>
+                  .
+                </li>
+                <li>
+                  You can voluntarily remove this 0.10% referral fee on
+                  Jupiter's trading interface.
+                </li>
               </ul>
             </li>
           </ul>

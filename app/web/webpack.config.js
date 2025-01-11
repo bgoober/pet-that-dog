@@ -17,6 +17,10 @@ module.exports = composePlugins(withNx(), withReact(), (config) => {
     stream: require.resolve('stream-browserify'),
     vm: require.resolve('vm-browserify'),
     process: require.resolve('process/browser'),
+    "assert": require.resolve("assert/"),
+    "util": require.resolve("util/"),
+    "path": require.resolve("path-browserify"),
+    "fs": false,
   };
 
   // Debug environment loading
