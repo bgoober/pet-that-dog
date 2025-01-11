@@ -83,10 +83,10 @@ export const Trading: React.FC = () => {
             padding: 0,
             margin: 0
           }}>
-            <li>Top 1000 stakers earn fees</li>
-            <li>100% of fees to stakers</li>
-            <li>6 hour unstake period</li>
-            <li>7 day fee accumulation window</li>
+            <li>Top 1000 stakers earn fees (maximum)</li>
+            <li>100% of fees to stakers (maximum)</li>
+            <li>6 hour unstake period (minimum)</li>
+            <li>7 day fee accumulation window (minimum)</li>
           </ul>
         </div>
       </div>
